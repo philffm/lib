@@ -1,8 +1,7 @@
 node_modules/
 package-lock.json
 *.bak
-.secret
-.infura
+.apikey*
 old/
 *.bin
 a.txt
