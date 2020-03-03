@@ -5,13 +5,13 @@ import {SetupVideoWindowYouTube} from './koios_playvideo.mjs';
 import {DisplayLessons, GetLessonInfo} from './koios_lessons.mjs';
 import {LinkButton,HideButton,DragItem} from './koios_util.mjs';
 import {GetSubTitlesAndSheets} from './koios_subtitles.mjs';
-import {currentlang,UpdateTranscript,FoundTranscript,SelectLanguage,SetVideoSecondsCB} from './koios_showtranscript.mjs';
+import {currentlang,UpdateTranscript,FoundTranscript,SelectLanguage,SetVideoTranscriptCallbacks} from './koios_showtranscript.mjs';
 import {} from './koios_getslides.mjs';
 import {FoundSlides,ClearSlideIndicators,UpdateSlide,SetupSlideWindow} from './koios_showslides.mjs';
 import {} from './koios_chat.mjs';
 import {} from './koios_notes.mjs';
 import {SetupSliders} from './koios_screenlayout.mjs';
-import {InitSpeak,ToggleSpeech} from './koios_speech.mjs';
+import {InitSpeak,StopSpeak,StartSpeak,EnableSpeech,IsSpeechOn} from './koios_speech.mjs';
 
 /* General comments
 https://gpersoon.com/koios/test/koios_video.js
@@ -84,14 +84,14 @@ var SecondsToSubtitle=[];
 
 var globalyoutubeid; // global for onYouTubeIframeAPIReady
 
-var ffirst=1;
+
 var previous_colour=""
 var previous_row=-1;
 var table
 var tablediv
 var fTriedFullScreen=false;
 var fFullScreen=false;
-var fSoundOn=true;
+
 var defaultvolume=100;
 var vidproginput=0;
 var vidprogress=0;
@@ -102,6 +102,7 @@ var font=0;
 
 
 var playerpromise;
+var fSoundOn;
 
 }    
 
@@ -248,6 +249,16 @@ function CreateSoundSlider() {
     divsoundslider.appendChild(input);
     SetVolume(defaultvolume);
 }   
+ 
+function ToggleSound() {
+   fSoundOn = !fSoundOn;
+   EnableSound(fSoundOn);
+
+    
+   document.getElementById("audio").style.color=fSoundOn?"red":"white"
+}
+
+
 function EnableSound(fOn) {
     fSoundOn = fOn;// store state
        if (video)
@@ -259,14 +270,10 @@ function EnableSound(fOn) {
         else 
             player.mute();
     
-}    
-function ToggleSound() {
-   fSoundOn = !fSoundOn;
-   EnableSound(fSoundOn);
-
+}   
     
-   document.getElementById("audio").style.color=fSoundOn?"red":"white"
-}
+
+
 async function SetVideoSeconds(seconds) {
     //console.log(`In SetVideoSeconds, moving to ${seconds}`);
 
@@ -330,6 +337,12 @@ async function startVideo() {
 
     tcallback(); // callbacks for the progress
 }
+
+function TranscriptShownCB(txt) {
+    console.log(`In TranscriptShownCB ${txt}`);
+      StartSpeak(txt);
+}
+
 function stopVideo() {
     console.log("In stopVideo");
     if (video) video.pause();
@@ -365,6 +378,17 @@ async function DisplayMessage(text) {
     msg.style.display="none";    
 }
 
+
+export async function ToggleSpeech(){
+//    if (ffirst) {
+//        console.log("First ToggleSpeech");
+//        ffirst=false;
+    //}
+    var fspeechon = !IsSpeechOn(); 
+    EnableSpeech(fspeechon);
+    EnableSound(!fspeechon); // disable video sound when speech is on
+        
+} 
 
 
    
@@ -410,6 +434,11 @@ async function LoadVideo(vidinfo) {
     
 }
 
+
+
+   
+
+
 async function asyncloaded() {    
     console.log(`In asyncloaded of script: ${import.meta.url}`);
     var lessonspromise=DisplayLessons(LoadVideo);
@@ -440,7 +469,7 @@ async function asyncloaded() {
    console.log("Init 1");    
     player=await playerpromise;    
 console.log("Init 2");
-    SetVideoSecondsCB(SetVideoSeconds);
+    SetVideoTranscriptCallbacks(SetVideoSeconds,TranscriptShownCB);
 console.log("Init 3");    
     SelectLanguage("nl");    
 console.log("Init 4");    
