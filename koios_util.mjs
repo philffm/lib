@@ -84,6 +84,12 @@ export function HideButton(nameButton,fHide) {
     function SetzIndex(fChange) {  
         domiddraggable.style.zIndex = (fChange? "-1": "")
         domidmousearea.style.zIndex  = (fChange? "1": "")
+        
+        
+        var arrchildren=domidmousearea.children;    
+        for (var i=0;i<arrchildren.length;i++) 
+            arrchildren[i].style.zIndex=(fChange? "-1": "")      
+        
     }
     
     async function SliderStart(ev) {
