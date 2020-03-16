@@ -12,6 +12,8 @@ import {} from './koios_chat.mjs';
 import {} from './koios_notes.mjs';
 import {SetupSliders} from './koios_screenlayout.mjs';
 import {InitSpeak,StopSpeak,StartSpeak,EnableSpeech,IsSpeechOn} from './koios_speech.mjs';
+import {SetupLogWindow} from './koios_log.mjs';
+
 
 /* General comments
 https://gpersoon.com/koios/test/koios_video.js
@@ -423,7 +425,8 @@ function ToggleCueVisibility() {
 async function LoadVideo(vidinfo) {
     console.log(`Loading video ${vidinfo.videoid}`);
     player=await playerpromise;
-    player.cueVideoById(vidinfo.videoid,0); // start at beginning   
+    if (player)
+        player.cueVideoById(vidinfo.videoid,0); // start at beginning   
     
     console.log(`In Loadvideo`);
     
@@ -441,6 +444,13 @@ async function LoadVideo(vidinfo) {
 
 async function asyncloaded() {    
     console.log(`In asyncloaded of script: ${import.meta.url}`);
+    
+    
+
+    
+    
+    
+    SetupLogWindow();
     var lessonspromise=DisplayLessons(LoadVideo);
     
        

@@ -89,7 +89,7 @@ export function HideButton(nameButton,fHide) {
         
         var arrchildren=domidmousearea.children;    
         for (var i=0;i<arrchildren.length;i++) 
-            arrchildren[i].style.zIndex=(fChange? "-1": "")      
+            arrchildren[i].style.zIndex=(fChange? "-2": "")      
         
     }
     
@@ -127,6 +127,6 @@ export function HideButton(nameButton,fHide) {
     }   
     domiddraggable.addEventListener('mousedown',  SliderStart);
     domiddraggable.addEventListener('touchstart', SliderStart, {passive:true} );     
-    domiddraggable.addEventListener('dragstart',  SliderStart);    
+  //  domiddraggable.addEventListener('dragstart',  SliderStart);    
 }
 
