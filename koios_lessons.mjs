@@ -187,6 +187,10 @@ function PrepButtons() {
     
     buttonForward=LinkClickButton("forward");subscribe("forwardclick",x=>SelectLesson(CurrentLesson +1));
     
+    
+    subscribe("keypressedp",x=>SelectLesson(CurrentLesson -1)); 
+    subscribe("keypressedn",x=>SelectLesson(CurrentLesson +1)); 
+    
     PrepButtons=function(){} // next time do nothing
 }
  

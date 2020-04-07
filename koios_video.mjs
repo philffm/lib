@@ -1,13 +1,13 @@
 console.log(`In ${window.location.href} starting script: ${import.meta.url}`);
 
  // imports
-    import {SetupVideoWindowYouTube,SetVideoTitle,ShowVideoTitle} from './koios_playvideo.mjs';
+    import {SetupVideoWindowYouTube,SetVideoTitle} from './koios_playvideo.mjs';
     import {DisplayLessons, SelectLesson,CurrentLesson,LastLesson} from './koios_lessons.mjs';
     import {LinkButton,HideButton,DragItem,publish,subscribe,LinkClickButton,LinkToggleButton} from './koios_util.mjs';
     import {GetSubTitlesAndSheets} from './koios_subtitles.mjs';
     import {currentlang,UpdateTranscript,FoundTranscript,SelectLanguage,SetVideoTranscriptCallbacks} from './koios_showtranscript.mjs';
     import {} from './koios_getslides.mjs';
-    import {FoundSlides,PrepareAndLoadSlides,UpdateSlide,SetupSlideWindow} from './koios_showslides.mjs';
+    import {FoundSlides,PrepareAndLoadSlides,UpdateSlide,SetupSlideWindow,ShowTitles} from './koios_showslides.mjs';
     import {} from './koios_chat.mjs';
     import {} from './koios_notes.mjs';
     import {SetupSliders} from './koios_screenlayout.mjs';
@@ -149,7 +149,7 @@ function ToggleFullScreen() {
 }    
 
 subscribe("shaking",x=>{if (fFullScreen) SetFullScreen(false)});
-
+document.addEventListener("keydown", x=>{publish(`keypressed${x.key}`)}); // connect actions to keypresses, not implemented yet
 
 function GetVolume() {
     if (video) return video.volume;
@@ -244,7 +244,9 @@ export async function startVideo() {
    //         console.log(player.getDebugText());
    //     console.log(player.getVideoData());
     
-    ShowVideoTitle(false);
+    
+    ShowTitles(false)
+    
     
     if (video) {
         video.play();
@@ -264,7 +266,7 @@ function TranscriptShownCB(txt) {
 }
 function stopVideo() {
     console.log("In stopVideo");
-    ShowVideoTitle(true);
+    ShowTitles(true);
     if (video) video.pause();
     if (player) player.pauseVideo();
    // UpdateVideoIndicator(true);
@@ -341,7 +343,7 @@ async function LoadVideo(vidinfo) { // call when first video is loaded or a diff
     currentduration = vidinfo.duration
     console.log(`In Loadvideo`);
     SetVideoTitle(vidinfo.txt);
-
+   SetVideoProgressBar(0)
     PrepareAndLoadSlides(vidinfo);
     
     GetSubTitlesAndSheets(vidinfo,FoundTranscript,FoundSlides);

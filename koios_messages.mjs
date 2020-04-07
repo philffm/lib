@@ -88,21 +88,13 @@ function TestAccelerometer() {
 }
 
 
-//var countor =10;
 function handleOrientation(event) {
-    var x= event.beta
-    var y= event.gamma
-    var sum = Math.abs(x+y)
-  //  countor++;
-    //console.log(`sum=${sum} `); // ${countor}
-
-        ShowTitles(sum < 3)
-    //    else
-      //   if (countor > 10) {
-        //      DisplayMessage("Phone perfectly flat");
-          //    countor=0;
-        // }
-    //}
+    if (event.beta && event.gamma) { // prevent triggering on a desktop
+        var x= event.beta
+        var y= event.gamma
+        var sum = Math.abs(x+y)
+        ShowTitles(sum < 3) // only show extra info when sum is small, e.g. phone is flat
+    }
 }
 
 async function MessagesStart() {
