@@ -24,7 +24,7 @@ var prevslide=0;
 
 export function ShowTitles(fOn) {
     var videoinfo=document.getElementById("videoinfo");
-    videoinfo.style.display=fOn?"block":"none"
+    videoinfo.style.display=fOn?"flex":"none"
       
      var list = document.getElementsByClassName("slideinfo"); 
      for (var i=0;i<list.length;i++) {
