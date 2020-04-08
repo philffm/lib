@@ -1,4 +1,4 @@
-console.log(`In ${window.location.href} starting script: ${import.meta.url}`);
+//console.log(`In ${window.location.href} starting script: ${import.meta.url}`);
 
 
  
@@ -25,11 +25,11 @@ async function MergeLevels(fInIframe,parenturl) {
         var course_domid=FindCourse(course_id);
         
         if (course_domid) {
-            console.log(course_domid)
-            console.log(course_domid.parentNode)
+      //      console.log(course_domid)
+      //      console.log(course_domid.parentNode)
             
             var container=course_domid.parentNode.parentNode.parentNode.getElementsByClassName("course-level-block");
-            console.log(container);
+      //      console.log(container);
             container[0].appendChild(course_level_id_domid.parentNode.parentNode);             
         }
         
