@@ -1,4 +1,4 @@
-console.log(`In ${window.location.href} starting script: ${import.meta.url}`);
+//console.log(`In ${window.location.href} starting script: ${import.meta.url}`);
 
 import {GetYouTubePlaylists,GetYouTubePlayListItems}     from './koios_youtube.mjs';
 import {LinkButton,HideButton,LinkClickButton,subscribe} from './koios_util.mjs';
