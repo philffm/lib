@@ -39,7 +39,7 @@ export async function GetSubTitlesAndSheets(vidinfo,SubtitleCB,SheetsCB) {
    var t=await data.text();
    var captions  = parser.parseFromString(t, "text/xml").getElementsByTagName('track');
 
-
+   console.log(captions)
    for (var i=0;i< captions.length;i++) {
        var language = captions[i].getAttribute('lang_code')
 
