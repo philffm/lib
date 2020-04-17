@@ -78,7 +78,6 @@ class Chat extends Component {
     this.updateThreadError();
 
     let threadData = []
-    // Step 3 - get posts in thread
     let posts = [];
     try {
       posts = await activeTopic.getPosts();
@@ -92,7 +91,6 @@ class Chat extends Component {
 
     // add thread members to state
     let threadMemberList = [];
-    // Step 4 - members of thread
     let members = [];
     try {
       members = await activeTopic.listMembers();
@@ -102,7 +100,6 @@ class Chat extends Component {
 
     // add thread mods to state
     let threadModeratorList = [];
-    // Step 4 - moderators of thread
     const moderators = await activeTopic.listModerators();
     threadModeratorList.push(...moderators)
     this.setState({ threadModeratorList });
