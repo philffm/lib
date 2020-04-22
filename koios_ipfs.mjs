@@ -18,6 +18,15 @@ export async function setupIPFS()
   return ipfs;
 }
 
+export async function setupBuffer()
+{
+  console.log("Setup buffer");
+  await Promise.all([
+    loadScriptAsync("https://packd.now.sh/buffer")
+  ]);
+  console.log("buffer libraries loaded");
+}
+
 export async function uploadYtDataToIpfs()
 {
   var ipfs = await setupIPFS();
@@ -32,13 +41,17 @@ export async function uploadYtDataToIpfs()
 
 export async function getYtInfoIpfs(hash)
 {
+  await setupBuffer();
+  var Buf = window.buffer.Buffer;
   var ipfs = await setupIPFS();
   var videoAndPlaylistInfo;
-  for await (const result of ipfs.cat(hash))
+  var chunks = [];
+  for await (const chunk of ipfs.cat(hash))
   {
-    //console.log(JSON.parse(result.toString('utf8')));
-    videoAndPlaylistInfo = JSON.parse(result.toString('utf8'));
+    chunks.push(chunk);
   }
+  videoAndPlaylistInfo = JSON.parse(Buf.concat(chunks).toString());
+  console.log(videoAndPlaylistInfo);
   return videoAndPlaylistInfo;
 }
 
@@ -55,7 +68,11 @@ export async function includeSubtitlesforIpfsExport()
   return info;
 }
 
-
+export async function test()
+{
+  var testje = JSON.stringify(await includeSubtitlesforIpfsExport());
+  console.log(JSON.parse(testje.toString('utf8')));
+}
 
 
 
