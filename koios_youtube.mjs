@@ -16,13 +16,13 @@ loadScriptAsync("https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.
 // See https://developers.google.com/youtube/v3/docs/playlists/list?apix=true
 
 export async function GetYouTubePlaylists() {
-
+    console.log("In GetYouTubePlaylists");
     await LoadGapi();
     var list=await gapi.client.youtube.playlists.list({
       "part": "snippet", // contentDetails
       "channelId": "UCMyWjw6D7eq6swaOljtwJdw" // koios online channel
     });
-
+console.log(list);
     var resultlist=[]
     for (var i=0;i<list.result.items.length;i++) {
         var result={};
@@ -36,18 +36,20 @@ export async function GetYouTubePlaylists() {
         result.thumbnail = list.result.items[i].snippet.thumbnails.high.url; // default.url;
         resultlist.push(result)
     }
-    //console.log("In GetYouTubePlaylists");
-    //console.log(resultlist);
+    console.log("In GetYouTubePlaylists");
+    console.log(resultlist);
     return resultlist;
 }
 
 export async function GetYouTubePlayListItems(_playlistId) {
-
+console.log("In GetYouTubePlayListItems");
     const queryString = window.location.search;
     //console.log(`In GetYouTubePlayListItems queryString=${queryString}`);
 
     const urlParams = new URLSearchParams(queryString);
     //console.log(urlParams);
+
+if (!_playlistId) _playlistId = "PL_tbH3aD86KvXkp5y0eB85_GEze1gBsKD"
 
     let playlistId = urlParams.get('playlistId') || _playlistId;
     // koios intro PL_tbH3aD86KvXkp5y0eB85_GEze1gBsKD

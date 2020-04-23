@@ -33,11 +33,18 @@ var onlyLessonsIndexList=[]
 
 
 
-export async function DisplayLessons(LoadVideoCB) {
+export async  function DisplayLessons(LoadVideoCB) {
+    console.log("DisplayLessons")
+    
     globalLoadVideoCB = LoadVideoCB;
     PrepButtons();
     var x=await GetYouTubePlaylists()
+console.log(x)    
     var items=await GetYouTubePlayListItems()
+
+
+
+console.log(items);
 
     for (var i=0;i<items.length;i++) {
 
