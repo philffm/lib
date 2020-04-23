@@ -37,7 +37,7 @@ export async function DisplayLessons(LoadVideoCB) {
     globalLoadVideoCB = LoadVideoCB;
     PrepButtons();
     var x=await GetYouTubePlaylists()
-    var items=await GetYouTubePlayListItems()
+    var items=await GetYouTubePlayListItems("PL_tbH3aD86KvXkp5y0eB85_GEze1gBsKD")
 
     for (var i=0;i<items.length;i++) {
 
