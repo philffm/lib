@@ -18,6 +18,7 @@ export async function setupIPFS()
   return ipfs;
 }
 
+
 export async function setupBuffer()
 {
   console.log("Setup buffer");
@@ -27,7 +28,8 @@ export async function setupBuffer()
   console.log("buffer libraries loaded");
 }
 
-export async function uploadYtDataToIpfs()
+
+export async function uploadYtDataToIpfs()        //Puts the object on ipfs
 {
   var ipfs = await setupIPFS();
   var hash; //IPFS hash
@@ -39,7 +41,8 @@ export async function uploadYtDataToIpfs()
   return hash;
 }
 
-export async function getYtInfoIpfs(hash)
+
+export async function getYtInfoIpfs(hash)           //Gets the json string from ipfs and parses it into an object
 {
   await setupBuffer();
   var Buf = window.buffer.Buffer;
@@ -55,32 +58,24 @@ export async function getYtInfoIpfs(hash)
   return videoAndPlaylistInfo;
 }
 
-export async function includeSubtitlesforIpfsExport()
+
+export async function includeSubtitlesforIpfsExport()   //Adds the subtitle object to the specific video in the youtube info json file
 {
-  var info = await forIPFSexport();
-  for(var i = 0; i<info.length;i++)
+  var data = await forIPFSexport();
+  for(var i = 0; i<data.length;i++)
   {
-    for(var x = 0; x<info[i].videos.length;x++)
+    for(var x = 0; x<data[i].videos.length;x++)
     {
-      info[i].videos[x].subtitles = await getSubTitles(info[i].videos[x].videoid);
+      data[i].videos[x].subtitles = await getSubTitles(data[i].videos[x].videoid);
     }
   }
-  return info;
+  return data;
 }
-
-export async function test()
-{
-  var testje = JSON.stringify(await includeSubtitlesforIpfsExport());
-  console.log(JSON.parse(testje.toString('utf8')));
-}
-
-
-
 
 
 var parser = new DOMParser();
 
-export async function getYouTubeSubTitle(language, videoId)
+export async function getYouTubeSubTitle(language, videoId)   //Gets one specific subtitle
 {
   var array = [];
   var subtitleUrl = `https://video.google.com/timedtext?v=${videoId}&lang=${language}`;
@@ -103,7 +98,7 @@ export async function getYouTubeSubTitle(language, videoId)
 }
 
 
-export async function getSubtitleList(videoId)
+export async function getSubtitleList(videoId)    //Gets a list of all subtitles languages available for a specific video(ID)
 {
   var subtitleUrl = `https://video.google.com/timedtext?type=list&v=${videoId}`;
   var data = await fetch(subtitleUrl).catch(console.log);
@@ -114,7 +109,7 @@ export async function getSubtitleList(videoId)
 }
 
 
-export async function getSubTitles(videoId)
+export async function getSubTitles(videoId)       //Gets all subtitles associated with one specific video(ID)
 {
   var captions = await getSubtitleList(videoId);
   var allVidSubs = [];
