@@ -16,13 +16,11 @@ loadScriptAsync("https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.
 // See https://developers.google.com/youtube/v3/docs/playlists/list?apix=true
 
 export async function GetYouTubePlaylists() {
-    
     await LoadGapi();
     var list=await gapi.client.youtube.playlists.list({
       "part": "snippet", // contentDetails
       "channelId": "UCMyWjw6D7eq6swaOljtwJdw" // koios online channel
     });
-    
     var resultlist=[]
     for (var i=0;i<list.result.items.length;i++) {
         var result={};
@@ -41,15 +39,18 @@ export async function GetYouTubePlaylists() {
     return resultlist;
 }
 
-export async function GetYouTubePlayListItems() {  
-
+export async function GetYouTubePlayListItems(_playlistId) {
     const queryString = window.location.search;
     //console.log(`In GetYouTubePlayListItems queryString=${queryString}`);
 
     const urlParams = new URLSearchParams(queryString);
     //console.log(urlParams);
-    
-    let playlistId = urlParams.get('playlistId') || "PL_tbH3aD86KvXkp5y0eB85_GEze1gBsKD";
+
+
+if (!_playlistId) _playlistId = "PL_tbH3aD86KvXkp5y0eB85_GEze1gBsKD"
+
+
+    let playlistId = urlParams.get('playlistId') || _playlistId;
     // koios intro PL_tbH3aD86KvXkp5y0eB85_GEze1gBsKD
     // level 2 "PL_tbH3aD86Kt7mITDw67sJMI6M0fRF2Zx";
     // level 1 "PL_tbH3aD86Kt-vJy4Q-rvZtXDmrLMG1Ef";
