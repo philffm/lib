@@ -6,6 +6,7 @@ import {loadScriptAsync,LoadGapi,ipfsgetjson,subscribe,publish} from './koios_ut
 
 subscribe("loadvideo",GetSlidesFromVideo)
 
+
 function GetSourceCid() {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
@@ -17,16 +18,23 @@ function GetSourceCid() {
 var oldcid;
 var slideindex;
 
+
 async function GetSlidesFromVideo(vidinfo) {
+
+
+
    // console.log("In GetSlidesFromVideo");
    // console.log(vidinfo);
     var cid=GetSourceCid();
     if (cid != oldcid)
         slideindex = await ipfsgetjson(cid);
     var match = vidinfo.txt.split(" ")[0];
-    var showslides=[]
-    for (var i=0;i<slideindex.length;i++)
-        if (slideindex[i].chapter === match)
+
+    var showslides=[]        
+    for (var i=0;i<slideindex.length;i++) 
+        if (slideindex[i].chapter === match) 
             showslides.push(slideindex[i])
     publish("foundslides",showslides);
-}
+}    
+
+

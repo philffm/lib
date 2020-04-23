@@ -25,32 +25,16 @@ var globalLessonslist; // format:
 // videoid
 
 
-
-
 var onlyLessonsIndexList=[]
 
-
-
-
-
-export async  function DisplayLessons(LoadVideoCB) {
-    console.log("DisplayLessons")
-    
+export async function DisplayLessons(LoadVideoCB) {
     globalLoadVideoCB = LoadVideoCB;
     PrepButtons();
     var x=await GetYouTubePlaylists()
-console.log(x)    
-    var items=await GetYouTubePlayListItems()
-
-
-
-console.log(items);
+    var items=await GetYouTubePlayListItems("PL_tbH3aD86KvXkp5y0eB85_GEze1gBsKD")
 
     for (var i=0;i<items.length;i++) {
-
-
         //console.log(items[i]);
-
        if (items[i].chapter)
           AddChapter(items[i].title)
        else {
