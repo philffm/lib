@@ -9,11 +9,11 @@ subscribe("loadvideo",GetSlidesFromVideo)
 
 function GetSourceCid() {
     const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
+    const urlParams = new URLSearchParams(queryString); 
     let cid = urlParams.get('slides') || 'QmXzRAXrFUou1FWHBMUvbb66bT8xfToQH3HJWqUNhTiXLX' // 'QmRzsL6TgZcphVAHBSNaSzf9uJyqL24R945aLQocu5mT5m';
     console.log(`In GetSourceCid cid=${cid}`);
     return cid;
-}
+}    
 
 var oldcid;
 var slideindex;
@@ -29,12 +29,10 @@ async function GetSlidesFromVideo(vidinfo) {
     if (cid != oldcid)
         slideindex = await ipfsgetjson(cid);
     var match = vidinfo.txt.split(" ")[0];
-
     var showslides=[]        
     for (var i=0;i<slideindex.length;i++) 
         if (slideindex[i].chapter === match) 
             showslides.push(slideindex[i])
     publish("foundslides",showslides);
 }    
-
 

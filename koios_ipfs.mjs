@@ -63,10 +63,16 @@ export async function includeSubtitlesforIpfsExport()   //Adds the subtitle obje
 {
   var data = await forIPFSexport();
   for(var i = 0; i<data.length;i++)
-  {
+  { 
+    console.log(`Playlist ${data[i].id}`);
     for(var x = 0; x<data[i].videos.length;x++)
-    {
+    { 
       data[i].videos[x].subtitles = await getSubTitles(data[i].videos[x].videoid);
+      
+      var lan=data[i].videos[x].subtitles.length;
+      var subs=lan?data[i].videos[x].subtitles[0].subtitle.length:0
+    console.log(`Video: ${data[i].videos[x].videoid} languages: ${lan} subtitles: ${subs} `);
+    //console.log(data[i].videos[x].subtitles);
     }
   }
   return data;
@@ -104,7 +110,7 @@ export async function getSubtitleList(videoId)    //Gets a list of all subtitles
   var data = await fetch(subtitleUrl).catch(console.log);
   var t = await data.text();
   var subtitleList = parser.parseFromString(t, "text/xml").getElementsByTagName('track');
-  console.log(subtitleList);
+  //console.log(subtitleList);
   return subtitleList;
 }
 
@@ -113,9 +119,13 @@ export async function getSubTitles(videoId)       //Gets all subtitles associate
 {
   var captions = await getSubtitleList(videoId);
   var allVidSubs = [];
+  
+  //console.log(`Video: ${videoId} #Captions: ${captions.length}`);
+  
   for (var i=0; i<captions.length; i++){
+      
     var language = captions[i].getAttribute('lang_code');
-    console.log(`Found language: ${language}`);
+    //console.log(`Found language: ${language}`);
     allVidSubs.push({
       lang: language,
       subtitle: await getYouTubeSubTitle(language, videoId)
@@ -126,6 +136,6 @@ export async function getSubTitles(videoId)       //Gets all subtitles associate
     }
     */
   }
-  console.log(allVidSubs);
+  //console.log(allVidSubs);
   return allVidSubs;
 }
