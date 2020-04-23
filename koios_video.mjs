@@ -421,8 +421,11 @@ async function LoadVideo(vidinfo) { // call when first video is loaded or a diff
     SetVideoTitle(vidinfo.txt);
    SetVideoProgressBar(0)
     
-    
-    GetSubTitlesAndSheets(vidinfo,FoundTranscript,FoundSlides);
+    console.log(vidinfo)
+   // GetSubTitlesAndSheets(vidinfo,FoundTranscript,FoundSlides);
+    for (var i=0;i< vidinfo.subtitles.length;i++) 
+       if (vidinfo.subtitles[i].lang == "vor")
+            FoundSlides(vidinfo.subtitles[i].subtitle,vidinfo);
     GetSetupLitAndAssInfo(vidinfo.txt);
     InitProgress(vidinfo);
     
