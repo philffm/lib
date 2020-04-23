@@ -40,7 +40,7 @@ export async function GetSubTitlesAndSheets(vidinfo,SubtitleCB,SheetsCB) {
    console.log(captions)
    for (var i=0;i< captions.length;i++) {
        var language = captions[i].getAttribute('lang_code')
-
+       
   //     console.log(`Found language: ${language}`)
        if (language != "vor") { // resetved for slide info
             var arraypromise = GetYouTubeSubTitle();
