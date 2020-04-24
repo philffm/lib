@@ -20,36 +20,35 @@ export async function GetYouTubePlaylists() {
     await LoadGapi();
     var list=await gapi.client.youtube.playlists.list({
       "part": "snippet", // contentDetails
+      "maxResults": 50,
       "channelId": "UCMyWjw6D7eq6swaOljtwJdw" // koios online channel
     });
-    
+    console.log(list);
     var resultlist=[]
     for (var i=0;i<list.result.items.length;i++) {
         var result={};
         result.id    = list.result.items[i].id;
         result.title = list.result.items[i].snippet.title;
         result.description = list.result.items[i].snippet.description;
-        
-        
-        
-        
         result.thumbnail = list.result.items[i].snippet.thumbnails.high.url; // default.url;
         resultlist.push(result)
     }
-    //console.log("In GetYouTubePlaylists");
-    //console.log(resultlist);
+    console.log(`In GetYouTubePlaylists ${resultlist.length}`);
+    console.log(resultlist);
     return resultlist;
 }
 
-export async function GetYouTubePlayListItems() {  
-
+export async function GetYouTubePlayListItems(_playlistId) {
+console.log("In GetYouTubePlayListItems");
     const queryString = window.location.search;
     //console.log(`In GetYouTubePlayListItems queryString=${queryString}`);
 
     const urlParams = new URLSearchParams(queryString);
     //console.log(urlParams);
+
+if (!_playlistId) _playlistId = "PL_tbH3aD86KvXkp5y0eB85_GEze1gBsKD"
     
-    let playlistId = urlParams.get('playlistId') || "PL_tbH3aD86KvXkp5y0eB85_GEze1gBsKD";
+    let playlistId = urlParams.get('playlistId') ||_playlistId // "PL_tbH3aD86KvXkp5y0eB85_GEze1gBsKD";
     // koios intro PL_tbH3aD86KvXkp5y0eB85_GEze1gBsKD
     // level 2 "PL_tbH3aD86Kt7mITDw67sJMI6M0fRF2Zx";
     // level 1 "PL_tbH3aD86Kt-vJy4Q-rvZtXDmrLMG1Ef";
@@ -91,7 +90,7 @@ export async function GetYouTubePlayListItems() {
             result.title        = snippet.title;
             result.description  = snippet.description;
             
-            console.log(snippet.thumbnails);
+           // console.log(snippet.thumbnails);
             
             result.thumbnail    = snippet.thumbnails.maxres? snippet.thumbnails.maxres.url : snippet.thumbnails.high.url; // default.url;
             result.videoid      = snippet.resourceId.videoId
@@ -116,5 +115,17 @@ export async function GetYouTubePlayListItems() {
     //console.log(resultlist);
     return resultlist;    
 }
+
+
+export async function forIPFSexport()     //creates an array of objects in the right format for IPFS export.
+{
+  var totalYoutubeInfo = await GetYouTubePlaylists();
+  for(var i=0;i<totalYoutubeInfo.length;i++)
+  {
+    totalYoutubeInfo[i].videos = await GetYouTubePlayListItems(totalYoutubeInfo[i].id);
+  }
+  return totalYoutubeInfo;
+}
+
 
 

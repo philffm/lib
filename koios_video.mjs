@@ -1,23 +1,26 @@
 //console.log(`In ${window.location.href} starting script: ${import.meta.url}`);
-
+// https://browserhow.com/how-to-clear-chrome-android-history-cookies-and-cache-data/
  // imports
     import {SetupVideoWindowYouTube,SetVideoTitle} from './koios_playvideo.mjs';
     import {DisplayLessons, SelectLesson,CurrentLesson,LastLesson} from './koios_lessons.mjs';
-    import {LinkButton,HideButton,DragItem,publish,subscribe,LinkClickButton,LinkToggleButton,CanvasProgressInfo,SaveVideoSeen,LoadVideoSeen} from './koios_util.mjs';
+    import {LinkButton,HideButton,DragItem,publish,subscribe,LinkClickButton,LinkToggleButton,CanvasProgressInfo,SaveVideoSeen,LoadVideoSeen,ForceButton} from './koios_util.mjs';
     import {GetSubTitlesAndSheets} from './koios_subtitles.mjs';
     import {currentlang,UpdateTranscript,FoundTranscript,SelectLanguage,SetVideoTranscriptCallbacks} from './koios_showtranscript.mjs';
     import {} from './koios_getslides.mjs';
     import {FoundSlides,UpdateSlide} from './koios_showslides.mjs';
     import {} from './koios_chat.mjs';
     import {} from './koios_notes.mjs';
-    import {SetupSliders,ShowTitles} from './koios_screenlayout.mjs';
+    import {SetupSliders /*,ShowTitles*/} from './koios_screenlayout.mjs';
     import {InitSpeak,StopSpeak,StartSpeak,EnableSpeech,IsSpeechOn} from './koios_speech.mjs';
     import {SetupLogWindow} from './koios_log.mjs';
     import {SetupChat} from './koios_chat.mjs';
     import {GetSetupLitAndAssInfo,SetupLitAndAss} from './koios_drive.mjs';
     import {} from './koios_test.mjs';
-    import {Relax,InitPopup} from './koios_popup.mjs';
+    import {SelectPopup,InitPopup} from './koios_popup.mjs';
     import {DisplayMessageContinous,SwitchDisplayMessageContinous,DisplayMessage} from './koios_messages.mjs';
+    import {} from './koios_music.mjs';
+    import {} from './koios_literature.mjs';
+    import {} from './koios_about.mjs';
 
 
 export var player=0;
@@ -98,7 +101,7 @@ async function VideoLocation() {
  
 
 function SeenVideo() { // every few seconds save the progress
-    console.log(`Seen video ${currentvideoid}`);
+    console.log(`Seen video ${currentvidinfo.txt}`);
     seeninfo.seenend=true;
     SaveVideoSeen(seeninfo,currentvidinfo)
 }    
@@ -110,12 +113,19 @@ subscribe('videoend',    SeenVideo);
 async function NextVideo() {
     stopVideo();
     
-    await Relax();
+    //await Relax();
     
+    var RelaxTime=5000;
+    await SelectPopup("relax")
+    await sleep(RelaxTime);
+    await SelectPopup("literature")
+    
+    /*
     if (CurrentLesson == LastLesson) 
         publish ("lessonsend") 
     else      
         SelectLesson(CurrentLesson +1);
+    */
 }    
 
 
@@ -201,8 +211,8 @@ function ToggleFullScreen() {
     SetFullScreen(!fFullScreen);
 }    
 
-subscribe("shaking",x=>{if (fFullScreen) SetFullScreen(false)});
-document.addEventListener("keydown", x=>{publish(`keypressed${x.key}`)}); // connect actions to keypresses, not implemented yet
+//subscribe("shaking",x=>{if (fFullScreen) SetFullScreen(false)});
+//document.addEventListener("keydown", x=>{publish(`keypressed${x.key}`)}); // connect actions to keypresses, not implemented yet
 
 function GetVolume() {
     if (video) return video.volume;
@@ -298,8 +308,9 @@ export async function startVideo() {
    //     console.log(player.getVideoData());
     
     
-    ShowTitles(false)
-    
+//    ShowTitles(false)
+    ForceButton("start",true);
+    HideButton("largestart",true)
     
     if (video) {
         video.play();
@@ -322,7 +333,9 @@ function TranscriptShownCB(txt) {
 }
 function stopVideo() {
     console.log("In stopVideo");
-    ShowTitles(true);
+    ForceButton("start",false);
+    HideButton("largestart",false)
+    //ShowTitles(true);
     if (video) video.pause();
     if (player) player.pauseVideo();
    // UpdateVideoIndicator(true);
@@ -390,8 +403,8 @@ subscribe('popupdisplaynone', x=> { if (fVideoRunning) startVideo(); } ); // if 
 
 async function LoadVideo(vidinfo) { // call when first video is loaded or a diffent video is selected
     
-    console.log(`Loading video ${vidinfo.videoid} ${vidinfo.txt}`);
-    console.log(vidinfo);
+    //console.log(`Loading video ${vidinfo.videoid} ${vidinfo.txt}`);
+    //console.log(vidinfo);
     
     publish("loadvideo",vidinfo); // note: with parameter
     
@@ -408,8 +421,11 @@ async function LoadVideo(vidinfo) { // call when first video is loaded or a diff
     SetVideoTitle(vidinfo.txt);
    SetVideoProgressBar(0)
     
-    
-    GetSubTitlesAndSheets(vidinfo,FoundTranscript,FoundSlides);
+    console.log(vidinfo)
+   // GetSubTitlesAndSheets(vidinfo,FoundTranscript,FoundSlides);
+    for (var i=0;i< vidinfo.subtitles.length;i++) 
+       if (vidinfo.subtitles[i].lang == "vor")
+            FoundSlides(vidinfo.subtitles[i].subtitle,vidinfo);
     GetSetupLitAndAssInfo(vidinfo.txt);
     InitProgress(vidinfo);
     
@@ -425,7 +441,11 @@ async function asyncloaded() {
     //LinkButton("start",startVideo);
     
     
-   // LinkClickButton("start");subscribe("startclick",startVideo);
+    LinkClickButton("largestart");subscribe("largestartclick",startVideo);
+    subscribe('videocued', x=>{HideButton("largestart",false);})
+    
+    var videofield=document.getElementById("videofield");
+videofield.addEventListener('click', x=>{console.log("videofield click");if (!IsVideoPaused()) stopVideo();}); 
     
     LinkToggleButton("start",false);subscribe("starton",startVideo);subscribe("startoff",stopVideo);
     
@@ -445,6 +465,9 @@ async function asyncloaded() {
     
  //   LinkButton("fullscreen",ToggleFullScreen);        
    LinkToggleButton("fullscreen",false);subscribe("fullscreenon",ToggleFullScreen);subscribe("fullscreenoff",ToggleFullScreen);
+    
+       
+    
     
     CreateVideoSlider(); 
     // CreateSoundSlider();
