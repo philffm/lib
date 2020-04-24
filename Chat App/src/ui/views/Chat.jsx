@@ -25,6 +25,7 @@ class Chat extends Component {
       showAddNewModeratorModal: false,
       showAddNewMemberModal: false,
       isMembersOnly: false,
+      removeTopicError: ''
     };
   }
 
@@ -58,19 +59,30 @@ class Chat extends Component {
     // fetch topic data
     topicManager.getOwner(topic, (err, owner) => {
       topicManager.getMembers(topic, async (err, members) => {
-        // Step 3 - join Thread
         const thread = await chatSpace.joinThread(topic, { firstModerator: owner, members });
         openTopics[topic] = thread;
         this.setState({ activeTopic: openTopics[topic] });
 
         this.updateThreadPosts();
         this.updateThreadCapabilities();
-        // Step 3 - add listener functions
         thread.onUpdate(() => this.updateThreadPosts());
         thread.onNewCapabilities(() => this.updateThreadCapabilities());
 
       })
     })
+  }
+
+  handleRemoveTopic = (topic) => {
+    const { topicManager, removeFromTopicList } = this.props;
+
+    topicManager.removeTopic(topic, (err, res) => {
+      if (err) {
+        this.setState({ removeTopicError: err});
+        return
+      }
+    });
+
+    removeFromTopicList(topic);
   }
 
   updateThreadPosts = async () => {
@@ -140,7 +152,8 @@ class Chat extends Component {
       myDid,
       topicList,
       topicManager,
-      addToTopicList
+      addToTopicList,
+      removeFromTopicList
     } = this.props;
 
     return (
@@ -161,6 +174,7 @@ class Chat extends Component {
           addToTopicList={addToTopicList}
           activeTopic={activeTopic}
           threadACError={threadACError}
+          removeFromTopicList={removeFromTopicList}
         />
 
         <div className="chatPage">
@@ -193,6 +207,7 @@ class Chat extends Component {
             topicTitle={topicTitle}
             threadMemberList={threadMemberList}
             threadModeratorList={threadModeratorList}
+            handleRemoveTopic={this.handleRemoveTopic}
           />
         </div>
       </React.Fragment>

@@ -68,10 +68,18 @@ class App extends Component {
     this.setState({ topicList: updatedTopicList });
   }
 
+  removeFromTopicList = (topic) => {
+    const { topicList } = this.state;
+
+    const index = topicList.indexOf(topic);
+    topicList.splice(index, 1);    
+    this.setState({ topicList });
+  }
+
 
   getChatContractAndTopics = () => {
     const topicManager = web3.eth  // eslint-disable-line
-      .contract(TopicManagerABI).at('0x4844e98b70851b91955b6819c5185c16ebc6f156');
+      .contract(TopicManagerABI).at('0x6c62FF1A22123710E60144261dDb1B3acF0Bb43d');
 
     // get chat topics
     const getTopics = (i, err, topic) => {
@@ -119,6 +127,7 @@ class App extends Component {
                   topicList={topicList}
                   topicManager={topicManager}
                   addToTopicList={this.addToTopicList}
+                  removeFromTopicList={this.removeFromTopicList}
                 />
               )}
             />

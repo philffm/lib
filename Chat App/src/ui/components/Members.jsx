@@ -3,6 +3,7 @@ import React from 'react';
 import ProfilePicture from './ProfilePicture';
 import CrossOut from '../../assets/CrossOut.svg';
 import '../styles/index.scss';
+import Delete from '../../assets/Delete.png'
 
 const Members = (props) => {
   const {
@@ -11,6 +12,7 @@ const Members = (props) => {
     threadModeratorList,
     topicTitle,
     activeTopic,
+    handleRemoveTopic
   } = props;
 
   const { _firstModerator } = activeTopic;
@@ -65,6 +67,22 @@ const Members = (props) => {
               <img src={CrossOut} alt="close" />
             </span>
             Add members
+          </button>
+        </div>
+      )}
+
+      {topicTitle && (
+        <div className="remove_topic">
+          <button
+            className="remove_topic"
+            onClick={() => handleRemoveTopic(topicTitle)}
+          >
+            <img
+              src={Delete}
+              alt="Delete"
+              className="dialogue_post_delete"
+            />
+            Remove Topic
           </button>
         </div>
       )}

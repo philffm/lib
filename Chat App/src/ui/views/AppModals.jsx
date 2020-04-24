@@ -39,26 +39,6 @@ class AppModals extends Component {
     handleAppModals('NewTopicModal');
   }
 
-  handleRemoveTopic = () => {
-    const {
-      topicName,
-      isMembersOnly,
-      topicManager,
-      handleAppModals,
-      addToTopicList,
-      handleFormChange
-    } = this.props;
-
-    topicManager.removeTopic(topicName, (err, res) => {
-      if (err) {
-        if (err) {
-          this.setState({ newTopicError: err });
-          return
-        }
-      }
-    })
-  }
-
   handleAddThreadMember = async () => { // interface value
     const {
       activeTopic,

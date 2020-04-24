@@ -319,7 +319,8 @@ a:active {
 
   button {
     justify-content: flex-start;
-    width: 100%;
+    height: fit-content !important;
+    width: fit-content !important;
     padding-left: 20px;
   }
 
@@ -386,6 +387,16 @@ a:active {
   overflow-y: scroll;
 }
 
+.remove_topic {
+  width:100%;
+  height: 66px;
+
+  button {
+    width: 100%;
+    border-radius: 0;
+  }
+}
+
 .chatPage_members {
   background-color: $backgroundHue;
   border-left: 1px solid rgb(242, 242, 242);
@@ -401,15 +412,6 @@ a:active {
     display: flex;
     justify-content: center;
     align-items: center;
-    color: $lightestFont;
-
-    &:hover {
-      color: $threeBoxBlack;
-
-      span {
-        background-color: $threeBoxBlack;
-      }
-    }
 
     span {
       width: 20px;
@@ -449,6 +451,7 @@ a:active {
   max-height: calc(100% - 216px);
   box-sizing: border-box;
   width: 100%;
+  height: 100%;
 }
 
 .chatPage_members_list-add {
@@ -457,6 +460,18 @@ a:active {
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
+  
+  button {
+    color: $lightestFont;
+    
+    &:hover {
+      color: $threeBoxBlack;
+
+      span {
+        background-color: $threeBoxBlack;
+      }
+    }
+  }
 }
 
 .chatPage_members_list_tile {

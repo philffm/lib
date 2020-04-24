@@ -4,6 +4,7 @@ import ProfilePicture from './ProfilePicture';
 import BoxLogo from './KoiosLogo';
 import '../styles/index.scss';
 
+
 const Topics = (props) => {
   const {
     topicList,
@@ -38,7 +39,7 @@ const Topics = (props) => {
           ))}
         </ul>
       </div>
-
+      
       <button
         onClick={() => handleAppModals('NewTopicModal')}
         className="topics_newTopic"
@@ -53,13 +54,14 @@ export default Topics;
 
 const TopicOption = ({ topic, handleViewTopic, isCurrentTopic }) => (
   <li>
-    <button
-      className="textButton"
-      onClick={() => handleViewTopic(topic)}
-    >
-      <h3 className={`${isCurrentTopic ? 'isCurrentTopic' : ''}`}>
-        {topic}
-      </h3>
-    </button>
+
+      <button
+        className="textButton"
+        onClick={() => handleViewTopic(topic)}
+      >
+        <h3 className={`${isCurrentTopic ? 'isCurrentTopic' : ''}`}>
+          {topic}
+        </h3>
+      </button>    
   </li>
 );
