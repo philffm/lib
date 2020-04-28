@@ -162,8 +162,8 @@ export async function SelectLesson(index) {
     if (index < 0)          index = 0;
     if (index > LastLesson) index = LastLesson;
     
-    HideButton("back",    index <= 0);
-    HideButton("forward", index >= LastLesson );
+    //HideButton("back",    index <= 0);
+    //HideButton("forward", index >= LastLesson );
 
     var prevdomid=document.getElementById(`lesson-${CurrentLesson}`);
     if (prevdomid) {        
@@ -183,16 +183,16 @@ export async function SelectLesson(index) {
 function PrepButtons() {
     //buttonBack=LinkButton("back"   ,x=>SelectLesson(CurrentLesson -1));
     
-    buttonBack=LinkClickButton("back");subscribe("backclick",x=>SelectLesson(CurrentLesson -1));
+    //buttonBack=LinkClickButton("back");subscribe("backclick",x=>SelectLesson(CurrentLesson -1));
     
     
     //buttonForward=LinkButton("forward",x=>SelectLesson(CurrentLesson +1));
     
-    buttonForward=LinkClickButton("forward");subscribe("forwardclick",x=>SelectLesson(CurrentLesson +1));
+    //buttonForward=LinkClickButton("forward");subscribe("forwardclick",x=>SelectLesson(CurrentLesson +1));
     
     
-    subscribe("keypressedp",x=>SelectLesson(CurrentLesson -1)); 
-    subscribe("keypressedn",x=>SelectLesson(CurrentLesson +1)); 
+    //subscribe("keypressedp",x=>SelectLesson(CurrentLesson -1)); 
+    //subscribe("keypressedn",x=>SelectLesson(CurrentLesson +1)); 
     
     PrepButtons=function(){} // next time do nothing
 }

@@ -430,6 +430,19 @@ async function LoadVideo(vidinfo) { // call when first video is loaded or a diff
     InitProgress(vidinfo);
     
 }
+
+
+function RotateVideoSpeed() {
+        
+
+    player.setPlaybackRate(2)
+        
+        
+}
+
+    
+
+
 async function asyncloaded() {    
     //console.log(`In asyncloaded of script: ${import.meta.url}`);   
     publish("playerstart");
@@ -447,7 +460,7 @@ async function asyncloaded() {
     var videofield=document.getElementById("videofield");
 videofield.addEventListener('click', x=>{console.log("videofield click");if (!IsVideoPaused()) stopVideo();}); 
     
-    LinkToggleButton("start",false);subscribe("starton",startVideo);subscribe("startoff",stopVideo);
+   // LinkToggleButton("start",false);subscribe("starton",startVideo);subscribe("startoff",stopVideo);
     
     
     //LinkButton("stop",stopVideo);    
@@ -465,7 +478,9 @@ videofield.addEventListener('click', x=>{console.log("videofield click");if (!Is
     
  //   LinkButton("fullscreen",ToggleFullScreen);        
    LinkToggleButton("fullscreen",false);subscribe("fullscreenon",ToggleFullScreen);subscribe("fullscreenoff",ToggleFullScreen);
-    
+     
+     
+     LinkClickButton("videospeed",false);subscribe("videospeedclick",RotateVideoSpeed);
        
     
     
