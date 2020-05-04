@@ -10,6 +10,10 @@ var GlobalSlideNotesBlockList;
 function InitNotes() {
     console.log("In InitNotes");      
     GlobalSlideNotesBlockList = new DomList("slide-notes-block")  
+    
+    
+    SetupNotes("notes");
+    
 }
 
 subscribe("foundslides",ShowSlidesInNotes) // called when sheets are found via json file
@@ -21,6 +25,8 @@ function ShowSlidesInNotes(slidesarray) {
   
     for (var i=0;i<CleanprevSlides.length;i++) 
         CleanprevSlides[i](); // call clean function for previous slides
+    
+    CleanprevSlides=[]
 
     for (var i=0;i<slidesarray.length;i++) {
         if (slidesarray[i].png) {
@@ -54,13 +60,13 @@ function SetupTextArea(target,uniqueid) {
             target.innerHTML = "..."
         
         
-    console.log(`In SetupTextArea ${uniqueid}`);
+   // console.log(`In SetupTextArea ${uniqueid}`);
     
     target.addEventListener('input',SaveTxt , true); // save the notes    
     
      
     function Clean() {
-        console.log(`removing listener for ${uniqueid}`);
+  //      console.log(`removing listener for ${uniqueid}`);
        target.removeEventListener('input',SaveTxt , true); // save the notes    
     }
 
@@ -103,8 +109,10 @@ function ShowNotesOfSelectedSlide(n) { // n starts at 0
     var target2=document.getElementsByClassName("slide-notes-text")    
     for (var i=0;i<target1.length;i++) {
         
-        target1[i].style.fontSize =i==n?"12px":"9px"
-        target2[i].style.fontSize =i==n?"12px":"9px"
+      //  target1[i].style.fontSize =i==n?"12px":"9px"
+      //  target2[i].style.fontSize =i==n?"12px":"9px"
+      
+        target1[i].style.color =i==n?"black":"gray"
     }
 }
     
@@ -125,7 +133,7 @@ function getVisibleTranscriptandCopyToClipboard() {
 LinkButton("transcripttoclipboard",getVisibleTranscriptandCopyToClipboard);  
     
     
-SetupNotes("notes");
+
        
 async function SetupNotes(windowid) {
     LinkClickButton("share");subscribe("shareclick",ShareNotes);
@@ -163,6 +171,8 @@ async function writeToClipboard(text) {
 }
 async function ShareNotes() {
     console.log("In ShareNotes");
+    NotesArea = document.getElementById("notescontainer")
+    console.log(NotesArea);
     var toShare=NotesArea.innerText    
     let err;
     if (navigator && navigator.share) {

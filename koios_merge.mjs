@@ -40,19 +40,35 @@ async function MergeLevels(fInIframe,parenturl) {
     }     
     
     
-    function FindAllLinks(fInIframe,parenturl) {
-        var links=document.getElementsByTagName("a");
+    function FindAllLinks(target,fInIframe,parenturl,courselevel) {
+       // console.log(`In FindAllLinks ${courselevel}`);
+       // console.log(target);
+        var links=target.getElementsByTagName("a");
         for (var i=0;i<links.length;i++) {          
             links[i].target="_top"; // change the "top" page when clicking a link       
             //console.log(`In koios_merge.mjs ${links[i].href} fInIframe=${fInIframe}`);
-            if (fInIframe && links[i].href.includes("playlistId")) {     
-                
-                links[i].href = links[i].href.replace("/viewer", parenturl.pathname);
-                //console.log(`New url ${links[i].href}`);
+            if (links[i].href.toLowerCase().includes("koios")) {                     
+
+                if (fInIframe)
+                    links[i].href = links[i].href.replace("/viewer", parenturl.pathname);
+               // console.log(`New url ${links[i].href}`);
+               // if (!links[i].href.includes("hash"))
+                 //   links[i].href =`${links[i].href}&hash=${hashCode(courselevel)}`
+              //  console.log(`New url ${links[i].href}`);
+                StoreSelection(links[i])
+                 
             }
+        }        
+        function StoreSelection(target) { // seperate function to store state
+           // console.log("Setting listener for");
+          //  console.log(target)
+            target.addEventListener("click",  SaveToLocalStorage);
+             function SaveToLocalStorage() {
+                 //console.log(`Saving ${courselevel}`);                 
+                 localStorage.setItem("CourseLevel", courselevel);  // this is how the player knows what is selected
+             }    
         }
-    }    
-    
+    }   
  
     var course_level_items=document.getElementsByClassName("course-level-id"); 
     //console.log(course_level_items);
@@ -62,7 +78,7 @@ async function MergeLevels(fInIframe,parenturl) {
         ProcessCourseLevel(course_level_items[i])
     }
 */    
-    FindAllLinks(fInIframe,parenturl);
+    
 
 
 var CatList;
@@ -72,14 +88,22 @@ var CatList;
     var data=[]
     for (var i=0;i<course_level_items.length;i++) {        
         var target=course_level_items[i]
+        
+        
+        
+        
         var save={}
         save.course=target.getAttribute("course");
         save.courselevel=target.getAttribute("courselevel");
         save.level=target.getAttribute("level");        
         save.contributer=target.getAttribute("contributer");        
+        save.url=target.getAttribute("url");
         data.push(save)
+        
+        FindAllLinks(target.parentNode.parentNode,fInIframe,parenturl,save.courselevel);
+        
     }
-    console.log(data);
+  //  console.log(data);
         
 
     var configuration= {
@@ -128,10 +152,50 @@ var CatList;
     })
     //console.log(JSON.stringify(movies, null, 2));
 
+//console.log("All courses");
+//console.log(data);
 
-MakeSelection(CatList,"level")
+/*
+if (fInIframe) { // only then jump to right course
+
+    var cl=localStorage.getItem("CourseLevel"); 
+    console.log(cl);
+    var hcl=hashCode(cl)
+    
+    const queryString = window.parent.parent.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    let hash = urlParams.get('hash') 
+    console.log(`hash ${hash}`);
+    
+      
+    if (hash != hcl) { // find corrent url
+        for (var z=0;z<data.length;z++) {
+            console.log(`Check ${data[z].courselevel}`)
+            if (data[z].courselevel == cl) {
+                
+                var url =`${data[z].url}&hash=${hcl}`
+                
+                console.log(`Going to url: ${url}`)    
+                console.log(window.parent.parent.location.href)
+                url=url.replace("/viewer", parenturl.pathname);
+                console.log(parenturl.pathname);
+                console.log(url)
+                window.parent.parent.location.href = url        
+                
+                
+                
+                
+            }
+        }
+    }         
+}
+*/
+
+
 MakeSelection(CatList,"course")
-MakeSelection(CatList,"contributer")
+//MakeSelection(CatList,"level")
+
+//MakeSelection(CatList,"contributer")
         
         
 function MakeSelection(domid,catid) {
@@ -142,13 +206,34 @@ function MakeSelection(domid,catid) {
       name: catid,
       per_page: 10
     })
-    console.log(JSON.stringify(top_level, null, 2));
-
+   // console.log(JSON.stringify(top_level, null, 2));
+    
+            
     for (var i=0;i<top_level.data.buckets.length;i++) {
-        var levelitem = LevelList.AddListItem() 
         var name=top_level.data.buckets[i].key
+        
+        if (catid == "course" && !name.toLowerCase().includes("blockchain") ){
+            
+            SelectItems("course-level-id",catid,name,false)
+            continue; // skip all tests
+        }
+    
+        
+        var levelitem = LevelList.AddListItem() 
+        
         levelitem.getElementsByClassName("select-txt")[0].innerHTML=name
-        SetButton(levelitem,catid,i,name);    
+        
+        
+        var select_btn=levelitem.getElementsByClassName("select-button")[0]
+        SetButton("course-level-id",select_btn,catid,i,name,true);    // course-level-id is located in html-embed
+        
+        var info_btn=levelitem.getElementsByClassName("info-button")[0]
+        switch (catid) {
+           case "level":      // SetButton("levels",info_btn,catid,i,name,false);    break;
+                            info_btn.style.display="none";break;
+           case "course":      SetButton("course-id",info_btn,catid,i,name,false);    break;
+           case "contributer": SetButton("contributers",info_btn,catid,i,name,false);  break;
+        }
     }
 }
     /*
@@ -173,21 +258,24 @@ function MakeSelection(domid,catid) {
 */
 
 
-    function SetButton(domid,cat,index,name) { // to remember state
-        var id=`${cat}item${index}`
+    function SetButton(listid,domid,cat,index,name,fInitial) { // to remember state
+        var id=`${listid}${cat}item${index}`
         domid.id=id
-        LinkToggleButton(id,true);subscribe(`${id}on`,x=>SelectItems(cat,name,true));subscribe(`${id}off`,x=>SelectItems(cat,name,false));
+        LinkToggleButton(id,fInitial);subscribe(`${id}on`,x=>SelectItems(listid,cat,name,true));subscribe(`${id}off`,x=>SelectItems(listid,cat,name,false));
     }    
+        
+    
 
-    function SelectItems(cat,item,fOn) {
+    function SelectItems(listid,cat,item,fOn) {
+       var list_items=document.getElementsByClassName(listid); 
      
-      console.log(`In SelectItems ${cat} ${item} ${fOn}`);
+  //    console.log(`In SelectItems ${cat} ${item} ${fOn}`);
       
-       for (var i=0;i<course_level_items.length;i++) {        
-           var target=course_level_items[i]
+       for (var i=0;i<list_items.length;i++) {        
+           var target=list_items[i]
            if (target.getAttribute(cat)==item) {
-               console.log(`Found ${cat} ${item}`);
-               console.log(target.parentNode.parentNode);
+           //    console.log(`Found ${cat} ${item}`);
+           //    console.log(target.parentNode.parentNode);
                target.parentNode.parentNode.style.display=fOn?"block":"none"
            }
        }  
@@ -206,7 +294,14 @@ async function asyncloaded() {
     
     var url = new URL(window.parent.parent.location);         // 2x parent in case in double iframe
     
-    MergeLevels(fInIframe,url);   
+    MergeLevels(fInIframe,url); 
+
+    if (fInIframe) {
+        var domid=document.getElementById("koiosheader");
+        domid.style.display="none"
+    }
+        
+    
 }
 
 window.addEventListener('DOMContentLoaded', asyncloaded);  // load  
