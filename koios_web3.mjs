@@ -37,7 +37,7 @@ export async function initializeWeb3() {
 }
 
 export async function initializeContract(abi, contractAddress) {
-  if (!web3) return null;
+  if (!web3) throw error('Web3 not initialized');
   let contractInstance = await new web3.eth.Contract(abi, contractAddress);
   return contractInstance;
 }
