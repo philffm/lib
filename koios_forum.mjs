@@ -2,7 +2,6 @@ import Box from "https://unpkg.com/3box/dist/3box.js";
 
 import { initializeContract, getUserAddress, getWeb3 } from "./koios_web3.mjs";
 import { abi, address } from "./constants/forum_contract";
-import { getMaxListeners } from "cluster";
 
 const contractInstance = await initializeContract(abi, address);
 let threads = [];
