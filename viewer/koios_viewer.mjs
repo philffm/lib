@@ -1,26 +1,28 @@
 //console.log(`In ${window.location.href} starting script: ${import.meta.url}`);
 // https://browserhow.com/how-to-clear-chrome-android-history-cookies-and-cache-data/
  // imports
+ 
+    import {LinkButton,HideButton,DragItem,publish,subscribe,LinkClickButton,LinkToggleButton,CanvasProgressInfo,SaveVideoSeen,LoadVideoSeen,ForceButton} from '../lib/koios_util.mjs';
+    import {SetupLogWindow} from '../lib/koios_log.mjs';
+    
     import {SetupVideoWindowYouTube,SetVideoTitle} from './koios_playvideo.mjs';
-    import {DisplayLessons, SelectLesson,CurrentLesson,LastLesson} from './koios_lessons.mjs';
-    import {LinkButton,HideButton,DragItem,publish,subscribe,LinkClickButton,LinkToggleButton,CanvasProgressInfo,SaveVideoSeen,LoadVideoSeen,ForceButton} from './koios_util.mjs';
+    import {DisplayLessons, SelectLesson,CurrentLesson,LastLesson} from './koios_lessons.mjs';    
     import {GetSubTitlesAndSheets} from './koios_subtitles.mjs';
     import {currentlang,UpdateTranscript,FoundTranscript,SelectLanguage,SetVideoTranscriptCallbacks} from './koios_showtranscript.mjs';
     import {} from './koios_getslides.mjs';
     import {FoundSlides,UpdateSlide} from './koios_showslides.mjs';
-    import {} from './koios_chat.mjs';
+   // import {} from './koios_chat.mjs';
     import {} from './koios_notes.mjs';
     import {SetupSliders /*,ShowTitles*/} from './koios_screenlayout.mjs';
     import {InitSpeak,StopSpeak,StartSpeak,EnableSpeech,IsSpeechOn} from './koios_speech.mjs';
-    import {SetupLogWindow} from './koios_log.mjs';
-    import {SetupChat} from './koios_chat.mjs';
-    import {GetSetupLitAndAssInfo,SetupLitAndAss} from './koios_drive.mjs';
+    //import {SetupChat} from './koios_chat.mjs';
+    //import {GetSetupLitAndAssInfo,SetupLitAndAss} from './koios_drive.mjs';
     import {} from './koios_test.mjs';
     import {SelectPopup,InitPopup} from './koios_popup.mjs';
     import {DisplayMessageContinous,SwitchDisplayMessageContinous,DisplayMessage} from './koios_messages.mjs';
     import {} from './koios_music.mjs';
     import {} from './koios_literature.mjs';
-    import {} from './koios_about.mjs';
+   // import {} from './koios_about.mjs';
 
 
 export var player=0;
@@ -114,12 +116,12 @@ async function NextVideo() {
     stopVideo();
     
     //await Relax();
-    
+/*
     var RelaxTime=5000;
     await SelectPopup("relax")
     await sleep(RelaxTime);
     await SelectPopup("literature")
-    
+*/    
     /*
     if (CurrentLesson == LastLesson) 
         publish ("lessonsend") 
@@ -421,15 +423,35 @@ async function LoadVideo(vidinfo) { // call when first video is loaded or a diff
     SetVideoTitle(vidinfo.txt);
    SetVideoProgressBar(0)
     
-    console.log(vidinfo)
+  //  console.log(vidinfo)
    // GetSubTitlesAndSheets(vidinfo,FoundTranscript,FoundSlides);
     for (var i=0;i< vidinfo.subtitles.length;i++) 
        if (vidinfo.subtitles[i].lang == "vor")
             FoundSlides(vidinfo.subtitles[i].subtitle,vidinfo);
-    GetSetupLitAndAssInfo(vidinfo.txt);
+    //GetSetupLitAndAssInfo(vidinfo.txt);
     InitProgress(vidinfo);
     
 }
+
+
+var globalVideospeed=0;
+async function RotateVideoSpeed() {
+        globalVideospeed++
+        if (globalVideospeed >=3) globalVideospeed=0;
+
+  switch (globalVideospeed) {
+      case 0: player.setPlaybackRate(1);console.log("Speed 1");break;
+      case 1: player.setPlaybackRate(1.5);console.log("Speed 1.5");break;
+      case 2: player.setPlaybackRate(2);console.log("Speed 2");break;
+  }
+      
+  await sleep(100); // wait until speed is processed      
+        DisplayMessage(`Video speed set to ${player.getPlaybackRate()}x`);
+}
+
+    
+
+
 async function asyncloaded() {    
     //console.log(`In asyncloaded of script: ${import.meta.url}`);   
     publish("playerstart");
@@ -447,7 +469,7 @@ async function asyncloaded() {
     var videofield=document.getElementById("videofield");
 videofield.addEventListener('click', x=>{console.log("videofield click");if (!IsVideoPaused()) stopVideo();}); 
     
-    LinkToggleButton("start",false);subscribe("starton",startVideo);subscribe("startoff",stopVideo);
+   // LinkToggleButton("start",false);subscribe("starton",startVideo);subscribe("startoff",stopVideo);
     
     
     //LinkButton("stop",stopVideo);    
@@ -465,7 +487,9 @@ videofield.addEventListener('click', x=>{console.log("videofield click");if (!Is
     
  //   LinkButton("fullscreen",ToggleFullScreen);        
    LinkToggleButton("fullscreen",false);subscribe("fullscreenon",ToggleFullScreen);subscribe("fullscreenoff",ToggleFullScreen);
-    
+     
+     
+     LinkClickButton("videospeed",false);subscribe("videospeedclick",RotateVideoSpeed);
        
     
     
@@ -474,7 +498,7 @@ videofield.addEventListener('click', x=>{console.log("videofield click");if (!Is
     InitSpeak();
     var chatlink="https://gitter.im/web3examples/test/~embed";    
     //SetupChat("chat",chatlink);
-    SetupLitAndAss();
+    //SetupLitAndAss();
     // CreateButton("closekeyboard",x=>document.blur(),document.getElementById('notes'));
     var metaDom = document.getElementsByName("viewport");
     metaDom[0].content=metaDom[0].content+", user-scalable=no"; //maximum-scale=1.0, minimum-scale=1.0"; // fix zoom    
@@ -504,7 +528,7 @@ publish("playerloading");
 SetupLogWindow();
 var url = window.location.pathname;
 var filename = url.substring(url.lastIndexOf('/')+1);
-console.log(filename);
+//console.log(filename);
 //console.log(`In ${window.location.href} starting script: ${document.currentScript.src}`);
 window.addEventListener('DOMContentLoaded', asyncloaded);  // load  
 /*  https://gist.github.com/kvyb/3b370c40696ffc222563c8a70276af15

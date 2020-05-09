@@ -8,12 +8,35 @@ import( "https://apis.google.com/js/api.js");
 //import "https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"; // date time conversion
 
 
-import {loadScriptAsync,LoadGapi} from './koios_util.mjs';
+import {loadScriptAsync} from '../lib/koios_util.mjs';
 
 loadScriptAsync("https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js")
 
 
 // See https://developers.google.com/youtube/v3/docs/playlists/list?apix=true
+
+
+
+//import "https://apis.google.com/js/api.js";
+
+
+export async function LoadGapi() {
+  //console.log('gapi load start');
+  await new Promise(function(resolve, reject) {  gapi.load('client:auth2', resolve); });
+  gapi.client.setApiKey("AIzaSyBPDSeL1rNL9ILyN2rX11FnHeBePld7HOQ");
+  await Promise.all( [ 
+        gapi.client.load("https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest"),
+        gapi.client.load("https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"),
+        //   gapi.client.load("https://content.googleapis.com/discovery/v1/apis/slides/v1/rest");  doesn't work because of authorization issues
+       ]
+    );  
+  //console.log('gapi loaded');  
+  LoadGapi=function(){} // next time: do nothing
+}
+
+
+
+
 
 export async function GetYouTubePlaylists() {
     
@@ -76,6 +99,10 @@ if (!_playlistId) _playlistId = "PL_tbH3aD86KvXkp5y0eB85_GEze1gBsKD"
         var resultlistindex=resultlist.length;
         for (var i=0;i<list.result.items.length;i++) {
             var snippet=list.result.items[i].snippet;
+            
+            
+            if (snippet.description== "This video is unavailable.") continue; // GP 28-4-2020 support deleted videos
+            
             var result={};            
             var deslines = snippet.description.split("\n"); // find ___ChapterTitles___
             if (deslines[0] && deslines[0].includes("___")) {  
@@ -90,7 +117,10 @@ if (!_playlistId) _playlistId = "PL_tbH3aD86KvXkp5y0eB85_GEze1gBsKD"
             result.title        = snippet.title;
             result.description  = snippet.description;
             
-           // console.log(snippet.thumbnails);
+            console.log(i);
+            console.log(list.result.items[i])
+            
+            console.log(snippet.thumbnails);
             
             result.thumbnail    = snippet.thumbnails.maxres? snippet.thumbnails.maxres.url : snippet.thumbnails.high.url; // default.url;
             result.videoid      = snippet.resourceId.videoId

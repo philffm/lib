@@ -1,7 +1,160 @@
+Version 1.02:
+
+Functional updates:
+
+Technical updates:
+    - added forum 
+    https://koios-final.webflow.io/test/forumcorwin
+    https://www.koios.online/test/forumcorwin
+    https://www.koios.online/test/forum
+    - subdirectories for mjs files
+
+Layout updates:
+
+Version 1.01:
+
+Functional updates:
+
+Technical updates:
+- support for https://koios-final.webflow.io/....
+- fixed bug with browsing video forward/backward in popup
+- moved testversions to 
+https://www.koios.online/test/viewer
+https://www.koios.online/test/browse-links
+https://www.koios.online/test/course-overview
+https://koios-final.webflow.io/test/viewer
+https://koios-final.webflow.io/test/browse-links
+https://koios-final.webflow.io/test/course-overview
+- removed dependancy on gpersoon.com for prod versions
+
+Layout updates:
+- popup yellow arrows not overlapping with rest
+- popup don's show index in index
+- fullscreen icon hidden when popup shows (otherwise interfere with yellow arrows)
+- version info; only shown in popup, small font, topleft corner
+- scrolling in popup enhanced
+
+Version 1.00:
+
+Functional updates:
+
+
+Technical updates:
+- fixed copy notes to clipboard
+- removed google api calls from player
+- reduce & fix log messages
+- removed dependancy on https://unpkg.com/ipfs/dist/index.js (error rate exceeded)
+- removed several log messages
+
+Layout updates:
+- copy notes to clipboard moves to top of notes
+- literature
+    - notes area removed
+    - changed layout of links
+- popup optimized screen width
+
+Version 0.87:
+
+Functional updates:
+
+Technical updates:
+
+Layout updates:
+- lesson overview
+    horizontal progress bar (not fully functining)
+- course overview
+    - removed 2nd scroll bar
+    - removed level buttons
+    - removed advance blockchain level
+
+
+Version 0.86:
+
+Functional updates:
+- remembers course & video
+
+Technical updates:
+- parameter no longer included in url
+
+Layout updates:
+- several updates by ricardo
+
+Version 0.85:
+
+Functional updates:
+
+
+Technical updates:
+
+Layout updates:
+- remove log / quiz / transcript / about tabs
+- moved slack link in popup to right menu bar
+- popup, arrows to bottum ot screen
+- popup, dots replace by icons
+
+Version 0.84:
+
+
+Functional updates:
+
+
+Technical updates:
+- browse next & prev video in popup pages
+
+Layout updates:
+- cursus change on index page
+- course selection screen 
+    - optimized
+    - header shown when outside of iframe
+    - test courses suppressed
+- course & video shown in popup pages
+- literature sorted
+
+Version 0.83:
+
+Functional updates:
+- upload function
+    - management info about videos
+    - check for deleted videos
+
+- browse-links
+    - fixed grid positioning
+
+Technical updates:
+
+- browse-links
+    - allow links to change top window
+
+Layout updates:
+- yellow < > in popup added shadow
+- right side menu in popup screen
+    - next video button
+    - next course button (currently redirect to course-overview page)
+- second slide at intro video
+
+Version 0.82:
+
+Functional updates:
+- facet search to select courses
+- link to feedback in slack (icon question mark)
+   - in intro screen
+   - message screen
+   - popupscreen
+- index screen within popupscreen
+- set higher videospeed (prototype)
+
+
+Technical updates:
+- improved handling of move button when leaving the browser window (with mouse)
+
+Layout updates:
+- start/back/forward buttons from left menu removed (alternatives are available)
+
 Version 0.81:
 
 Functional updates:
 - upload page created
+- after relax, the literature is shown
 
 Technical updates:
 - prep for ipfsstorage of subtitles
@@ -181,3 +334,4 @@ Slides connected to video based on first keyword of the slide title and video ti
 
 Technical updates:
 Slides switched to PNG format (svg layout is sometimes distorted
+

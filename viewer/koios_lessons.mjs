@@ -1,9 +1,9 @@
 //console.log(`In ${window.location.href} starting script: ${import.meta.url}`);
 
 //import {GetYouTubePlaylists,GetYouTubePlayListItems}     from './koios_youtube.mjs';
-import {LinkButton,HideButton,LinkClickButton,subscribe,LoadVideoSeen,CanvasProgressInfo,MonitorDomid,DomList,sleep,SelectTabBasedOnNumber} from './koios_util.mjs';
-import {player} from './koios_video.mjs';
-import {getYtInfoIpfs} from './koios_ipfs.mjs';
+import {LinkButton,HideButton,LinkClickButton,subscribe,LoadVideoSeen,CanvasProgressInfo,MonitorDomid,DomList,sleep,SelectTabBasedOnNumber,GetCourseInfo,ipfsgetjson} from '../lib/koios_util.mjs';
+import {player} from './koios_viewer.mjs';
+//import {getYtInfoIpfs} from './koios_ipfs.mjs';
 
 // Global vars
 var PrepareLessonsListTemplate;   
@@ -12,7 +12,8 @@ var PrepareChapterTemplate;
 var PrepareChapterParent;  
 export var CurrentLesson=0;
 export var LastLesson=0;
-
+export var CurrentCourseTitle="";
+export var maxduration=0;
 
 var buttonBack;
 var buttonForward;
@@ -31,6 +32,9 @@ var globalLessonslist; // format:
 var onlyLessonsIndexList=[]
 
 
+
+
+
 export async function DisplayLessons(LoadVideoCB) {
     console.log("In DisplayLessons")
     globalLoadVideoCB = LoadVideoCB;
@@ -38,13 +42,33 @@ export async function DisplayLessons(LoadVideoCB) {
 //    var x=await GetYouTubePlaylists()
 //   var items=await GetYouTubePlayListItems()
 
+
+var videoinfo=GetCourseInfo("videoinfo") || "QmUj3D5yMz5AMPBHVhFdUF2CpadeHDsEuyr1MSNjT5m31R"
+
+
+/*
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
-    let videoinfo = urlParams.get('videoinfo') || "QmPZpwKA1fZWkeRofm8qEbu9AJYydBjD3BfobBtAv1SP4p"
-    console.log(videoinfo);
-    var items=await getYtInfoIpfs(videoinfo)
-    console.log(items)
+    let videoinfo = urlParams.get('videoinfo') || "QmUj3D5yMz5AMPBHVhFdUF2CpadeHDsEuyr1MSNjT5m31R"
+//    "QmaamPoDLEhTa9fYC9c6ec7F4gng94zQsw3fWFGAyR8kMe" // "QmPZpwKA1fZWkeRofm8qEbu9AJYydBjD3BfobBtAv1SP4p"
+
+*/
+
+
+  //  console.log(videoinfo);
     
+    var items = await ipfsgetjson(videoinfo)
+    
+    // var items=await getYtInfoIpfs(videoinfo)
+  //  console.log(items)
+    CurrentCourseTitle=items.title;
+    maxduration=0;
+    for (var i=0;i<items.videos.length;i++)      
+         if (!items.videos[i].chapter)
+             maxduration = Math.max(maxduration,items.videos[i].duration);
+         
+   // console.log(`maxduration ${maxduration}`)     
+         
     for (var i=0;i<items.videos.length;i++) {
         
         //console.log(items[i]);
@@ -53,15 +77,24 @@ export async function DisplayLessons(LoadVideoCB) {
           AddChapter(items.videos[i].title)
        else {
           AddLessonsItem(items.videos[i]); //.title,items.videos[i].thumbnail,items.videos[i].description,items.videos[i].videoid,items.videos[i].duration);
+          
+          
        } 
     }    
     globalLessonslist = items;
     
     Webflow.require('slider').redraw(); // create to dots
     
-    return SelectLesson(0) // select a lesson with slides
+    
+    var prevlesson=localStorage.getItem(`lesson-${CurrentCourseTitle}`);
+    
+    //console.log(`prevlesson ${prevlesson}`)
+    
+    return SelectLesson(prevlesson?prevlesson:0) // select a lesson with slides
 
     
+        
+             
 }
 
 
@@ -112,7 +145,7 @@ function AddLessonsItem(vidinfo) { // txt,thumbnail,description,videoid,duration
     //cln.getElementsByTagName("img")[0].src=vidinfo.thumbnail;    
     
 
-    cln.getElementsByClassName("lesson-name")[0].innerHTML=vidinfo.txt;
+    cln.getElementsByClassName("lesson-name")[0].innerHTML=`${vidinfo.txt} (${vidinfo.duration} s)`;
     cln.getElementsByClassName("lesson-image")[0].src=vidinfo.thumbnail; 
     
     cln.id=`lesson-${index}`;
@@ -128,7 +161,7 @@ function AddLessonsItem(vidinfo) { // txt,thumbnail,description,videoid,duration
     var canvasloc=cln.getElementsByClassName("pi-lesson")[0]
     
     var seeninfothisvideo=LoadVideoSeen(vidinfo)
-    CanvasProgressInfo(canvasloc,false,seeninfothisvideo)  // vertical
+    CanvasProgressInfo(canvasloc,true,seeninfothisvideo,maxduration)  // vertical
     
     
      var target = GlobalVideoPagesList.AddListItem()
@@ -158,12 +191,14 @@ function AddChapter(txt) {
 
 export async function SelectLesson(index) {   
 
-    console.log(`In SelectLesson index=${index}`);
+    console.log(`In SelectLesson !! index=${index}`);
     if (index < 0)          index = 0;
     if (index > LastLesson) index = LastLesson;
-    
-    HideButton("back",    index <= 0);
-    HideButton("forward", index >= LastLesson );
+   
+
+   
+    //HideButton("back",    index <= 0);
+    //HideButton("forward", index >= LastLesson );
 
     var prevdomid=document.getElementById(`lesson-${CurrentLesson}`);
     if (prevdomid) {        
@@ -177,22 +212,32 @@ export async function SelectLesson(index) {
    globalLoadVideoCB(onlyLessonsIndexList[CurrentLesson]);   
    SelectTabBasedOnNumber("videofield",CurrentLesson);
    
+console.log(`Storing lesson nr lesson-${CurrentCourseTitle} ${CurrentLesson}`);
+   localStorage.setItem(`lesson-${CurrentCourseTitle}`, CurrentLesson);
+   
+   
+   
+}
+
+
+export async function SelectNextLesson(delta) {   
+    SelectLesson(parseInt(CurrentLesson) + parseInt(delta))
 }
 
 
 function PrepButtons() {
     //buttonBack=LinkButton("back"   ,x=>SelectLesson(CurrentLesson -1));
     
-    buttonBack=LinkClickButton("back");subscribe("backclick",x=>SelectLesson(CurrentLesson -1));
+    //buttonBack=LinkClickButton("back");subscribe("backclick",x=>SelectLesson(CurrentLesson -1));
     
     
     //buttonForward=LinkButton("forward",x=>SelectLesson(CurrentLesson +1));
     
-    buttonForward=LinkClickButton("forward");subscribe("forwardclick",x=>SelectLesson(CurrentLesson +1));
+    //buttonForward=LinkClickButton("forward");subscribe("forwardclick",x=>SelectLesson(CurrentLesson +1));
     
     
-    subscribe("keypressedp",x=>SelectLesson(CurrentLesson -1)); 
-    subscribe("keypressedn",x=>SelectLesson(CurrentLesson +1)); 
+    //subscribe("keypressedp",x=>SelectLesson(CurrentLesson -1)); 
+    //subscribe("keypressedn",x=>SelectLesson(CurrentLesson +1)); 
     
     PrepButtons=function(){} // next time do nothing
 }
