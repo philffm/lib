@@ -194,7 +194,7 @@ function _convertFigmaColorToRGB(value) {
 
             var strtxt=""
             var strstyle=""    
-            var strclass=""
+
             if (b) {
                 strstyle +=`width:${b.width}px;height:${b.height}px;position: absolute;left:${xoffset};top:${yoffset};`;
                 console.log(b);console.log(strstyle);
@@ -310,7 +310,7 @@ function _convertFigmaColorToRGB(value) {
 
           
             var insrtstyle=strstyle?`style="${strstyle}"`:""
-            str +=`<div class="${figdata.name} ${figdata.type} ${strclass}" ${insrtstyle} title="${figdata.name}">${strtxt}` //  ${figdata.type}
+            str +=`<div class="${figdata.name}" ${insrtstyle} title="${figdata.name}">${strtxt}\n` //  ${figdata.type}
             //console.log(insrtstyle);
         }
         
