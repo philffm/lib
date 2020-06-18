@@ -12,10 +12,12 @@ export async function setupIPFS()
   console.log("In SetupIPFS");
   await Promise.all([ // see https://www.npmjs.com/package/ipfs
     loadScriptAsync("https://bundle.run/buffer"), // https://packd.now.sh/buffer
-    loadScriptAsync("https://unpkg.com/ipfs/dist/index.js"),
+    //loadScriptAsync("https://unpkg.com/ipfs/dist/index.js"),
+    loadScriptAsync("https://unpkg.com/ipfs-http-client/dist/index.min.js")
   ]);
   console.log("Ipfs & buffer libraries loaded");
-  var ipfs = await window.Ipfs.create(); //await??
+  //var ipfs = await window.Ipfs.create(); //await?? //for node in browser
+  var ipfs = await window.IpfsHttpClient('https://ipfs.infura.io:5001'); //for infura node
   return ipfs;
 }
 
