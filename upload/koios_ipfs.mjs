@@ -12,10 +12,16 @@ export async function setupIPFS()
   console.log("In SetupIPFS");
   await Promise.all([ // see https://www.npmjs.com/package/ipfs
     loadScriptAsync("https://bundle.run/buffer"), // https://packd.now.sh/buffer
+<<<<<<< HEAD
+    //loadScriptAsync("https://unpkg.com/ipfs/dist/index.js"),
+    loadScriptAsync("https://unpkg.com/ipfs-http-client/dist/index.min.js")
+=======
     loadScriptAsync("https://unpkg.com/ipfs/dist/index.min.js"),
+>>>>>>> 9a441df35e3c403cbccf10e809c92a6452fe675d
   ]);
   console.log("Ipfs & buffer libraries loaded");
-  var ipfs = await window.Ipfs.create(); //await??
+  //var ipfs = await window.Ipfs.create(); //await?? //for node in browser
+  var ipfs = await window.IpfsHttpClient('https://ipfs.infura.io:5001'); //for infura node
   return ipfs;
 }
 
@@ -24,11 +30,21 @@ export async function setupBuffer()
 {
   console.log("Setup buffer");
   await Promise.all([
-    
+
   ]);
   console.log("buffer libraries loaded");
 }
 */
+export async function uploadToDB() {
+  await Promise.all([
+    loadScriptAsync('../database/KoiosDB.js')
+  ]);
+  var koiosDB1 = window.KoiosDB;
+  await koiosDB1._init();
+  await koiosDB1._createDB();
+  var list = await includeSubtitlesforIpfsExport();
+
+}
 
 export async function uploadYtDataToIpfs()        //Puts the object on ipfs
 {
@@ -36,7 +52,7 @@ export async function uploadYtDataToIpfs()        //Puts the object on ipfs
     var list=await includeSubtitlesforIpfsExport()
     var res=[]
 
-    for (var i=0;i<list.length;i++) { 
+    for (var i=0;i<list.length;i++) {
         console.log(`Storing ${list[i].id}`)
         var hash; //IPFS hash
         for await (const result of ipfs.add(JSON.stringify(list[i])))
@@ -45,7 +61,7 @@ export async function uploadYtDataToIpfs()        //Puts the object on ipfs
             hash = result.path;
         }
         res.push({playlist:list[i].id,title:list[i].title,hash:hash});
-    }      
+    }
     return {res:res,list:list} // GP 28-4 also export list
 }
 
@@ -53,7 +69,7 @@ export async function uploadYtDataToIpfs()        //Puts the object on ipfs
 export async function getYtInfoIpfs(hash)           //Gets the json string from ipfs and parses it into an object /// not used, see ipfsgetjson
 {
  // await setupBuffer();
-  
+
   var ipfs = await setupIPFS();
   var Buf = window.buffer.Buffer;
   var videoAndPlaylistInfo;
@@ -72,12 +88,12 @@ export async function includeSubtitlesforIpfsExport()   //Adds the subtitle obje
 {
   var data = await forIPFSexport();
   for(var i = 0; i<data.length;i++)
-  { 
+  {
     console.log(`Playlist ${data[i].id}`);
     for(var x = 0; x<data[i].videos.length;x++)
-    { 
+    {
       data[i].videos[x].subtitles = await getSubTitles(data[i].videos[x].videoid);
-      
+
       var lan=data[i].videos[x].subtitles.length;
       var subs=lan?data[i].videos[x].subtitles[0].subtitle.length:0
     console.log(`Video: ${data[i].videos[x].videoid} languages: ${lan} subtitles: ${subs} `);
@@ -129,11 +145,11 @@ export async function getSubTitles(videoId)       //Gets all subtitles associate
 {
   var captions = await getSubtitleList(videoId);
   var allVidSubs = [];
-  
+
   //console.log(`Video: ${videoId} #Captions: ${captions.length}`);
-  
+
   for (var i=0; i<captions.length; i++){
-      
+
     var language = captions[i].getAttribute('lang_code');
     //console.log(`Found language: ${language}`);
     allVidSubs.push({
