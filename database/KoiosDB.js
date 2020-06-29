@@ -9,7 +9,7 @@ class KoiosDB {
     this.defaultDbOptions = {
       accessController: { write: ["*"] },
       meta: { name: 'demonstration docs' },
-      indexBy: 'doc'
+      //indexBy: 'doc'
     };
   }
 
@@ -30,35 +30,31 @@ class KoiosDB {
     this.onready();
   }
 
-  async _createDB() {
-    this.db = await this.orbitdb.docs('jsondb', this.defaultDbOptions);
-    await this.db.load();
-    console.log("Database Loaded");
-  }
-
-  async _connectToDB(_dbid) {
-    //this.db = await this.orbitdb.open(_dbid, this.defaultDbOptions);
+  async _createDBInstance(_dbid='jsondb') {
     this.db = await this.orbitdb.docs(_dbid, this.defaultDbOptions);
     await this.db.load();
-    console.log("Database Loaded");
+    console.log("Database Instance Loaded");
   }
 
-  async addJson(id, json) {
+  async addJson(id="default", json={default:'default'}) {
   // const existingPiece = this.getPieceByHash(hash)
   //if (existingPiece) {
    // await this.updatePieceByHash(hash, instrument)
    //return;
   //}
-  //var putOBJ = { _id:`${id}`, doc:{json}};
-  var jsonTest = { _id: 'testid', doc: {energie: 5, voedingswaren:"33", prijs: 700}};
+  var putOBJ = {_id:id, json};
+  console.log("dit is t object");
+  console.log(json);
 
-  var cid = await this.db.put(jsonTest);
+  var cid = await this.db.put(json);
+  console.log(cid);
   return cid;
   }
 
-  async getJsonById(id) {
-    console.log(await this.db.query((e)=>e.doc));
-    return await this.db.query((e)=>e.doc);
+  async getJsonById(id = '') {
+    var queryResult = await this.db.get(id);
+    //console.log(queryResult);
+    return queryResult;
   }
 
   async events() {
