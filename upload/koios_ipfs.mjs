@@ -1,6 +1,6 @@
 //console.log(`In ${window.location.href} starting script: ${import.meta.url}`);
 import {
-  forIPFSexport
+  forIPFSexport, GetYouTubePlayListItems
 } from './koios_youtube.mjs';
 import {
   loadScriptAsync
@@ -14,7 +14,6 @@ export async function setupIPFS()
     loadScriptAsync("https://bundle.run/buffer"), // https://packd.now.sh/buffer
     //loadScriptAsync("https://unpkg.com/ipfs/dist/index.js"),
     loadScriptAsync("https://unpkg.com/ipfs-http-client/dist/index.min.js")
-
   ]);
   console.log("Ipfs & buffer libraries loaded");
   //var ipfs = await window.Ipfs.create(); //await?? //for node in browser
@@ -33,15 +32,66 @@ export async function setupBuffer()
 }
 */
 export async function uploadToDB() {
-  await Promise.all([
-    loadScriptAsync('../database/KoiosDB.js')
-  ]);
-  var koiosDB1 = window.KoiosDB;
+
+  await loadScriptAsync("https://unpkg.com/ipfs/dist/index.min.js"),
+  await loadScriptAsync('https://www.unpkg.com/orbit-db@0.24.1/dist/orbitdb.min.js'),
+  await loadScriptAsync('https://www.mgatsonides.online:5001/lib/database/KoiosDB.js')
+
+  var koiosDB1 = window.TDB;
   await koiosDB1._init();
-  await koiosDB1._createDB();
+  await koiosDB1._createDBInstance();
   var list = await includeSubtitlesforIpfsExport();
 
 }
+
+export async function LessonFormat(_playid = "PL_tbH3aD86KvZcwoEAdFyMCWijbYGDBIo") {
+  var list = await GetYouTubePlayListItems(_playid);
+  var json = {_id: 1,
+  Course_Title: "Blockchain and Cryptocurrencies 1",
+  Chapter: [
+      {
+          Chapter_Id: 1,
+          Chapter_Title: "BC-1.1",
+          Paragraph: [
+              {
+                  Paragraph_Id: 1,
+                  Paragraph_Title: ".1",
+                  Lesson: [
+                      {
+                          Lesson_Id: 1,
+                          Lesson_Title: "Introduction to the Blockchain Course!",
+                          Video: {
+                              Video_Name: "Intro",
+                              Description: "This is the description",
+                              Youtube_Id: "",
+                              Cid: "",
+                              Subtitle: [
+                                  {
+                                  Language: "",
+                                  Cid: ""
+                                  }
+                              ]
+                          },
+                      }
+                  ]
+              }
+          ],
+          Lesson: {}
+      }
+  ],
+  ECTS: 15,
+  Responsible: {}
+  };
+  for (var i=0;i<list.length;i++)
+  {
+    json.Chapter[0].Paragraph[0].Lesson.push(
+    {Lesson_Id:i, Title:list[i].title, Video:{Description:list[i].description, Duration:list[i].duration, Thumbnail:list[i].thumbnail, Youtube_Id:list[i].videoid}});
+  }
+  return json;
+}
+
+
+
 
 export async function uploadYtDataToIpfs()        //Puts the object on ipfs
 {

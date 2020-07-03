@@ -17,8 +17,8 @@ class KoiosDB {
     this.node = await this.Ipfs.create({
       repo: './create-db-ipfs',
       config: {  Addresses: { Swarm: [
-          "/ip4/0.0.0.0/tcp/4002",
-          "/ip4/127.0.0.1/tcp/4003/ws" // to allow interaction with browser
+          //"/ip4/0.0.0.0/tcp/4002",
+          //"/ip4/127.0.0.1/tcp/4003/ws" // to allow interaction with browser
       ] } }
     });
     //this.node.on('error', (e) => { throw (e); });
