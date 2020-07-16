@@ -12,12 +12,8 @@ export async function setupIPFS()
   console.log("In SetupIPFS");
   await Promise.all([ // see https://www.npmjs.com/package/ipfs
     loadScriptAsync("https://bundle.run/buffer"), // https://packd.now.sh/buffer
-<<<<<<< HEAD
     //loadScriptAsync("https://unpkg.com/ipfs/dist/index.js"),
     loadScriptAsync("https://unpkg.com/ipfs-http-client/dist/index.min.js")
-=======
-    loadScriptAsync("https://unpkg.com/ipfs/dist/index.min.js"),
->>>>>>> 9a3112a0b82d2bccc09bdc1c10f08f48e5151db2
   ]);
   console.log("Ipfs & buffer libraries loaded");
   //var ipfs = await window.Ipfs.create(); //await?? //for node in browser
@@ -50,6 +46,8 @@ export async function uploadToDB() {
 
 export async function LessonFormat(_playid = "PL_tbH3aD86KvZcwoEAdFyMCWijbYGDBIo") {
   var list = await GetYouTubePlayListItems(_playid);
+  console.log(list);
+  console.log("This is list!!!!");
   var json = {_id: 1,
   Course_Title: "Blockchain and Cryptocurrencies 1",
   Chapter: [
@@ -63,7 +61,7 @@ export async function LessonFormat(_playid = "PL_tbH3aD86KvZcwoEAdFyMCWijbYGDBIo
                   Lesson: [
                       {
                           Lesson_Id: 1,
-                          Lesson_Title: "Introduction to the Blockchain Course!",
+                          Title: "Introduction to the Blockchain Course!",
                           Video: {
                               Video_Name: "Intro",
                               Description: "This is the description",
