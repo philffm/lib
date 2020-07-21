@@ -1,10 +1,10 @@
-import {getElement,DomList,LinkClickButton,subscribe, FitOneLine} from '../lib/koios_util.mjs';
+import {getElement,DomList,LinkClickButton,subscribe, FitOneLine} from '../lib/koiosf_util.mjs';
 import {LessonFormat} from '../upload/koios_ipfs.mjs';
 
 
 
   var ParagraphboxList = new DomList("paragraphbox");
-  var StructureboxList = new DomList("editstructurebox");
+  //var StructureboxList = new DomList("editstructurebox");
 
 
    //ParagraphboxList.EmptyList()
@@ -17,9 +17,9 @@ import {LessonFormat} from '../upload/koios_ipfs.mjs';
     target.style.whiteSpace = "pre"; //werkt goed in combi met innerText
 
     console.log("link");
-    LinkClickButton("addbutton");
-    subscribe("addbuttonclick",onInput);
+    getElement("addbutton").addEventListener('animatedclick',onInput)
     FitOneLine(getElement("input"));
+    uploadEvents();
 
 
     async function onInput() {          //for test try PL_tbH3aD86KtN40_30P9S_rPryycQPr9k
@@ -35,6 +35,10 @@ import {LessonFormat} from '../upload/koios_ipfs.mjs';
         return inputVal;
     }
 
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
     function ShowBlock(x,y,txt) {
         var pb = ParagraphboxList.AddListItem();
         //console.log(pb);
@@ -43,11 +47,41 @@ import {LessonFormat} from '../upload/koios_ipfs.mjs';
         but.addEventListener("click", clicky);
         pb.style.left= `${x*25}px`;
         getElement("paragraph",pb).innerHTML=txt;
-        function clicky(){console.log("Clickyclack!");}
+
+
+        async function clicky(){
+          console.log("Clickyclack!");
+          await sleep(500);
+          console.log("After sleep");
+          var delBut = getElement("deleteButton");
+          delBut.addEventListener("click", deleteLesson);
+        }
+
+        function deleteLesson() {
+          console.log("deleted!!!!");
+          pb.parentNode.removeChild(pb);
+        }
 
     }
 
-    function toggleStructureMenu() {
+    function uploadEvents() {
+      var files = document.createElement("input");
+      files.id = "file-input";
+      files.type = "file";
+      files.name= "files[]";
+      files.multiple = 1;
+      files.style = "display: none;";
+      var upOpBut = getElement("openuploader");
+      upOpBut.addEventListener("click", upEv);
+
+      async function upEv() {
+        await sleep(500);
+        var upBut = getElement("filesButton");
+        upBut.addEventListener("click", upup);
+        function upup() {
+          files.click();
+        }
+      }
 
     }
 

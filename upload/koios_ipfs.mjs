@@ -4,7 +4,7 @@ import {
 } from './koios_youtube.mjs';
 import {
   loadScriptAsync
-} from '../lib/koios_util.mjs';
+} from '../lib/koiosf_util.mjs';
 
 
 export async function setupIPFS()

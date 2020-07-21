@@ -1,0 +1,61 @@
+Tokencasus
+Servers opzetten
+
+Koelkast, mining rig, ipfs
+Slack navragen
+
+Hoe kunnen IoT apparaten worden ingezet in een tokenecosysteem?
+
+Hoi allemaal. Aankomend schooljaar ga ik mijn stage uitvoeren bij Koios.
+Hier wil ik o.a. een aantal apparaten maken die passen binnen het Koios Ecosysteem.
+Op dit moment zijn er al een aantal ideeën hiervoor. Namelijk, een koelkast/drankautomaat
+waar betaald kan worden met tokens. X Y Z
+
+Hebben jullie nog leuke ideeën?
+
+
+
+BC-1.0.0 KOIOS Blockchain Technology Introduction
+Bitcoin is cool
+Repetition questions
+...
+
+Resizing and making lessonnames fit? in js or figma?
+Next step sorting it under paragraphs.
+
+
+
+1. Manipulate tree structure.
+class for objects
+2. Add button to add to database.
+3. Connecting database.
+4. Uploader.
+	For the uploader I use a hidden files field. The button will click on this hidden field!
+	https://stackoverflow.com/questions/16215771/how-to-open-select-file-dialog-via-js/16215950#16215950
+5. Edit info.
+5.1 Function and button to add literature.
+5.2	Quiz questions
+
+
+Eventhandlers brave vs chrome
+
+Front end boxes too big.
+
+
+
+Unique ID -> timestamp (var h1=await globaldb.put({ _id: new Date().getTime())
+
+
+Parent
+In edit menu'tje New chapter from here
+Delete insert nummering opnieuw berekenen voor lesson.
+los programmatje
+
+Hoe kan ik html div ertussen plaatsen?
+Onthouden van id in de front end/layout? of kan dat anders? (rerender? live versie van t object?)
+this
+rerender of deleten van domelement temp.parentNode.removeChild(temp);
+
+linked list vs array of objects
+
+14
