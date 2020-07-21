@@ -4,7 +4,7 @@ import {uploadYtDataToIpfs,getYtInfoIpfs,includeSubtitlesforIpfsExport} from './
 import {LinkClickButton,subscribe} from '../lib/koios_util.mjs';
 import {SetupLogWindow,log} from '../lib/koios_log.mjs';
 import {GetYouTubePlaylists, LoadGapi} from './koios_youtube.mjs';
- 
+
 
 
 
@@ -43,10 +43,11 @@ async function display()
   videoSelect.style.margin = "8px";
 
   var files = document.createElement("input");
-  files.id = "files";
+  files.id = "file-input";
   files.type = "file";
   files.name= "files[]";
   files.multiple = 1;
+  files.style = "display: none;";
 
   var submit = document.createElement("input");
   submit.id = "upload-submit";
