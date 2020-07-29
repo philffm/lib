@@ -119,8 +119,8 @@ async function init() {
 
 async function onConnect(provider) {
     web3 = new Web3(provider);
-    if (await web3.eth.getChainId() != 43110) {
-        alert("Please connect with ava network address");
+    if (await web3.eth.getChainId() != 4) {
+        alert("Please connect with rinkeby network address");
     } else {
         accounts = await web3.eth.getAccounts();
         contract = await new web3.eth.Contract(contractJson.abi, contractJson.networks[1].address);
