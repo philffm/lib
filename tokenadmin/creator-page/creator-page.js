@@ -123,7 +123,7 @@ async function onConnect(provider) {
         alert("Please connect with rinkeby network address");
     } else {
         accounts = await web3.eth.getAccounts();
-        contract = await new web3.eth.Contract(contractJson.abi, contractJson.networks[1].address);
+        contract = await new web3.eth.Contract(contractJson.abi, contractJson.networks[4].address);
         isCreator = await contract.methods.creators(accounts[0]).call();
         console.log(isCreator)
         if (!isCreator) {
