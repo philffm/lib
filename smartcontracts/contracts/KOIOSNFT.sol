@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// based on https://github.com/ConsenSys/artifaqt/blob/master/contract/contracts/eip721
+// based on https://github.com/ConsenSys/artifaqt/blob/master/contract/contracts/KOIOSNFT
 // Use for educational purposes only // without approval functions
 // Extended with templates
 pragma solidity ^0.6.9;
@@ -74,7 +74,7 @@ contract KOIOSNFT {
     
     modifier isManager(uint256 _templateId) {
         require(msg.sender == admin || 
-            (ownedTypedTokens[msg.sender][ADMINTOKEN] > 0) || (ownedTypedTokens[msg.sender][templates[_templateId].Manager] > 0),"Must have admin or manager role for the badge");
+            (ownedTypedTokens[msg.sender][ADMINTOKEN] > 0) || (ownedTypedTokens[msg.sender][BADGECREATORTOKEN] > 0) || (ownedTypedTokens[msg.sender][templates[_templateId].Manager] > 0),"Must have admin, badgecreator or manager role for the badge");
         _;
         
     }        
@@ -176,8 +176,7 @@ contract KOIOSNFT {
         require(_index < allTokens.length);
         return allTokens[_index];
     }
-    function tokenOfOwnerByIndex(address _owner, uint256 _index) external view
-    tokenExists(_tokenId) returns (uint256 _tokenId) {
+    function tokenOfOwnerByIndex(address _owner, uint256 _index) external view returns (uint256 _tokenId) {
         require(_index < ownedTokens[_owner].length);
         return ownedTokens[_owner][_index];
     }
@@ -234,7 +233,9 @@ contract KOIOSNFT {
         emit Transfer(msg.sender, address(0), _tokenId);
     }
 
-    function CreateNewBadge(string memory _name, string memory _cid, bool _SelfMint, bool _SelfBurn, bool _AllowTransfer) public isBadgeCreator returns (uint256)  {
+    function CreateNewBadge(string memory _name, string memory _cid, bool _SelfMint, bool _SelfBurn, bool _AllowTransfer) public  isBadgeCreator returns (uint256)  {
+        
+
        
        templates.push(Template(string(abi.encodePacked(_name, "-manager")), "QmW5D7h6evMcqoJVreKGNj5uQAfd4ewdoNcStAXKN4BaUu" ,  false,false,false,0));
        templates.push(Template(_name, _cid,  _SelfMint,  _SelfBurn,  _AllowTransfer,templates.length-1)); // manager is the token perviousely created
@@ -266,5 +267,21 @@ contract KOIOSNFT {
     function contractURI() public view returns (string memory) { // for opensea, use the template#0
         return string(abi.encodePacked(baseURI, templates[0].cid));
     }
+
+
+    function checkIsAdmin() public view returns (bool) {
+        return msg.sender == admin || (ownedTypedTokens[msg.sender][ADMINTOKEN] > 0);
+    }
+    
+    function checkIsBadgeCreator() public view returns (bool)  {
+        return msg.sender == admin || (ownedTypedTokens[msg.sender][ADMINTOKEN] > 0) || (ownedTypedTokens[msg.sender][BADGECREATORTOKEN] > 0);
+    }
+    
+    function checkIsManager(uint256 _templateId) public view returns (bool)  {
+        return msg.sender == admin || (ownedTypedTokens[msg.sender][ADMINTOKEN] > 0) || (ownedTypedTokens[msg.sender][templates[_templateId].Manager] > 0);
+
+    }        
+    
+
 
 }
