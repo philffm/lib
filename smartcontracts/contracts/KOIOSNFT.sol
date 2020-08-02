@@ -237,7 +237,7 @@ contract KOIOSNFT {
         
 
        
-       templates.push(Template(string(abi.encodePacked(_name, "-manager")), "QmW5D7h6evMcqoJVreKGNj5uQAfd4ewdoNcStAXKN4BaUu" ,  false,false,false,0));
+       templates.push(Template(string(abi.encodePacked(_name, "-manager")), "QmQ6dXRkD9pFBnRy8mUjCkLjvSzNktWopjtFV4todh8Buk" ,  false,false,false,0));
        templates.push(Template(_name, _cid,  _SelfMint,  _SelfBurn,  _AllowTransfer,templates.length-1)); // manager is the token perviousely created
        
        createToken(admin,templates.length-2); // give everything also to admin
