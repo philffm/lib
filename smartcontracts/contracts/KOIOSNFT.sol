@@ -265,7 +265,7 @@ contract KOIOSNFT {
     }
     
     function contractURI() public view returns (string memory) { // for opensea, use the template#0
-        return string(abi.encodePacked(baseURI, templates[0].cid));
+        return string(abi.encodePacked(baseURI, templates[CONTRACTINFO].cid));
     }
 
 
