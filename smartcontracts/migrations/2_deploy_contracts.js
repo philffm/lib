@@ -1,5 +1,5 @@
-var koiosBadge = artifacts.require("KoiosBadges");
+var KOIOSNFT = artifacts.require("KOIOSNFT");
 
 module.exports = function(deployer) {
-  deployer.deploy(koiosBadge, "https://koiosonline.github.io/lib/tokens/");
+  deployer.deploy(KOIOSNFT);
 };

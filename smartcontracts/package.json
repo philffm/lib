@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/larsmeulenbroek/Koios-Badges#readme",
   "dependencies": {
+    "@openzeppelin/contracts": "^3.1.0",
     "@truffle/hdwallet-provider": "^1.0.35",
     "@walletconnect/web3-provider": "1.0.5",
     "web3": "^1.2.9",
