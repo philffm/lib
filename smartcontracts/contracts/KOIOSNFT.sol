@@ -87,9 +87,9 @@ contract KOIOSNFT {
         name = "koios";
         symbol = "koios";
         baseURI = "ipfs://ipfs/";
-        CreateNewBadge(name, "QmacmwVNLeQL4DjhPojty5chL7G7g1ZA19SgsnrM8DR8Cs", true,true,true);
+        CreateNewBadge(name, "QmcunXqjhDDVmyESNjgJvVcBTDCRwogdkdKosp32xhH52v", true,true,true);
         CreateNewBadge("admin", "QmZGUeT4yYrbtRPbTgj1rFwVNaUJAMmX28PBwCJ5Qiq64n", true,true,true);
-        CreateNewBadge("badgecreator", "QmW5D7h6evMcqoJVreKGNj5uQAfd4ewdoNcStAXKN4BaUu", true,true,true);
+        CreateNewBadge("badgecreator", "QmRfCmkxv7UzePqTZyhUTuVScqGuanndgwUbHwKMgbaLvm", true,true,true);
 
     }
     function onERC721Received(address _operator, address _from, uint256 _tokenId, bytes memory _data) public returns(bytes4) {
