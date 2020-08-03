@@ -2,15 +2,18 @@
 // based on https://github.com/ConsenSys/artifaqt/blob/master/contract/contracts/KOIOSNFT
 // Use for educational purposes only // without approval functions
 // Extended with templates
-pragma solidity ^0.6.9;
+pragma experimental ABIEncoderV2;
+pragma solidity ^0.7.0;
 
 contract KOIOSNFT {  
-    event Transfer(address indexed _from, address indexed _to, uint256 indexed _tokenId);
+    event Transfer(address indexed _from, address indexed _to, uint256 indexed _tokenId);    
+    event NewBadge(uint256 _templateid,string _name);
 
     string public  name;
     string public  symbol;
     address public  admin;
     uint256 public  counter = 10;
+    
     
     uint256[]                      public allTokens; 
     mapping(uint256 => uint256)    public allTokensIndex;      
@@ -29,10 +32,10 @@ contract KOIOSNFT {
     struct Template {
         string  name;
         string  cid;
+        uint256 managedBy; // template id of manager
         bool SelfMint;
         bool SelfBurn; 
         bool AllowTransfer;
-        uint256 Manager;
     }
 
     Template[] public templates;
@@ -48,14 +51,9 @@ contract KOIOSNFT {
     bytes4 internal constant ERC721_ENUMERABLE_INTERFACE_SIGNATURE = 0x780e9d63;
     bytes4 internal constant ONERC721RECEIVED_FUNCTION_SIGNATURE = 0x150b7a02;
 
-    uint256 public constant CONTRACTINFOMANAGER = 0;
-    uint256 public constant CONTRACTINFO = 1;
-    uint256 public constant ADMINTOKENMANAGER   = 2;
-    uint256 public constant ADMINTOKEN   = 3;
-    uint256 public constant BADGECREATORTOKENMANAGER = 4;
-    uint256 public constant BADGECREATORTOKEN = 5;
-    
-    
+    uint256 public constant ADMINTOKEN   = 0;    
+    uint256 public constant CONTRACTINFOTOKEN = 1;
+    uint256 public constant BADGECREATORTOKEN = 2;
 
     modifier tokenExists(uint256 _tokenId) {
         require(uint256(ownerOfToken[_tokenId]) != 0);
@@ -74,23 +72,17 @@ contract KOIOSNFT {
     
     modifier isManager(uint256 _templateId) {
         require(msg.sender == admin || 
-            (ownedTypedTokens[msg.sender][ADMINTOKEN] > 0) || (ownedTypedTokens[msg.sender][BADGECREATORTOKEN] > 0) || (ownedTypedTokens[msg.sender][templates[_templateId].Manager] > 0),"Must have admin, badgecreator or manager role for the badge");
+            (ownedTypedTokens[msg.sender][ADMINTOKEN] > 0) || (ownedTypedTokens[msg.sender][BADGECREATORTOKEN] > 0) || (ownedTypedTokens[msg.sender][templates[_templateId].managedBy] > 0),"Must have admin, badgecreator or manager role for the badge");
         _;
         
     }        
     
     
-    
-    // string memory _name, string memory _symbol, string memory _baseURI, string memory _cidcontract,string memory _cidadmin
-    constructor () public {
+    constructor (string memory _name, string memory _symbol, string memory _baseURI) {
         admin = msg.sender;
-        name = "koios";
-        symbol = "koios";
-        baseURI = "ipfs://ipfs/";
-        CreateNewBadge(name, "QmcunXqjhDDVmyESNjgJvVcBTDCRwogdkdKosp32xhH52v", true,true,true);
-        CreateNewBadge("admin", "QmZGUeT4yYrbtRPbTgj1rFwVNaUJAMmX28PBwCJ5Qiq64n", true,true,true);
-        CreateNewBadge("badgecreator", "QmRfCmkxv7UzePqTZyhUTuVScqGuanndgwUbHwKMgbaLvm", true,true,true);
-
+        name = _name;
+        symbol = _symbol;
+        baseURI = _baseURI;
     }
     function onERC721Received(address _operator, address _from, uint256 _tokenId, bytes memory _data) public returns(bytes4) {
         receivedOperator = _operator;
@@ -209,16 +201,25 @@ contract KOIOSNFT {
     }
     
     
-    function createToken(address _minter,uint256 _templateId) public isManager( _templateId) {
+    function createToken(address _to,uint256 _templateId) public isManager( _templateId) {
         
         templateOf[counter]=_templateId;
         typedTokens[_templateId].push(counter);
         typedTokensIndex[_templateId] = typedTokens[_templateId].length-1;
         
-        addToken(_minter, counter);
-        emit Transfer(address(0), _minter, counter);
+        addToken(_to, counter);
+        emit Transfer(address(0), _to, counter);
         counter += 1; // every new token gets a new ID
     }
+    
+    
+    function createTokens(address[] memory _to,uint256 _templateId) public isManager( _templateId) {
+        uint arrayLength = _to.length;
+        for (uint i = 0; i < arrayLength; i++) 
+            createToken(_to[i],_templateId);        
+    }
+    
+    
     function burnToken(uint256 _tokenId) public {
         require(ownerOfToken[_tokenId] == msg.sender,"Token should be in control of owner");
         uint256 templateId=templateOf[_tokenId];
@@ -233,29 +234,26 @@ contract KOIOSNFT {
         emit Transfer(msg.sender, address(0), _tokenId);
     }
 
-    function CreateNewBadge(string memory _name, string memory _cid, bool _SelfMint, bool _SelfBurn, bool _AllowTransfer) public  isBadgeCreator returns (uint256)  {
-        
-
+    function CreateNewBadge(string memory _name, string memory _cid, uint256 _managedBy, bool _SelfMint, bool _SelfBurn, bool _AllowTransfer) public  isBadgeCreator returns (uint256)  {        
+       templates.push(Template(_name, _cid,  _managedBy, _SelfMint,  _SelfBurn,  _AllowTransfer)); 
+       createToken(admin,templates.length-1); // give everything also to admin       
        
-       templates.push(Template(string(abi.encodePacked(_name, "-manager")), "QmQ6dXRkD9pFBnRy8mUjCkLjvSzNktWopjtFV4todh8Buk" ,  false,false,false,0));
-       templates.push(Template(_name, _cid,  _SelfMint,  _SelfBurn,  _AllowTransfer,templates.length-1)); // manager is the token perviousely created
-       
-       createToken(admin,templates.length-2); // give everything also to admin
-       createToken(admin,templates.length-1); // give everything also to admin
-       
+       emit NewBadge(templates.length-1,_name);
        return templates.length-1;
     }
     
     
-    function assignManager(address _to, uint256 _templateid) public isBadgeCreator {
-         createToken(_to,templates[_templateid].Manager);
+    function UpdateBadge(uint256 _templateid,string memory _name, string memory _cid, uint256 _managedBy, bool _SelfMint, bool _SelfBurn, bool _AllowTransfer) public isAdmin {       
+       templates[_templateid]=Template(_name, _cid, _managedBy, _SelfMint,  _SelfBurn,  _AllowTransfer);
     }
     
-    function UpdateBadge(uint256 _templateid,string memory _name, string memory _cid, bool _SelfMint, bool _SelfBurn, bool _AllowTransfer, uint256 _Manager) public isAdmin {
-       
-       templates[_templateid]=Template(_name, _cid,  _SelfMint,  _SelfBurn,  _AllowTransfer, _Manager);
+    function GetTemplateId(uint256 _tokenId) public view returns (uint256) {
+        return templateOf[_tokenId];
     }
     
+    function GetTemplateInfo(uint256 _templateid) public view returns ( Template memory)   {       
+       return templates[_templateid];
+    }
     
     function nrTemplates() external view returns (uint256) {
         return templates.length;
@@ -265,7 +263,7 @@ contract KOIOSNFT {
     }
     
     function contractURI() public view returns (string memory) { // for opensea, use the template#0
-        return string(abi.encodePacked(baseURI, templates[CONTRACTINFO].cid));
+        return string(abi.encodePacked(baseURI, templates[CONTRACTINFOTOKEN].cid));
     }
 
 
@@ -278,10 +276,16 @@ contract KOIOSNFT {
     }
     
     function checkIsManager(uint256 _templateId) public view returns (bool)  {
-        return msg.sender == admin || (ownedTypedTokens[msg.sender][ADMINTOKEN] > 0) || (ownedTypedTokens[msg.sender][templates[_templateId].Manager] > 0);
+        return msg.sender == admin || (ownedTypedTokens[msg.sender][ADMINTOKEN] > 0) || (ownedTypedTokens[msg.sender][templates[_templateId].managedBy] > 0);
 
     }        
     
+    function destroy() public  { 
+        require(msg.sender == admin,"Must be admin to destroy");
+        selfdestruct(msg.sender);
+    }
 
 
+        
+         
 }

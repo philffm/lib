@@ -21,6 +21,8 @@
     "@openzeppelin/contracts": "^3.1.0",
     "@truffle/hdwallet-provider": "^1.0.35",
     "@walletconnect/web3-provider": "1.0.5",
+    "ipfs-http-client": "^45.0.0",
+    "node-fetch": "^2.6.0",
     "web3": "^1.2.9",
     "web3modal": "^1.7.0"
   }
