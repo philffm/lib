@@ -1,3 +1,4 @@
+console.log(`In ${window.location.href} starting script: ${import.meta.url}`);
 console.log("This is init.mjs, located at https://koiosonline.github.io/lib/bootstrap/init.mjs")
 
 
