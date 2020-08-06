@@ -1,0 +1,10 @@
+<script>
+window.onerror = function(message, source, lineno, colno, error) {       
+console.log("onerror")
+    var str="Error: "+message+" "+source+" "+lineno+" "+colno+" ";
+    if (error && error.stack) str += error.stack;    
+    alert(str)    
+} 
+</script>
+<script> onzin </script>
+<script type="module" src="https://koiosonline.github.io/lib/bootstrap/init.mjs"></script>
