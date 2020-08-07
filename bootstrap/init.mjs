@@ -9,9 +9,10 @@ async function start() {
     var d=await fetch("https://ipfs.io/ipfs/QmSwzhurFqfwEBdytiwsexAS8ZQxLPJ8LMna9ELP1xRXzq")
     //console.log(d);
     var t=await d.text();
-    //console.log(t);
+    console.log(t);
  
     document.getElementsByTagName("html")[0].innerHTML=t;
+    console.log(document);
 }
 
 start();
