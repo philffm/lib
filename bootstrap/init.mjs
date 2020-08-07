@@ -17,8 +17,14 @@ async function start() {
        console.log(t);
     document.getElementsByTagName("html")[0].innerHTML=t;
     
-    //document.getElementsByTagName("head")[0].innerHTML +=t.head;
-    //document.getElementsByTagName("body")[0].innerHTML +=t.body;
+    var pb=t.indexOf("body");
+    var head=t.substring(1,pb)
+    var body=t.substring(pb)
+    console.log(head)
+    console.log(body)
+    
+    document.getElementsByTagName("head")[0].innerHTML +=head;
+    document.getElementsByTagName("body")[0].innerHTML +=body;
     
         var event = new Event('DOMContentLoaded',{  bubbles: true,  cancelable: true});
     window.document.dispatchEvent(event); 
