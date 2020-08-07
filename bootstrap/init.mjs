@@ -34,9 +34,24 @@ async function start() {
     document.getElementsByTagName("head")[0].innerHTML +=head;
     document.getElementsByTagName("body")[0].innerHTML +=body;
     
-        var event = new Event('DOMContentLoaded',{  bubbles: true,  cancelable: true});
+
+    
+ 
+ 
+    var tag = document.createElement('script');
+    tag.src = "https://gpersoon.com/koios/gerard/viewer_figma/koiosf_viewer.mjs";
+    tag.type="module"
+ 
+  
+  document.head.appendChild(tag);  
+  
+          var event = new Event('DOMContentLoaded',{  bubbles: true,  cancelable: true});
     window.document.dispatchEvent(event); 
     console.log(document);
+  
+});
+}
+    
 }
 
 start();
