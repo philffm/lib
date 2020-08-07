@@ -28,7 +28,7 @@ async function start() {
     var event = new Event('DOMContentLoaded',{  bubbles: true,  cancelable: true});
     window.document.dispatchEvent(event); 
     console.log(document);
-});
+}
 
 start();
 
