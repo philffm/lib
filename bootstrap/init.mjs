@@ -19,7 +19,15 @@ async function start() {
     
     var pb=t.indexOf("body");
     var head=t.substring(1,pb)
+    
+    head=head.replace("<head>","")
+    head=head.replace("</head>","")
+    
     var body=t.substring(pb)
+    
+    body=body.replace("<body>","")
+    body=body.replace("</body>","")
+    
     console.log(head)
     console.log(body)
     
