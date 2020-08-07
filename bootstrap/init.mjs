@@ -12,7 +12,7 @@ async function start() {
     console.log(t);
     
     t=t.replace("<html>","")
-    t=t.replace("<\html>","")
+    t=t.replace("</html>","")
  
        console.log(t);
     document.getElementsByTagName("html")[0].innerHTML=t;
