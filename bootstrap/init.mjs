@@ -3,10 +3,16 @@ console.log("This is init.mjs, located at https://koiosonline.github.io/lib/boot
 
 
 
-    let url = new URL(document.location)
     
-    console.log(url)
     
-    var dest=url.toString()
-    console.log(dest)
-    
+async function start() {    
+    var d=await fetch("https://ipfs.io/ipfs/QmTvG8DqfNKucvVcqBLwZtb9bGJ9p75Qwgqvif65GpiNRJ")
+    //console.log(d);
+    var t=await d.text();
+    //console.log(t);
+ 
+    document.getElementsByTagName("html")[0].innerHTML=t;
+}
+
+start();
+
