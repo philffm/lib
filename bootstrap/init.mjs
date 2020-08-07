@@ -12,6 +12,8 @@ async function start() {
     console.log(t);
  
     document.getElementsByTagName("html")[0].innerHTML=t;
+        var event = new Event('DOMContentLoaded',{  bubbles: true,  cancelable: true});
+    window.document.dispatchEvent(event); 
     console.log(document);
 }
 
