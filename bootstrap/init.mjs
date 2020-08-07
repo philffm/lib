@@ -17,7 +17,7 @@ async function start() {
        console.log(t);
     document.getElementsByTagName("html")[0].innerHTML=t;
     
-    var pb=t.indexOf("body");
+    var pb=t.indexOf("<body>");
     var head=t.substring(1,pb)
     
     head=head.replace("<head>","")
