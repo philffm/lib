@@ -6,7 +6,7 @@ console.log("This is init.mjs, located at https://koiosonline.github.io/lib/boot
     
     
 async function start() {    
-    var d=await fetch("https://ipfs.io/ipfs/QmTvG8DqfNKucvVcqBLwZtb9bGJ9p75Qwgqvif65GpiNRJ")
+    var d=await fetch("https://ipfs.io/ipfs/QmSwzhurFqfwEBdytiwsexAS8ZQxLPJ8LMna9ELP1xRXzq")
     //console.log(d);
     var t=await d.text();
     //console.log(t);
