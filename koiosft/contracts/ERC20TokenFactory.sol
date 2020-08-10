@@ -10,6 +10,8 @@ contract ERC20Token {
     uint8 private _decimals;
     address public  _admin;
 	address public _factory;
+	
+	string private _tokenURI;
     mapping (address => uint256) private _balances;
     uint256 private _totalSupply;
 
@@ -19,12 +21,13 @@ contract ERC20Token {
         require( (msg.sender == _admin) || (msg.sender==_factory),"Must have admin role");
         _;
     }
-    constructor (string memory name, string memory symbol, uint8 decimals,address admin) {
+    constructor (string memory name, string memory symbol, uint8 decimals,string memory tokenURI,address admin) {
 	    _admin = admin;
         _name = name;
         _symbol = symbol;
         _decimals = decimals;
 		_factory = msg.sender;
+		_tokenURI = tokenURI;
         _mint(admin, 10000 * (10 ** uint256(_decimals)));
     }
 	function _transfer(address sender, address recipient, uint256 amount) internal {
@@ -74,6 +77,15 @@ contract ERC20Token {
     function adminmint(uint256 amount) public isAdmin {
 		_mint(msg.sender, amount);
 	}
+	
+	function tokenURI() public view returns (string memory) {
+        return _tokenURI;
+    }
+	
+	function setTokenURI(string memory settokenURI) public isAdmin {
+         _tokenURI = settokenURI;
+    }
+	
 	function destroy() public isAdmin {         
         selfdestruct(msg.sender);
     }
@@ -89,8 +101,8 @@ contract ERC20TokenFactory {
         require(msg.sender == admin,"Must have admin role");
         _;
     }
-    function createToken(string memory _name, string memory _symbol, uint8 _decimals) public isAdmin returns (ERC20Token)  {
-        tokens.push(new ERC20Token(_name, _symbol, _decimals,admin));
+    function createToken(string memory _name, string memory _symbol, uint8 _decimals,string memory _tokenURI) public isAdmin returns (ERC20Token)  {
+        tokens.push(new ERC20Token(_name, _symbol, _decimals,_tokenURI,admin));
     }
 	function NrTokens() public view returns(uint256) {
 	   return tokens.length;
