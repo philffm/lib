@@ -1,4 +1,5 @@
 var ERC20TokenFactory = artifacts.require("ERC20TokenFactory");
+var ERC20Token = artifacts.require("ERC20Token");
 
 module.exports = async function(deployer) {
 	ERC20TokenFactoryContract = await ERC20TokenFactory.deployed()
@@ -10,8 +11,9 @@ module.exports = async function(deployer) {
 	NrTokens=await ERC20TokenFactoryContract.NrTokens();	
 	console.log(`NrTokens=${NrTokens}`);
 	for (var i=0;i<NrTokens;i++) {
-		tokens=await ERC20TokenFactoryContract.tokens(i);	
-		console.log(`Address token ${i} ${tokens}`)
+		tokenaddress=await ERC20TokenFactoryContract.tokens(i);	
+		console.log(`Address token ${i} ${tokenaddress}`)
+		
 	}
 	
 };

@@ -8,22 +8,24 @@ contract ERC20Token {
     string private _name;
     string private _symbol;
     uint8 private _decimals;
-    address public  admin;
+    address public  _admin;
+	address public _factory;
     mapping (address => uint256) private _balances;
     uint256 private _totalSupply;
 
     event Transfer(address indexed from, address indexed to, uint256 value);
 	
     modifier isAdmin {
-        require(msg.sender == admin,"Must have admin role");
+        require( (msg.sender == _admin) || (msg.sender==_factory),"Must have admin role");
         _;
     }
-    constructor (string memory name, string memory symbol, uint8 decimals) {
-	    admin = msg.sender;
+    constructor (string memory name, string memory symbol, uint8 decimals,address admin) {
+	    _admin = admin;
         _name = name;
         _symbol = symbol;
         _decimals = decimals;
-        _mint(msg.sender, 10000 * (10 ** uint256(_decimals)));
+		_factory = msg.sender;
+        _mint(admin, 10000 * (10 ** uint256(_decimals)));
     }
 	function _transfer(address sender, address recipient, uint256 amount) internal {
         require(sender != address(0), "ERC20: transfer from the zero address");
@@ -72,8 +74,7 @@ contract ERC20Token {
     function adminmint(uint256 amount) public isAdmin {
 		_mint(msg.sender, amount);
 	}
-	function destroy() public  { 
-        require(msg.sender == admin,"Must be admin to destroy");
+	function destroy() public isAdmin {         
         selfdestruct(msg.sender);
     }
 }
@@ -89,13 +90,12 @@ contract ERC20TokenFactory {
         _;
     }
     function createToken(string memory _name, string memory _symbol, uint8 _decimals) public isAdmin returns (ERC20Token)  {
-        tokens.push(new ERC20Token(_name, _symbol, _decimals));
+        tokens.push(new ERC20Token(_name, _symbol, _decimals,admin));
     }
 	function NrTokens() public view returns(uint256) {
 	   return tokens.length;
 	}
-	function destroy() public  { 
-        require(msg.sender == admin,"Must be admin to destroy");		
+	function destroy() public isAdmin {         
 		uint arrayLength = tokens.length;
         for (uint i = 0; i < arrayLength; i++) 
             tokens[i].destroy();
