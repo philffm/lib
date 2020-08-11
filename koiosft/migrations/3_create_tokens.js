@@ -23,7 +23,8 @@ module.exports = async function(deployer) {
 	console.log(`NrTokens=${NrTokens}`);
 	for (var i=0;i<NrTokens;i++) {
 		tokenaddress=await ERC20TokenFactoryContract.tokens(i);	
-		console.log(`Address token ${i} ${tokenaddress}`)		
+		await ERC20Token.at(tokenaddress).then(ERC20TokenContract => 	
+		ERC20TokenContract.name().then(name => console.log(`Address token ${i} ${tokenaddress} name:${name}`)))
 	}	
 };
 
@@ -39,6 +40,7 @@ async function CreateNewToken(ipfs, contract,name,image) {
     const cid = (await ipfs.add(str)).path;  
 	await contract.createToken(name,name,18,cid);		
     console.log(`Adding Badge ${name} cid=${cid} image=${image}`)
+	
 }
 
   
