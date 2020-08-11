@@ -101,6 +101,7 @@ async function MakeImage(ipfs, name,documentpart) {
 }
 `   
     const cid = (await ipfs.add(str)).path;  
+	console.log(cid);
 	return cid;
 }
 

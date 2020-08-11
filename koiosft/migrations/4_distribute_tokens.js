@@ -12,8 +12,23 @@ module.exports = async function(deployer) {
 		tokenaddress=await ERC20TokenFactoryContract.tokens(i);	
 		ERC20TokenContract[i] = await ERC20Token.at(tokenaddress) // don't process directly => timeouts
 	}	
-	for (var i=0;i<NrTokens;i++) 
-	   await Process(tokenaddress,ERC20TokenContract[i])
+	
+	var acts=await web3.eth.getAccounts()
+	
+	for (var i=0;i<NrTokens;i++) {
+		name=await ERC20TokenContract[i].name()
+		console.log(`Processing contract ${name}`)
+		decimals=await ERC20TokenContract[i].decimals()	
+		//console.log(`Address token ${tokenaddress} name:${name} decimals:${decimals}`)
+	
+		const ten = new BN("10")
+		const amount = ten.pow(new BN(decimals)).mul(new BN(7))
+		for (var j=0;j<toarray.length;j++) 
+			await Process(tokenaddress,amount,ERC20TokenContract[i],toarray[j])
+		var left=await ERC20TokenContract[i].balanceOf(acts[0])
+		console.log(`Left on account ${acts[0]} ${left}`)
+	}
+			
 }  
   
 
@@ -29,24 +44,10 @@ var toarray=[
     
   
   
-async function Process(tokenaddress,contract)  {
-	name=await contract.name()
-	console.log(`Processing contract ${name}`)
-	decimals=await contract.decimals()	
-	//console.log(`Address token ${tokenaddress} name:${name} decimals:${decimals}`)
-	for (var i=0;i<toarray.length;i++) {		
-		const ten = new BN("10")
-		const amount = ten.pow(new BN(decimals)).mul(new BN(7))
-	     await contract.transfer(toarray[i], amount)
-		 newbalance=await contract.balanceOf(toarray[i])
-		 console.log(`Transferred ${amount.toString()} to  ${toarray[i]}, which has now: ${newbalance.toString()}`)		
-	}
-	
-	var acts=await web3.eth.getAccounts()
-	
-	var left=await contract.balanceOf(acts[0])
-	console.log(`Left on account ${acts[0]} ${left}`)
-	
+async function Process(tokenaddress,amount,contract,dest)  {
+	     await contract.transfer(dest, amount)
+		 newbalance=await contract.balanceOf(dest)
+		 console.log(`Transferred ${amount.toString()} to  ${dest}, which has now: ${newbalance.toString()}`)		
 }
 
  
