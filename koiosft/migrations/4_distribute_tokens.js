@@ -21,10 +21,10 @@ const BN = web3.utils.BN
   
 var toarray=[
             "0x8e2A89fF2F45ed7f8C8506f846200D671e2f176f", // gerard
-         //   "0xEA9a7c7cD8d4Dc3acc6f0AaEc1506C8D6041a1c5", // gerard canary
-         //   "0x336101f6685906fFe861ac519A98A6736d2D5b37", // phil
-         //   "0xe88cAc4e10C4D316E0d52B82dd54f26ade3f0Bb2", // corwin
-         //   "0x4Ad2eaE4137e11EB3834840f1DC38F5f0fa181c3" // mathieu        
+            "0xEA9a7c7cD8d4Dc3acc6f0AaEc1506C8D6041a1c5", // gerard canary
+            "0x336101f6685906fFe861ac519A98A6736d2D5b37", // phil
+            "0xe88cAc4e10C4D316E0d52B82dd54f26ade3f0Bb2", // corwin
+            "0x4Ad2eaE4137e11EB3834840f1DC38F5f0fa181c3" // mathieu        
             ]
     
   
