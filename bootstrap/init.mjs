@@ -14,10 +14,14 @@ async function start() {
     var split=window.location.href.split("/");
 	console.log(split)
 	var last=split[split.length-1]
+	var beforelast=split[split.length-2]
 	console.log(last);
 	switch (last) {
 		case "viewer.test.koios.online": cidlocation="https://gpersoon.com/koios/gerard/bootstrap";break;
 		case "viewer.koios.online": 	 cidlocation="https://gpersoon.com/koios/lib/bootstrap";break;
+		case "newviewer": if (beforelast=="test") cidlocation="https://gpersoon.com/koios/gerard/bootstrap";
+						  else 				      cidlocation="https://gpersoon.com/koios/lib/bootstrap";
+						  break;
 	}	
 	var cid=await (await fetch(cidlocation+"/.cid")).text()
 	console.log(cid)	
