@@ -22,18 +22,22 @@ async function start() {
 	var last=split[split.length-1]
 	var beforelast=split[split.length-2]
 	console.log(beforelast,last);
-	var cidlocation="."
-	var prod="https://koiosonline.github.io/lib/bootstrap"
-	var test="https://gpersoon.com/koios/gerard/bootstrap"
-	switch (last) {
-		case "viewer.test.koios.online": cidlocation=test;break;
-		case "viewer.koios.online": 	 cidlocation=prod;break;
-		case "newviewer": if (beforelast=="test") cidlocation=test;
-						  else 				      cidlocation=prod;
-						  break;
-	}	
-	var cid=await (await fetch(cidlocation+"/cid")).text()
-	console.log(cid)	
+	
+	var cid=url.searchParams.get("ipfs");   	
+	if (!cid) {	
+		var cidlocation="."
+		var prod="https://koiosonline.github.io/lib/bootstrap"
+		var test="https://gpersoon.com/koios/gerard/bootstrap"
+		switch (last) {
+			case "viewer.test.koios.online": cidlocation=test;break;
+			case "viewer.koios.online": 	 cidlocation=prod;break;
+			case "newviewer": if (beforelast=="test") cidlocation=test;
+							  else 				      cidlocation=prod;
+							  break;
+		}	
+		cid=await (await fetch(cidlocation+"/cid")).text()
+	}
+	console.log(cid)		
     var iframe=document.createElement("iframe");
     iframe.src="https://ipfs.io/ipfs/"+cid
     iframe.width="100%"
@@ -43,17 +47,13 @@ async function start() {
     iframe.style.position="fixed";
     iframe.style.top="0";
     iframe.style.left="0";
-    document.body.appendChild(iframe);    
-	
-	for (var i=0;i<10;i++) { // give it a few tries; iframe needs to be loaded first
-		
+	console.log(`Loading ${iframe.src}`);
+    document.body.appendChild(iframe);    	
+	for (var i=0;i<10;i++) { // give it a few tries; iframe needs to be loaded first		
 		console.log(`Send ${url.href}`)
 		iframe.contentWindow.postMessage(url.href+"&"+i, "*"); // 'https://ipfs.io');
 		await sleep(1000)
 	}
-	
-
-	
 }
 
 start();
