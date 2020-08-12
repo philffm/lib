@@ -9,6 +9,10 @@ console.log("This is init.mjs, located at https://koiosonline.github.io/lib/boot
 // c:\bin\dig +noall +answer TXT _dnslink.viewer.koios.online
 // c:\bin\dig +noall +answer TXT _dnslink.viewer.test.koios.online
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 
 async function start() { 
 	let url = (new URL(document.location));
@@ -40,6 +44,16 @@ async function start() {
     iframe.style.top="0";
     iframe.style.left="0";
     document.body.appendChild(iframe);    
+	
+	for (var i=0;i<10;i++) { // give it a few tries; iframe needs to be loaded first
+		
+		console.log(`Send ${url.href}`)
+		iframe.contentWindow.postMessage(url.href+"&"+i, "*"); // 'https://ipfs.io');
+		await sleep(1000)
+	}
+	
+
+	
 }
 
 start();
