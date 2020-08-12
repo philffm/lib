@@ -9,7 +9,7 @@ console.log("This is init.mjs, located at https://koiosonline.github.io/lib/boot
 // c:\bin\dig +noall +answer TXT _dnslink.viewer.koios.online
 // c:\bin\dig +noall +answer TXT _dnslink.viewer.test.koios.online
 
-var cidlocation="."
+
 async function start() { 
 	let url = (new URL(document.location));
 	console.log(url)
@@ -18,11 +18,14 @@ async function start() {
 	var last=split[split.length-1]
 	var beforelast=split[split.length-2]
 	console.log(beforelast,last);
+	var cidlocation="."
+	var prod="https://koiosonline.github.io/lib/bootstrap/init.mjs"
+	var test="https://gpersoon.com/koios/gerard/bootstrap"
 	switch (last) {
-		case "viewer.test.koios.online": cidlocation="https://gpersoon.com/koios/gerard/bootstrap";break;
-		case "viewer.koios.online": 	 cidlocation="https://gpersoon.com/koios/lib/bootstrap";break;
-		case "newviewer": if (beforelast=="test") cidlocation="https://gpersoon.com/koios/gerard/bootstrap";
-						  else 				      cidlocation="https://gpersoon.com/koios/lib/bootstrap";
+		case "viewer.test.koios.online": cidlocation=test;break;
+		case "viewer.koios.online": 	 cidlocation=prod;break;
+		case "newviewer": if (beforelast=="test") cidlocation=test;
+						  else 				      cidlocation=prod;
 						  break;
 	}	
 	var cid=await (await fetch(cidlocation+"/.cid")).text()
