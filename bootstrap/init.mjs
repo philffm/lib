@@ -2,11 +2,12 @@ console.log(`In ${window.location.href} starting script: ${import.meta.url}`);
 console.log("This is init.mjs, located at https://koiosonline.github.io/lib/bootstrap/init.mjs")
 // http://gpersoon.com/koios/lib/bootstrap/test.html
 // dnslink=/ipfs/QmZEgAo2Su99vcSwCf14AGokucaPCcshxr8zK3fZ5fKjf5
-// 
+// https://ipfs.io/ipns/koios.online
+// https://ipfs.io/ipns/viewer.koios.online
+// https://ipfs.io/ipns/viewer.test.koios.online
 // c:\bin\dig +noall +answer TXT _dnslink.koios.online
 // c:\bin\dig +noall +answer TXT _dnslink.viewer.koios.online
 // c:\bin\dig +noall +answer TXT _dnslink.viewer.test.koios.online
-
 
 var cidlocation="."
 async function start() { 
