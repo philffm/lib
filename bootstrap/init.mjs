@@ -23,7 +23,7 @@ async function start() {
 	var beforelast=split[split.length-2]
 	console.log(beforelast,last);
 	var cidlocation="."
-	var prod="https://koiosonline.github.io/lib/bootstrap/init.mjs"
+	var prod="https://koiosonline.github.io/lib/bootstrap"
 	var test="https://gpersoon.com/koios/gerard/bootstrap"
 	switch (last) {
 		case "viewer.test.koios.online": cidlocation=test;break;
@@ -32,7 +32,7 @@ async function start() {
 						  else 				      cidlocation=prod;
 						  break;
 	}	
-	var cid=await (await fetch(cidlocation+"/.cid")).text()
+	var cid=await (await fetch(cidlocation+"/cid")).text()
 	console.log(cid)	
     var iframe=document.createElement("iframe");
     iframe.src="https://ipfs.io/ipfs/"+cid
