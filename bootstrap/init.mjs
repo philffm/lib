@@ -1,8 +1,9 @@
 console.log(`In ${window.location.href} starting script: ${import.meta.url}`);
 console.log("This is init.mjs, located at https://koiosonline.github.io/lib/bootstrap/init.mjs")
 // http://gpersoon.com/koios/lib/bootstrap/test.html
+// https://ipfs.io/ipns/koios.online
 
-var cidlocation="http://gpersoon.com/koios/lib/bootstrap"
+var cidlocation="https://gpersoon.com/koios/lib/bootstrap"
 // var cidlocation="."
 async function start() { 
 	var cid=await (await fetch(cidlocation+"/.cid")).text()
