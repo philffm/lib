@@ -11,11 +11,13 @@ console.log("This is init.mjs, located at https://koiosonline.github.io/lib/boot
 
 var cidlocation="."
 async function start() { 
-    var split=window.location.href.split("/");
+	let url = (new URL(document.location));
+	console.log(url)
+    var split=url.pathname.split("/");
 	console.log(split)
 	var last=split[split.length-1]
 	var beforelast=split[split.length-2]
-	console.log(last);
+	console.log(beforelast,last);
 	switch (last) {
 		case "viewer.test.koios.online": cidlocation="https://gpersoon.com/koios/gerard/bootstrap";break;
 		case "viewer.koios.online": 	 cidlocation="https://gpersoon.com/koios/lib/bootstrap";break;
