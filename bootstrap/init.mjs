@@ -7,13 +7,17 @@ console.log("This is init.mjs, located at https://koiosonline.github.io/lib/boot
 // c:\bin\dig +noall +answer TXT _dnslink.viewer.koios.online
 // c:\bin\dig +noall +answer TXT _dnslink.viewer.test.koios.online
 
-var cidlocation="https://gpersoon.com/koios/lib/bootstrap"
-// var cidlocation="."
+
+var cidlocation="."
 async function start() { 
     var split=window.location.href.split("/");
 	console.log(split)
-
-
+	var last=split[split.length-1]
+	console.log(last);
+	switch (last) {
+		case "viewer.test.koios.online": cidlocation="https://gpersoon.com/koios/gerard/bootstrap";break;
+		case "viewer.koios.online": 	 cidlocation="https://gpersoon.com/koios/lib/bootstrap";break;
+	}	
 	var cid=await (await fetch(cidlocation+"/.cid")).text()
 	console.log(cid)	
     var iframe=document.createElement("iframe");
