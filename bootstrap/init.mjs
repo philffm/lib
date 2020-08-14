@@ -33,7 +33,7 @@ async function start() {
 			case "viewer.test.koios.online": cidlocation=test;break;
 			case "viewer.koios.online": 	 cidlocation=prod;break;
 			case "newviewer": break;
-			case "homepage ": cidfile="homepage";break;						  							  
+			case "homepage": cidfile="homepage";break;						  							  
 		}
 		var loadfile=cidlocation+"/"+cidfile
 		console.log(`Loading config file ${loadfile}`)
