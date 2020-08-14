@@ -26,7 +26,7 @@ async function start() {
 	var cid=url.searchParams.get("ipfs");   	
 	if (!cid) {	
 		var prod="https://koiosonline.github.io/lib/bootstrap"
-		var test="https://gpersoon.com/koios/gerard/bootstrap"
+		var test="https://gpersoon.com/koios/lib/bootstrap"
 		var cidlocation=(beforelast=="test")?test:prod;
 		var cidfile="viewer"
 		switch (last) {
