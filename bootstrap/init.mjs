@@ -25,17 +25,17 @@ async function start() {
 	
 	var cid=url.searchParams.get("ipfs");   	
 	if (!cid) {	
-		var cidlocation="."
 		var prod="https://koiosonline.github.io/lib/bootstrap"
 		var test="https://gpersoon.com/koios/gerard/bootstrap"
+		var cidlocation=(beforelast=="test")?test:prod;
+		var cidfile="viewer"
 		switch (last) {
 			case "viewer.test.koios.online": cidlocation=test;break;
 			case "viewer.koios.online": 	 cidlocation=prod;break;
-			case "newviewer": if (beforelast=="test") cidlocation=test;
-							  else 				      cidlocation=prod;
-							  break;
+			case "newviewer": 
+			case "homepage ": cidfile="homepage"							  							  
 		}	
-		cid=await (await fetch(cidlocation+"/cid")).text()
+		cid=(await (await fetch(cidlocation+"/"+cidfile)).text()).trim();
 	}
 	console.log(cid)		
     var iframe=document.createElement("iframe");
