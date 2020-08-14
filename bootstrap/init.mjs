@@ -32,10 +32,12 @@ async function start() {
 		switch (last) {
 			case "viewer.test.koios.online": cidlocation=test;break;
 			case "viewer.koios.online": 	 cidlocation=prod;break;
-			case "newviewer": 
-			case "homepage ": cidfile="homepage"							  							  
-		}	
-		cid=(await (await fetch(cidlocation+"/"+cidfile)).text()).trim();
+			case "newviewer": break;
+			case "homepage ": cidfile="homepage";break;						  							  
+		}
+		var loadfile=cidlocation+"/"+cidfile
+		console.log(`Loading config file ${loadfile}`)
+		cid=(await (await fetch(loadfile)).text()).trim();
 	}
 	console.log(cid)		
     var iframe=document.createElement("iframe");
