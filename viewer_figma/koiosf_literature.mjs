@@ -1,4 +1,4 @@
-import {loadScriptAsync,GetJsonIPFS,subscribe,publish,DomList,GetCidViaIpfsProvider,getElement,sortfunction } from '../lib/koiosf_util.mjs';
+import {loadScriptAsync,GetJsonIPFS,subscribe,publish,DomList,GetCidViaIpfsProvider,getElement,sortfunction,LinkToggleButton,FitOneLine,ForceButton } from '../lib/koiosf_util.mjs';
 import {GetCourseInfo,GlobalCourseList} from './koiosf_course.mjs';
 import {GlobalLessonList} from './koiosf_lessons.mjs';
 
@@ -9,8 +9,10 @@ async function NewCourseSelected (courseid) {
     let cid =  await GetCourseInfo("slides") 
     console.log(`In NewCourseSelected cid=${cid}`);
     globalslideindex = await GetJsonIPFS(cid);        
-    globalslideindex.sort(sortfunction);
-    await GetLiteratureForVideo()
+    if (globalslideindex) {
+        globalslideindex.sort(sortfunction);
+        await GetLiteratureForVideo()
+    }
 }    
    
 
@@ -29,8 +31,34 @@ async function asyncloaded() {
     domid.appendChild(iframe);
     console.log("Prepare for setcurrentcourse");
     GlobalUrlList = new DomList("browser-url") // before real-slides (because is child)  
+    
+    
+     LinkToggleButton("topicweb",TopicOnOff) 
+     LinkToggleButton("topiclit",TopicOnOff) 
+     LinkToggleButton("topicpod",TopicOnOff) 
+     
+      ForceButton("topicweb",true);
+       ForceButton("topiclit",true);
+        ForceButton("topicpod",true);
+}
+ 
+ 
+function  TopicOnOff(event) {
+    
+    var mask=this.classList[1]
+    var fOn=GetToggleState(this,"displayactive"); 
+    
+    console.log(`TopicOnOff ${mask} ${fOn}`);
+    ShowItems(mask,fOn);
+ 
+}
+ 
+function ShowItems(tag,fOn) {
+  GlobalUrlList.FilterDataset("type",tag,fOn,true);
+
 }
 
+    
 
 subscribe("loadvideo",GetLiteratureForVideo);
 
@@ -40,6 +68,12 @@ var GlobalUrlList
 async function GetLiteratureForVideo() {   
     var vidinfo=await GlobalLessonList.GetCurrentLessonData()
     
+	
+	
+	var lit=await GlobalLessonList.GetLiterature()
+	console.log("Literature from youtube in GetLiteratureForVideo")
+	console.log(lit)
+	
     console.log(vidinfo);
         
     if (!vidinfo) return;
@@ -51,37 +85,50 @@ async function GetLiteratureForVideo() {
     if (!globalslideindex) return; // not loaded yet
     var slideindex=globalslideindex
 
+	SearchArray(slideindex,match)
+	SearchArray(lit,match)
+ 
+}
+
+function SearchArray(slideindex,match) {
+	if (!slideindex) return;
     var str="";
        for (var i=0;i<slideindex.length;i++) {
         if (match && slideindex[i].chapter !== match) 
             continue; // ignore
-            
+        
+        var type="";
+        
         var url = slideindex[i].url
+        if (url) type="topicweb"
+        
         if (!url && slideindex[i].cid) {
+            type="topiclit"
             url = slideindex[i].cid
             url = GetCidViaIpfsProvider(slideindex[i].cid,0)
             url = `https://docs.google.com/viewerng/viewer?url=${url}&embedded=true`;
         }
-        if (!url && slideindex[i].pdf) {                
+        if (!url && slideindex[i].pdf) {      
+            type="topiclit"
             url = slideindex[i].pdf
             url = `https://docs.google.com/viewerng/viewer?url=${url}&embedded=true`;
         }    
         if (url) {            
-            str +=SetInfo(url,slideindex[i].title,"browse-window-frame",slideindex[i].url?false:true)+"<br>"
+            str +=SetInfo(url,slideindex[i].title,"browse-window-frame",slideindex[i].url?false:true,type)+"<br>"
         }
+		
     }          
-    
- //   SetExtLink(str)  don't show the entire external tab
 }
+
     
 
 var prevurl=undefined
 
-    function SetInfo(url,txt,target,fDocument) { 
+    function SetInfo(url,txt,target,fDocument,type) { 
         if (url == prevurl) return "";  // filter out duplicates (already sorted)
         prevurl = url;
     
-        url = url.replace("http:","https:"); // to prevent error messages from browser
+        //url = url.replace("http:","https:"); // to prevent error messages from browser  (sometimes localhost http)
         var urltarget = GlobalUrlList.AddListItem()  
         
 //console.log(`In SetInfo ${url} ${txt}`)
@@ -98,18 +145,21 @@ var prevurl=undefined
         link_int.target=target
         
         link_int.title = txt; // hoover text to see entire link
-        //urltarget.style.overflow="hidden"
-        //urltarget.style.textOverflow="ellipsis"  
-        link_int.style.overflow="hidden"
-        link_int.style.textOverflow="ellipsis"  
-        link_int.style.whiteSpace="nowrap"
+
+        FitOneLine(link_int)        
+         
   
         link_ext.href=url
         link_ext.target="_blank"
         link_ext.title=`External tab: ${txt}`
         
         var str=`<a href="${url}">${txt}</a>`
+        
+        urltarget.dataset.type=type;
         return str;
+        
+        
+
     }    
 
 
