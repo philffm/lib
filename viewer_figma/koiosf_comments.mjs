@@ -3,6 +3,7 @@ import { } from "../lib/3box.js"; // from "https://unpkg.com/3box/dist/3box.js";
 import { getUserAddress, getWeb3Provider,authorize } from "./koiosf_login.mjs";
 import {DomList,getElement,FitOneLine,LinkVisible,subscribe,GetImageIPFS} from '../lib/koiosf_util.mjs';
 import {log} from '../lib/koiosf_log.mjs'; 
+import {DisplayMessage} from "./koiosf_messages.mjs";
 
 let box;
 let space;
@@ -154,9 +155,10 @@ async function SetDeleteButton(domid,postid) {
     async function DeleteForumEntry() {
         console.log(currentThread);
         try {
-          await currentThread.deletePost(postid);
+            DisplayMessage("Are you sure you want to delete this?");
+            await currentThread.deletePost(postid);
         } catch (error) {
-          console.log(error);
+            console.log(error);
         }
     }
 }
