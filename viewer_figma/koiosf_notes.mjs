@@ -1,5 +1,5 @@
 import {LinkButton,LinkClickButton,subscribe,DomList,GetCidViaIpfsProvider,getElement,setElementVal,FitOneLine} from '../lib/koiosf_util.mjs';   
-import {DisplayMessage} from './koiosf_messages.mjs';  
+import {DisplayMessage,SwitchDisplayMessageContinous,DisplayMessageContinous} from './koiosf_messages.mjs';  
 import {CurrentCourseTitle} from './koiosf_lessons.mjs'
 
 console.log("Start notes");
@@ -83,14 +83,8 @@ LinkButton("transcripttoclipboard",getVisibleTranscriptandCopyToClipboard);
     
 
 
-async function writeToClipboard(text) {
+async function writeToClipboard(text) {   // doesn't work on blob page (no permission)
     console.log(`writeToClipboard ${text}`)
-    
-       await navigator.permissions.request({name: 'clipboard-write'});
-    
-    var perm=await navigator.permissions.query({name:'clipboard-write'})
-    console.log(perm)
-    
     try {
         await navigator.clipboard.writeText(text);
         var msg=`Copied to clipboard (${text.length} characters)`;
@@ -108,19 +102,24 @@ async function ShareNotes() {
     var toShare=GlobalNotesArea.GetText()
     console.log(toShare)
     let err;
-    console.log(navigator)
-    console.log(navigator.share);
-    console.log(navigator.share.length);
+    //console.log(JSON.stringify(navigator))
+    //console.log("test");
+    // console.log(navigator)
     
-    if (navigator && navigator.share && navigator.share.length > 0) {
-        console.log("Sharing");
-        await navigator.share({ title: "Sharing notes", text: toShare }).catch( x=>err=x);
-        if (err) writeToClipboard(toShare);
+    try {
+        if (navigator && navigator.share && (typeof(navigator.share)=="function")) {
+            console.log("Sharing");
+            SwitchDisplayMessageContinous(true)
+            DisplayMessageContinous("Select destination");
+            await navigator.share({ title: "Sharing notes", text: toShare }).catch( x=>err=x);   // note crashes windows chrome Version 84.0.4147.105 
+            SwitchDisplayMessageContinous(false)
+            return;
+        }
+    } catch(error) {
+        DisplayMessage(error.message);
+        console.error(error);
     }
-     else 
-         writeToClipboard(toShare);     
-     
-     
+    writeToClipboard(toShare);     // if share doesn't work then write to clipboard
 } 
 
 
