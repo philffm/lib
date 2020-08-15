@@ -158,7 +158,7 @@ if (newpage.includes("http")) {// must be webpage
         var decoded=decodeURIComponent(newpage)
         decoded=decoded.replace("https//","https://") // : seems to be deleted
         console.log(decoded);
-        location.href=decoded
+        window.parent.location.href=decoded  // change at the highest level
     }
     
     
