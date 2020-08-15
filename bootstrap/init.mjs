@@ -54,14 +54,19 @@ async function start() {
     
 	console.log(`Loading ${iframe.src}`);
     document.body.appendChild(iframe);    	
-	for (var i=0;i<10;i++) { // give it a few tries; iframe needs to be loaded first		
-		console.log(`Send ${url.href}`)
-		iframe.contentWindow.postMessage(url.href+"&"+i, "*"); // 'https://ipfs.io'); received in util
-		await sleep(1000)
-	}
+	await Send();
 }
 
 start();
+  
+  
+async function Send() {
+    for (var i=0;i<10;i++) { // give it a few tries; iframe needs to be loaded first		
+		console.log(`Send ${url.href}`)
+		iframe.contentWindow.postMessage({"urlhref":url.href,"try":i}, "*"); // 'https://ipfs.io'); received in util
+		await sleep(1000)
+	}
+}    
   
   
 function Receive(event) {
