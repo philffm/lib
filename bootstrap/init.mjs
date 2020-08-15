@@ -78,7 +78,7 @@ function Receive(event) {
          console.log(event.data); 
 		 
 		 
-         }
+         
      } else {
          // The data was NOT sent from your site! 
          // Be careful! Do not use it. This else branch is
