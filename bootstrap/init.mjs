@@ -62,8 +62,6 @@ async function start() {
 }
 
 start();
-
- 
   
   
 function Receive(event) {
