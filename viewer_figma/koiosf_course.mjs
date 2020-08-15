@@ -86,7 +86,7 @@ class CourseList {
 		if (!cid) cid="howtouse01"        
         return cid;
     }
-    async LoadCurrentCourse() {
+    async LoadCurrentCourse() { // only do this 1 time, because takes the url parameters
         console.log("In LoadCurrentCourse")
         var list=await this.GetList()
         var courseid=GetURLParam("course")
@@ -149,9 +149,16 @@ async function asyncloaded() {
     console.log("globaldomlistcoursesmy");
     console.log(globaldomlistcoursesmy);
     
-    
+    subscribe("receivedparenturl",NewOrgLocation);
     await GlobalCourseList.LoadCurrentCourse()
 }    
+
+function NewOrgLocation() {
+    console.log("Received NewOrgLocation");
+    var courseid=GetURLParam("course")
+    if (courseid)
+        GlobalCourseList.SetCurrentCourse(courseid)
+}
 
 async function ScrOtherMadeVisible() {
     console.log("In ScrOtherMadeVisible")

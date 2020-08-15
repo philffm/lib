@@ -94,7 +94,7 @@ function SearchArray(slideindex,match) {
 	if (!slideindex) return;
     var str="";
        for (var i=0;i<slideindex.length;i++) {
-        if (match && slideindex[i].chapter !== match) 
+        if (match && slideindex[i].chapter !== match && slideindex[i].chapter!="*") // * means a match with all chapters
             continue; // ignore
         
         var type="";
@@ -128,7 +128,8 @@ var prevurl=undefined
         if (url == prevurl) return "";  // filter out duplicates (already sorted)
         prevurl = url;
     
-        //url = url.replace("http:","https:"); // to prevent error messages from browser  (sometimes localhost http)
+        if (!url.includes("localhost"))    // sometimes localhost http for jupyter
+            url = url.replace("http:","https:"); // to prevent error messages from browser  
         var urltarget = GlobalUrlList.AddListItem()  
         
 //console.log(`In SetInfo ${url} ${txt}`)

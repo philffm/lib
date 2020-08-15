@@ -16,6 +16,7 @@ function StoreIPFS {
     Write-Host "StoreIPFS $($FilePath)"
 	
     $uri="https://ipfs.infura.io:5001/api/v0/add?pin=true"
+    $uri="http://diskstation:5002/api/v0/add?pin=true"
     $fileBin = [System.IO.File]::ReadAllBytes($FilePath)
 	$enc = [System.Text.Encoding]::GetEncoding("iso-8859-1")
 	$fileEnc = $enc.GetString($fileBin)
@@ -27,7 +28,7 @@ function StoreIPFS {
         $fileEnc,
         "--$boundary--$LF"
         ) -join $LF
-    try {  $result = Invoke-RestMethod -Uri $uri -Method Post -ContentType "multipart/form-data; boundary=`"$boundary`"" -Body $bodyLines }
+    try {  $result = Invoke-RestMethod -Uri $uri -Method Post -ContentType "multipart/form-data; boundary=`"$boundary`"" -Headers @{ "Origin"="fake://"} -Body $bodyLines }
     catch [System.Net.WebException] {  Write-Error( "REST-API-Call failed for '$URL': $_" ); throw $_ ; }
     # Write-Host $result
     return $result
@@ -39,14 +40,16 @@ $mdarray1 = @()
 
 Get-ChildItem -Path $curr_path -Recurse -Filter *.ppt? | ForEach-Object {
     Write-Host "Processing powerpoint" $_.FullName "..."
-    $document = $ppt_app.Presentations.Open($_.FullName)
+    $document = $ppt_app.Presentations.Open($_.FullName,[Microsoft.Office.Core.MsoTriState]::msoFalse)
 
     $targetdir=$_.BaseName
-    $targetdir = $targetdir -replace '[^0-9a-zA-Z]', '_'
+    # $targetdir = $targetdir -replace '[^0-9a-zA-Z]', '_'
+    $targetdir = "outputpowerpoint"
     $destination = "$($curr_path)\$($targetdir)"
 
     
-    Write-Host $destination
+    Write-Host "Powerpoint file:" $_.BaseName
+    Write-Host "PNG's will be stored here:" $destination
 
 
     $powerpointname = $_.BaseName
@@ -55,7 +58,18 @@ Get-ChildItem -Path $curr_path -Recurse -Filter *.ppt? | ForEach-Object {
     
     $result = $document.SaveAs($destination, $outputTypeImg, $EmbedFonts)
     Write-Host "PNG's saved" $result
-    
+
+
+    $outputTypeImg = [Microsoft.Office.Interop.PowerPoint.PpSaveAsFileType]::ppSaveAsPDF
+    $destinationsheets = "$($curr_path)\sheets.pdf"
+    $result = $document.SaveAs($destinationsheets, $outputTypeImg, $EmbedFonts)
+    Write-Host "Entire PDF saved" $result
+    $sheetsresult = StoreIPFS ($destinationsheets)
+    Write-Host "Stored sheets on ipfs" $ipfs.Name
+   #$mdarray1
+    $mdarray1 += ,@{ chapter="*";title="Sheets";cid=$sheetsresult.Name;size=$sheetsresult.Size;source=$powerpointname}   
+     #$mdarray1
+
     $comma=" "
     $chapter = 0
 
@@ -128,8 +142,7 @@ Get-ChildItem -Path $curr_path -Recurse -Filter *.ppt? | ForEach-Object {
 
 
     }
-
-
+  
     $document.Close()
 }
 
@@ -141,7 +154,7 @@ Get-ChildItem -Path $curr_path -Recurse -Filter *.ppt? | ForEach-Object {
 
     $mdarray1 | ConvertTo-Json -depth 100  |  Out-File -Encoding ASCII $filename    # Sort-Object -Property @{Expression = {$_.chapter}; Ascending = $true} |
     $result = StoreIPFS ($filename)
-    $end = "$($_.BaseName) : $($result.Name)"
+    $end = "Powerpoint $($powerpointname) : $($result.Name)"
     Write-Output $end
     Add-Content "$($curr_path)\ipfs.json" $end
 
