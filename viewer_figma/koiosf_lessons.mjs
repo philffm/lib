@@ -84,7 +84,7 @@ class LessonList {
          var currentcourse=GlobalCourseList.GetCurrentCourse()
          console.log(`Storing lesson nr lesson-${currentcourse} ${lessonid}`);
          if (lessonid <0) lessonid=0
-         if (lessonid >= this.lessons.length) index = this.lessons.length-1;
+         if (lessonid >= this.lessons.length) lessonid = this.lessons.length-1;
          
          localStorage.setItem(`lesson-${currentcourse}`, lessonid);  
          

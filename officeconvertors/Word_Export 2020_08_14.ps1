@@ -2,6 +2,7 @@
 #All slides are converted to png files and stored on IPFS
 #A list of the slides (including number, title, IPFS hash) are stored in a .json file
 #The json file is also stored on IPFS
+#The firstpart of the filename is used as a prefix that should be present in the chapters
 
 
 
@@ -31,33 +32,41 @@ $curr_path = Split-Path $scriptpath
 [Reflection.Assembly]::LoadWithPartialname("Microsoft.Office.Interop.Word") > $null
 [Reflection.Assembly]::LoadWithPartialname("Office") > $null # need this or word might not close
 $word_app = New-Object "Microsoft.Office.Interop.Word.ApplicationClass" 
-$word_app.Visible = $false
+$word_app.Visible = [Microsoft.Office.Core.MsoTriState]::msoFalse
 
     #SaveCopy($chapter,$_.Text)
 function SaveCopy {
-    param ($chapter,$text)
+    param ($range,$chapter,$text)
     Write-Host SaveCopy $chapter $text
+
+    if (-Not (Test-Path .\outputword)) { New-Item -ItemType directory -Path .\outputword }
     $text = $text.trim() -replace '[^0-9a-zA-Z]', '_'
     $text = $text.Trim("_")
+  
     $destination = "$($curr_path)\outputword\$($chapter) $($text).pdf"
-    $word_appcopy = New-Object "Microsoft.Office.Interop.Word.ApplicationClass"         
+    #$word_appcopy = New-Object "Microsoft.Office.Interop.Word.ApplicationClass"         
    # $word_appcopy.Visible = $false
-    $document = $word_appcopy.documents.add()   
+    #$document = $word_appcopy.documents.add()   
 
-    $document.Content.Paste()
-    $document.Content.InsertParagraphBefore()
-    $document.Content.InsertBefore("$($chapter) $($text)")
+    #$document.Content.Paste()
+    #$document.Content.InsertParagraphBefore()
+    #$document.Content.InsertBefore("$($chapter) $($text)")
 
     $outputTypePDF = 17 # wdSaveAsPDF
     
-    $document.SaveAs($destination,$outputTypePDF)
+    #$document.SaveAs($destination,$outputTypePDF)
 
-    $doNotSaveChanges = [Microsoft.Office.Interop.Word.WdSaveOptions]::wdDoNotSaveChanges
+    Write-Host "Exporting" $destination
+    $range.ExportAsFixedFormat2($destination,$outputTypePDF)
 
-    $document.Close([ref]$doNotSaveChanges)
-    $word_appcopy.Quit()
-    [GC]::Collect()
-    [GC]::WaitForPendingFinalizers()
+
+
+    #$doNotSaveChanges = [Microsoft.Office.Interop.Word.WdSaveOptions]::wdDoNotSaveChanges
+
+    #$document.Close([ref]$doNotSaveChanges)
+    #$word_appcopy.Quit()
+    #[GC]::Collect()
+    #[GC]::WaitForPendingFinalizers()
 
     return StoreIPFS($destination)
   #return ""
@@ -68,7 +77,10 @@ function StoreIPFS {
 
     Write-Host "StoreIPFS $($FilePath)"
 	
+
+
     $uri="https://ipfs.infura.io:5001/api/v0/add?pin=true"
+    $uri="http://diskstation:5002/api/v0/add?pin=true"
     $fileBin = [System.IO.File]::ReadAllBytes($FilePath)
 	$enc = [System.Text.Encoding]::GetEncoding("iso-8859-1")
 	$fileEnc = $enc.GetString($fileBin)
@@ -80,7 +92,7 @@ function StoreIPFS {
         $fileEnc,
         "--$boundary--$LF"
         ) -join $LF
-    try {  $result = Invoke-RestMethod -Uri $uri -Method Post -ContentType "multipart/form-data; boundary=`"$boundary`"" -Body $bodyLines }
+    try {  $result = Invoke-RestMethod -Uri $uri -Method Post -ContentType "multipart/form-data; boundary=`"$boundary`"" -Headers @{ "Origin"="fake://"} -Body $bodyLines }
     catch [System.Net.WebException] {  Write-Error( "REST-API-Call failed for '$URL': $_" ); throw $_ ; }
     # Write-Host $result
     return $result
@@ -98,6 +110,8 @@ Get-ChildItem -Path $curr_path -Recurse -Filter *.doc? | ForEach-Object {
     $wordname = $_.BaseName
     
     Write-Host $wordname
+    $prefix = $wordname.Split(" ")[0]+"."
+    Write-Host $prefix
 
     $range = $document.content
 
@@ -141,10 +155,10 @@ Write-Host "Analyzing" $newtitle
            $newtitle = $newtitle.trim("_") 
 
 Write-Host $newchapter
-           if ($newchapter -Match '3.') {
+           if ($newchapter -Match $prefix) {
                Write-Host  "KOP:"  $newchapter $newtitle
                $inbetween=$Document.Range($prev, $_.Range.Start)
-               $prev = $_.Range.End
+               $prev = $_.Range.Start
                $inbetween.Hyperlinks | ForEach-Object {                
                     if ($_.Address -ne $prevurl) {
                       #  Write-Host $chapter $_.Address
@@ -155,8 +169,8 @@ Write-Host $newchapter
                 if ($chapter -ne "skip") {
                     $copylength=$inbetween.Characters.Count.ToString()
                     if ($copylength -gt 1) {
-                        $inbetween.copy() | out-null;
-                        $result=SaveCopy $chapter $prevtext  # note: space seperated
+                       # $inbetween.copy() | out-null;
+                        $result=SaveCopy $inbetween $chapter $prevtext  # note: space seperated
                         $mdarray1 += ,@{ chapter=$chapter;cid=$result.Name;title="$($chapter) $($prevtext)"} 
                     }
                 }
@@ -186,9 +200,14 @@ Write-Host $newchapter
             $prevurl = $_.Address
         }
     }
-      $inbetween.copy() | out-null;
-      $result=SaveCopy $chapter $prevtext  # note: space seperated
+      #$inbetween.copy() | out-null;
+      $result=SaveCopy $inbetween $chapter $prevtext  # note: space seperated
      $mdarray1 += ,@{ chapter=$chapter;cid=$result.Name;title="$($chapter) $($prevtext)"} 
+
+
+     $result=SaveCopy $document.content "Literature" "" # note: space seperated
+     $mdarray1 += ,@{ chapter="*";cid=$result.Name;title="Literature"} 
+
 
     $document.Close()
 }    
@@ -199,7 +218,7 @@ Write-Host $newchapter
     Write-Host  $filename   
     $mdarray1 | Sort-Object -Property @{Expression = {$_.chapter}; Ascending = $true},@{Expression = {$_.source}; Ascending = $true} | ConvertTo-Json -depth 100  |  Out-File -Encoding ASCII $filename  
     $result = StoreIPFS ($filename)
-    $end = "$($_.BaseName) : $($result.Name)"
+    $end = "Word $($wordname) : $($result.Name)"
     Write-Output $end
     Add-Content "$($curr_path)\ipfs.json" $end
 

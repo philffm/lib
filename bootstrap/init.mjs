@@ -49,14 +49,41 @@ async function start() {
     iframe.style.position="fixed";
     iframe.style.top="0";
     iframe.style.left="0";
+    
+    window.addEventListener('message', Receive);
+    
 	console.log(`Loading ${iframe.src}`);
     document.body.appendChild(iframe);    	
 	for (var i=0;i<10;i++) { // give it a few tries; iframe needs to be loaded first		
 		console.log(`Send ${url.href}`)
-		iframe.contentWindow.postMessage(url.href+"&"+i, "*"); // 'https://ipfs.io');
+		iframe.contentWindow.postMessage(url.href+"&"+i, "*"); // 'https://ipfs.io'); received in util
 		await sleep(1000)
 	}
 }
 
 start();
 
+ 
+  
+  
+function Receive(event) {
+	  //console.log(event.origin);
+	  console.log(event);
+     // IMPORTANT: check the origin of the data! 
+     if (event.origin.includes('ipfs.io') || event.origin.includes('gpersoon')) { 
+	 console.log("In receive msssage");
+	 // console.log(event)
+         // The data was sent from your site.
+         // Data sent with postMessage is stored in event.data:
+         console.log(event.data); 
+		 
+		 
+         }
+     } else {
+         // The data was NOT sent from your site! 
+         // Be careful! Do not use it. This else branch is
+         // here just for clarity, you usually shouldn't need it.
+         return; 
+     } 
+ }); 
+ 

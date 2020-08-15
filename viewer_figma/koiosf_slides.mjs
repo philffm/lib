@@ -37,6 +37,7 @@ class SlideList {
     }
      
     async LoadList(match) {
+        console.log(`In LoadList ${match}`);
         if (this.currentList) {
             for (var i=0;i<this.currentList.length;i++)
                URL.revokeObjectURL(this.currentList[i])   
@@ -116,6 +117,7 @@ export function UpdateSlide(CurrentPos) {   // called frequently
 
 async function ShowSlide() {    
     var url=GlobalSlideList.GetCurrentSlide()
+    if (!url) url="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" // otherwise previous slide is still shown
     var slide=getElement("slideimage")
     slide.src=url;
     slide.style.width="100%"
