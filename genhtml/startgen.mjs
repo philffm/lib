@@ -154,6 +154,14 @@ function SwitchPage(newpage,callerthis,fbackbutton) {
     console.log(`SwitchPage to ${newpage} from `) 	
     console.log(globalprevpage)
     
+if (newpage.includes("http")) {// must be webpage
+        var decoded=decodeURIComponent(newpage)
+        decoded=decoded.replace("https//","https://") // : seems to be deleted
+        console.log(decoded);
+        location.href=decoded
+    }
+    
+    
     if (currentoverlay) { // close the overlay first
             var ev = new CustomEvent("hide");
             currentoverlay.dispatchEvent(ev); 
