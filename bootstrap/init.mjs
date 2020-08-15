@@ -76,7 +76,10 @@ function Receive(event) {
          // The data was sent from your site.
          // Data sent with postMessage is stored in event.data:
          console.log(event.data); 
-		 
+		 var FullScreenOnOff=event.data.fullscreen;
+         console.log(FullScreenOnOff);
+         if (FullScreenOnOff !=undefined)
+             SetFullScreenOnOff(FullScreenOnOff)
 		 
          
      } else {
@@ -88,3 +91,38 @@ function Receive(event) {
  }
  
  
+ 
+ function SetFullScreenOnOff(fFullScreen) {
+    console.log("In SetFullScreenOnOff");
+ 
+    
+    console.log(`Making fullscreen ${fFullScreen}`);
+    let elem = document.body; // let elem = document.documentElement;
+    if (fFullScreen) {                
+        if (elem.requestFullScreen)       console.log("elem.requestFullScreen")  
+        if (elem.mozRequestFullScreen)    console.log("elem.mozRequestFullScreen") 
+        if (elem.webkitRequestFullScreen) console.log("elem.webkitRequestFullScreen")
+        
+        if (elem.requestFullScreen) {
+            elem.requestFullScreen({ navigationUI: "hide" });
+        } else if (elem.mozRequestFullScreen) {
+            elem.mozRequestFullScreen({ navigationUI: "hide" });
+        } else if (elem.webkitRequestFullScreen) {
+            elem.webkitRequestFullScreen({ navigationUI: "hide" });
+        }   
+    } else {
+        if (document.exitFullscreen)       console.log("document.exitFullscreen")  
+        if (document.mozExitFullscreen)    console.log("document.mozExitFullscreen") 
+        if (document.webkitExitFullscreen) console.log("document.webkitExitFullscreen")
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.mozExitFullscreen) {
+            document.mozExitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        }
+    }          
+ 
+   console.log(`Making fullscreen at end ${fFullScreen}`);
+}    
+
