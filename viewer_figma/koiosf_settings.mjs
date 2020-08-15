@@ -91,7 +91,7 @@ function FullScreenOnOff(event) {
 	var fOn=GetToggleState(this,"displayactive")    
 	
     
-    var x=window.parent.postMessage({"fullScreen":fOn}, "*"); // 'https://ipfs.io'); received in util
+    var x=window.parent.postMessage({"fullscreen":fOn}, "*"); // 'https://ipfs.io'); received in util
     console.log(`After postmessage ${x}`)
     
 	

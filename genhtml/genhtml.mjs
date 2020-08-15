@@ -1205,7 +1205,7 @@ function ConvertColor(color) {
         
         
         if (dest) {
-            insdata=`data-dest="${dest}"`
+            insdata=`data-dest="${encodeURIComponent(dest)}"`
           //  console.log(`insdata : ${insdata}`);
         }
         
