@@ -54,13 +54,13 @@ async function start() {
     
 	console.log(`Loading ${iframe.src}`);
     document.body.appendChild(iframe);    	
-	await Send();
+	await Send(url);
 }
 
 start();
   
   
-async function Send() {
+async function Send(url) {
     for (var i=0;i<10;i++) { // give it a few tries; iframe needs to be loaded first		
 		console.log(`Send ${url.href}`)
 		iframe.contentWindow.postMessage({"urlhref":url.href,"try":i}, "*"); // 'https://ipfs.io'); received in util
