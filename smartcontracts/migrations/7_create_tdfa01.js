@@ -116,7 +116,7 @@ async function MakeImage(ipfs, name,documentpart) {
 	var g=FindObject(name,documentpart);
 	if (!g) return undefined;
 	console.log(g.id);
-	var imagelink = `https://api.figma.com/v1/images/${documentid}?ids=${g.id}&format=svg`       
+	var imagelink = `https://api.figma.com/v1/images/${documentid}?ids=${g.id}&format=png`       
 	var buffer=await FigmaApiGetImageSrc(imagelink,token)	
 	var result= await ipfs.add(buffer)
 	const image =result.path;  

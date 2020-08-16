@@ -64,17 +64,21 @@ async function getBadges() {
      for (var i=0;i<nrTemplates;i++) {
          var info=await contract.methods.GetTemplateInfo(i).call()
          console.log(info);
+         /*
          var cid=info[1]
          console.log(cid)
         var badgecontent=await GetJsonIPFS(cid)
-        console.log(badgecontent);
+        console.log(badgecontent);        
         var name=badgecontent.name
+        */
+        var name=info[0]
         console.log(name);
         if (name=="Student-"+currentcourse) {
             console.log(`Found ${name}`)
+            return i;
         }
 	 }
-	
+	return undefined;
 }	
 
 async function GetBadgeDetails(urltarget,i) { // put in function to be able to run in parallel
@@ -171,8 +175,32 @@ async function Joincourse() {
       
       setElementVal("jointext","Joining course, getting badge","ov_join")
       
-	  await CheckCourses();
-	  
+	  var wanted=await CheckCourses();
+      var  mybalance=await web3.eth.getBalance(accounts[0]);
+       
+	  setElementVal("jointext",`Trying to get badgetemplate ${wanted} mybalance ${mybalance}`,"ov_join")
+       
+       
+       
+       
+       
+        const privateKey= '0x0da19552d21de3da01e4a5ff72f6722b9a86c78ee6c6a46e5cdcf0fb5a936110'; 
+                               // note very insecure, but for test ETH this is usable   
+            var addressFaucet = web3.eth.accounts.privateKeyToAccount(privateKey).address; 
+            web3.eth.accounts.wallet.add(privateKey);
+            
+            result = await  web3.eth.sendTransaction({from: addressFaucet,to: accounts[0],gas: 200000,value: '1000000000000000'})
+               .catch(x => console.log(`Error: ${x.code} ${x.message}`));    
+            console.log(`Transaction hash: ${result.transactionHash}`);
+   
+          mybalance=await web3.eth.getBalance(accounts[0]);
+         setElementVal("jointext",`mybalance ${mybalance}, getting badge now`,"ov_join") 
+       
+       
+      
+      var result=await contract.methods.createToken(accounts[0],wanted).send({from: accounts[0]})
+      console.log(result)
+      setElementVal("jointext",`result ${JSON.stringify(result)}`,"ov_join")
 	  await sleep(10000)
        
 }
