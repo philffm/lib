@@ -5,7 +5,8 @@
     
 window.addEventListener("popstate", function(e) {
 	console.log("Location: " + document.location + ", state: " + JSON.stringify(e.state))
-    SwitchPage(e.state.page,undefined,true)
+    if (e.state && e.state.page)
+        SwitchPage(e.state.page,undefined,true)
 });
     
     

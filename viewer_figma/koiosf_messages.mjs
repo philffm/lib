@@ -12,7 +12,7 @@ export async function DisplayMessage(text) {
     msgtext.innerText=text;
     
    // msg.style.display="flex";
-    await sleep(1000);
+    await sleep(10000);
    // msg.style.display="none";    
    getElement("ov_message").dispatchEvent(new CustomEvent("hide"));  
    SwitchPage("close") // close message overlay

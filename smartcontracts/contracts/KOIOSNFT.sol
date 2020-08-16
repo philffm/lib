@@ -70,13 +70,12 @@ contract KOIOSNFT {
         _;
     }
     
-    modifier isManager(uint256 _templateId) {
+    modifier MayMint(uint256 _templateId) {
         require(msg.sender == admin || 
-            (ownedTypedTokens[msg.sender][ADMINTOKEN] > 0) || (ownedTypedTokens[msg.sender][BADGECREATORTOKEN] > 0) || (ownedTypedTokens[msg.sender][templates[_templateId].managedBy] > 0),"Must have admin, badgecreator or manager role for the badge");
+            (ownedTypedTokens[msg.sender][ADMINTOKEN] > 0) || (ownedTypedTokens[msg.sender][BADGECREATORTOKEN] > 0) || templates[_templateId].SelfMint || (ownedTypedTokens[msg.sender][templates[_templateId].managedBy] > 0),"Must have admin, badgecreator or manager role for the badge");
         _;
         
-    }        
-    
+    }             
     
     constructor (string memory _name, string memory _symbol, string memory _baseURI) {
         admin = msg.sender;
@@ -201,7 +200,7 @@ contract KOIOSNFT {
     }
     
     
-    function createToken(address _to,uint256 _templateId) public isManager( _templateId) {
+    function createToken(address _to,uint256 _templateId) public MayMint( _templateId) {
         
         templateOf[counter]=_templateId;
         typedTokens[_templateId].push(counter);
@@ -213,7 +212,7 @@ contract KOIOSNFT {
     }
     
     
-    function createTokens(address[] memory _to,uint256 _templateId) public isManager( _templateId) {
+    function createTokens(address[] memory _to,uint256 _templateId) public MayMint( _templateId) {
         uint arrayLength = _to.length;
         for (uint i = 0; i < arrayLength; i++) 
             createToken(_to[i],_templateId);        
@@ -223,7 +222,9 @@ contract KOIOSNFT {
     function burnToken(uint256 _tokenId) public {
         require(ownerOfToken[_tokenId] == msg.sender,"Token should be in control of owner");
         uint256 templateId=templateOf[_tokenId];
-         
+        
+        require(templates[templateId].SelfBurn,"May not burn");
+        
         uint256 typedIndex = typedTokensIndex[_tokenId];
         uint256 typedLength = typedTokens[templateId].length;
         typedTokens[templateId][typedIndex] = typedTokens[templateId][typedLength-1];
@@ -275,7 +276,7 @@ contract KOIOSNFT {
         return msg.sender == admin || (ownedTypedTokens[msg.sender][ADMINTOKEN] > 0) || (ownedTypedTokens[msg.sender][BADGECREATORTOKEN] > 0);
     }
     
-    function checkIsManager(uint256 _templateId) public view returns (bool)  {
+    function checkMayCreate(uint256 _templateId) public view returns (bool)  {
         return msg.sender == admin || (ownedTypedTokens[msg.sender][ADMINTOKEN] > 0) || (ownedTypedTokens[msg.sender][templates[_templateId].managedBy] > 0);
 
     }        
