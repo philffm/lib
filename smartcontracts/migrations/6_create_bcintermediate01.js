@@ -4,6 +4,9 @@ const fs2 = require('fs');
 const token = fs2.readFileSync(".figma").toString().trim();
 const documentid = fs2.readFileSync(".figmadocument").toString().trim();
 
+const courseid="bcintermediate01"
+
+
 module.exports = async function(deployer) {
     const IpfsHttpClient = require('ipfs-http-client')
     var ipfs = await IpfsHttpClient(/*"http://diskstation:5002"); */ 'https://ipfs.infura.io:5001'); //for infura node
@@ -12,19 +15,51 @@ module.exports = async function(deployer) {
     var documentpart=(await FigmaApiGet(url,token)).document;
 	
 	
-	cidKoios=await MakeImage(ipfs, "Koioslogo",documentpart); 	
-	cidAdmin=await MakeImage(ipfs, "Admin",documentpart); 	
-	cidKeyGiver=await MakeImage(ipfs, "Key-giver",documentpart); 	
-	
     KOIOSNFTContract = await KOIOSNFT.deployed()
     console.log(`KOIOSNFTContract is at address:  ${KOIOSNFTContract.address}`);
     console.log(`totalSupply is now:  ${await KOIOSNFTContract.totalSupply()}`);
-    var managerid=await CreateNewBadge(ipfs,"Admin",               "General administrator",        cidAdmin,0,false,false,false);      
-    await CreateNewBadge(ipfs,"Koios",               "Info for the contract",                      cidKoios,managerid,false,false,false);    
-    var coursecreatorid=await CreateNewBadge(ipfs,"coursecreator",       "Creat",                  cidKeyGiver,managerid,false,false,false);     // bool _SelfMint, bool _SelfBurn, bool _AllowTransfer)
-console.log(`coursecreatorid=${coursecreatorid}`); // 2
+    
+    
+    var coursesdata=await fetch("https://gpersoon.com/koios/lib/viewer_figma/courseinfo.json");
+    var courses=await coursesdata.json()
+    //console.log(courses);
+    coursecreatorid=2;
+    
+
+    console.log(`Id:${courseid}`);
+    var currentcourse=courses[courseid];
+    console.log(currentcourse)      
+
+    teacherid=undefined;
+    cidTeacher=await MakeImage(ipfs, "Teacher"+"-"+courseid,documentpart); 
+    if (cidTeacher) var teacherid=await CreateNewBadge(ipfs, "Teacher"+"-"+courseid, currentcourse.description,cidTeacher,coursecreatorid,false,true,false);
+
+    cidStudent=await MakeImage(ipfs, "Student"+"-"+courseid,documentpart); 
+    if (cidStudent) var studentid=await CreateNewBadge(ipfs, "Student"+"-"+courseid, currentcourse.description,cidStudent,teacherid,true,true,false);
+
+    cidNetworked=await MakeImage(ipfs, "Networked"+"-"+courseid,documentpart); 
+    if (cidNetworked) await CreateNewBadge(ipfs, "Networked"+"-"+courseid, currentcourse.description,cidNetworked,teacherid,false,true,false);
+
+    cidNotestaken=await MakeImage(ipfs, "Notestaken"+"-"+courseid,documentpart); 
+    if (cidNotestaken) await CreateNewBadge(ipfs, "Notestaken"+"-"+courseid, currentcourse.description,cidNotestaken,teacherid,false,true,false);
+      
+    cidQuestionsasked=await MakeImage(ipfs, "Questionsasked"+"-"+courseid,documentpart); 
+    if (cidQuestionsasked) await CreateNewBadge(ipfs, "Questionsasked"+"-"+courseid, currentcourse.description,cidQuestionsasked,teacherid,false,true,false);
+
+    cidCoursecompleted=await MakeImage(ipfs, "Coursecompleted"+"-"+courseid,documentpart); 
+    if (cidCoursecompleted) await CreateNewBadge(ipfs, "Coursecompleted"+"-"+courseid, currentcourse.description,cidCoursecompleted,teacherid,false,true,false);
+
+    cidKnowledgetransfered=await MakeImage(ipfs, "Knowledgetransfered"+"-"+courseid,documentpart); 
+    if (cidKnowledgetransfered) await CreateNewBadge(ipfs, "Knowledgetransfered"+"-"+courseid, currentcourse.description,cidKnowledgetransfered,teacherid,false,true,false);
+
+    cidVideowatched=await MakeImage(ipfs, "Videowatched"+"-"+courseid,documentpart); 
+    if (cidVideowatched) await CreateNewBadge(ipfs, "Videowatched"+"-"+courseid, currentcourse.description,cidVideowatched,teacherid,false,true,false);
+
+
+    
     console.log(`totalSupply is now:  ${await KOIOSNFTContract.totalSupply()}`);
 };
+
 
 async function CreateNewBadge(ipfs, name,desc,cid,managerid,SelfMint,SelfBurn, AllowTransfer) {
     
@@ -34,6 +69,9 @@ async function CreateNewBadge(ipfs, name,desc,cid,managerid,SelfMint,SelfBurn, A
     console.log(`Adding Badge ${name} cid=${cid}  templateid=${id} managerid=${managerid}`) // image=${image}
     return id;
 }
+
+
+
 
 async function FigmaApiGetImageSrc(url,token) {
         var obj=await FigmaApiGet(url,token); 
@@ -49,6 +87,8 @@ async function FigmaGetImage(url) {
 	var buffer=await (p1).buffer()
 	return buffer;    
 }   
+
+
 
 async function FigmaApiGet(url,token) { 
     var x=await fetch(url, { headers: {'X-Figma-Token': token } } );
