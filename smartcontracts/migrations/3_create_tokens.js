@@ -41,9 +41,9 @@ module.exports = async function(deployer) {
     console.log(`totalSupply is now:  ${await KOIOSNFTContract.totalSupply()}`);
     var managerid=await CreateNewBadge(ipfs,"Admin",               "General administrator",        cidAdmin,0,false,false,false);      
     await CreateNewBadge(ipfs,"Koios",               "Info for the contract",                      cidKoios,managerid,false,false,false);    
-    var coursecreatorid=await CreateNewBadge(ipfs,"coursecreator",       "Creat",                  cidKeyGiver,managerid,false,false,false);     
+    var coursecreatorid=await CreateNewBadge(ipfs,"coursecreator",       "Creat",                  cidKeyGiver,managerid,false,false,false);     // bool _SelfMint, bool _SelfBurn, bool _AllowTransfer)
     
-    var coursesdata=await fetch("https://gpersoon.com/koios/gerard/viewer_figma/courseinfo.json");
+    var coursesdata=await fetch("https://gpersoon.com/koios/lib/viewer_figma/courseinfo.json");
     var courses=await coursesdata.json()
     //console.log(courses);
 
@@ -60,30 +60,30 @@ module.exports = async function(deployer) {
       //}
 	  teacherid=undefined;
       cidTeacher=await MakeImage(ipfs, "Teacher"+"-"+courseid,documentpart); 
-	  if (cidTeacher) var teacherid=await CreateNewBadge(ipfs, "teacher of "+currentcourse.courselevel, currentcourse.description,cidTeacher,coursecreatorid,false,false,false);
+	  if (cidTeacher) var teacherid=await CreateNewBadge(ipfs, "Teacher"+"-"+courseid, currentcourse.description,cidTeacher,coursecreatorid,false,true,false);
 	  
 	  if (!teacherid) continue;
 	  
 	  cidStudent=await MakeImage(ipfs, "Student"+"-"+courseid,documentpart); 
-	  if (cidStudent) var studentid=await CreateNewBadge(ipfs, "Student of "+currentcourse.courselevel, currentcourse.description,cidStudent,teacherid,false,false,false);
+	  if (cidStudent) var studentid=await CreateNewBadge(ipfs, "Student"+"-"+courseid, currentcourse.description,cidStudent,teacherid,true,true,false);
 
 	  cidNetworked=await MakeImage(ipfs, "Networked"+"-"+courseid,documentpart); 
-	  if (cidNetworked) await CreateNewBadge(ipfs, "Networked in "+currentcourse.courselevel, currentcourse.description,cidNetworked,teacherid,true,true,false);
+	  if (cidNetworked) await CreateNewBadge(ipfs, "Networked"+"-"+courseid, currentcourse.description,cidNetworked,teacherid,false,true,false);
 	  
 	  cidNotestaken=await MakeImage(ipfs, "Notestaken"+"-"+courseid,documentpart); 
-	  if (cidNotestaken) await CreateNewBadge(ipfs, "Notes taken in "+currentcourse.courselevel, currentcourse.description,cidNotestaken,teacherid,false,true,false);
+	  if (cidNotestaken) await CreateNewBadge(ipfs, "Notestaken"+"-"+courseid, currentcourse.description,cidNotestaken,teacherid,false,true,false);
 	  	  
 	  cidQuestionsasked=await MakeImage(ipfs, "Questionsasked"+"-"+courseid,documentpart); 
-	  if (cidQuestionsasked) await CreateNewBadge(ipfs, "Questions asked in "+currentcourse.courselevel, currentcourse.description,cidQuestionsasked,teacherid,false,true,false);
+	  if (cidQuestionsasked) await CreateNewBadge(ipfs, "Questionsasked"+"-"+courseid, currentcourse.description,cidQuestionsasked,teacherid,false,true,false);
 	  
-	  cidCoursecompleted=await MakeImage(ipfs, "Course completed"+"-"+courseid,documentpart); 
-	  if (cidCoursecompleted) await CreateNewBadge(ipfs, "Course completed of "+currentcourse.courselevel, currentcourse.description,cidCoursecompleted,teacherid,false,true,false);
+	  cidCoursecompleted=await MakeImage(ipfs, "Coursecompleted"+"-"+courseid,documentpart); 
+	  if (cidCoursecompleted) await CreateNewBadge(ipfs, "Coursecompleted"+"-"+courseid, currentcourse.description,cidCoursecompleted,teacherid,false,true,false);
 	   
 	  cidKnowledgetransfered=await MakeImage(ipfs, "Knowledgetransfered"+"-"+courseid,documentpart); 
-	  if (cidKnowledgetransfered) await CreateNewBadge(ipfs, "Knowledge transfered in "+currentcourse.courselevel, currentcourse.description,cidKnowledgetransfered,teacherid,false,true,false);
+	  if (cidKnowledgetransfered) await CreateNewBadge(ipfs, "Knowledgetransfered"+"-"+courseid, currentcourse.description,cidKnowledgetransfered,teacherid,false,true,false);
 	
       cidVideowatched=await MakeImage(ipfs, "Videowatched"+"-"+courseid,documentpart); 
-	  if (cidVideowatched) await CreateNewBadge(ipfs, "Video watched of "+currentcourse.courselevel, currentcourse.description,cidVideowatched,teacherid,false,true,false);
+	  if (cidVideowatched) await CreateNewBadge(ipfs, "Videowatched"+"-"+courseid, currentcourse.description,cidVideowatched,teacherid,false,true,false);
 		
       
     }

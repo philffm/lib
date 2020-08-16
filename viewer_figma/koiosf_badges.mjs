@@ -1,7 +1,7 @@
- import {GetJson,subscribe,DomList,setElementVal,GetJsonIPFS,GetImageIPFS,GetURLParam,GetResolvableIPFS,getElement,LinkClickButton} from '../lib/koiosf_util.mjs';
+ import {GetJson,subscribe,DomList,setElementVal,GetJsonIPFS,GetImageIPFS,GetURLParam,GetResolvableIPFS,getElement,LinkClickButton,LinkVisible} from '../lib/koiosf_util.mjs';
  import {SwitchDisplayMessageContinous,DisplayMessageContinous,DisplayMessage} from './koiosf_messages.mjs'
 import {getWeb3,getWeb3Provider} from './koiosf_login.mjs'
- 
+import {GlobalCourseList} from './koiosf_course.mjs'
  
 var accounts, contract, web3, isCreator;
 
@@ -53,10 +53,27 @@ async function getBadges() {
 
 
  async function CheckCourses() {
-	var nrTemplates=await contract.methods.nrTemplates()
+	var nrTemplates=await contract.methods.nrTemplates().call()
 	console.log(`nrTemplates=${nrTemplates}`);
+    console.log(nrTemplates);
 	
-	
+    
+    var currentcourse=GlobalCourseList.GetCurrentCourse()
+    console.log(currentcourse);
+    
+     for (var i=0;i<nrTemplates;i++) {
+         var info=await contract.methods.GetTemplateInfo(i).call()
+         console.log(info);
+         var cid=info[1]
+         console.log(cid)
+        var badgecontent=await GetJsonIPFS(cid)
+        console.log(badgecontent);
+        var name=badgecontent.name
+        console.log(name);
+        if (name=="Student-"+currentcourse) {
+            console.log(`Found ${name}`)
+        }
+	 }
 	
 }	
 
@@ -149,15 +166,15 @@ async function GetTokenDetails(urltarget,contracttoken,balance) {
 
 
 async function Joincourse() {
-	
-	//await DisplayMessage("test")
-	
-	  await SwitchDisplayMessageContinous(true)
-	  await DisplayMessageContinous("Joining course, getting badge");
+	 console.log("In Joincourse")
+ 
+      
+      setElementVal("jointext","Joining course, getting badge","ov_join")
+      
 	  await CheckCourses();
 	  
 	  await sleep(10000)
-      await SwitchDisplayMessageContinous(false)
+       
 }
  
   var contractJson
@@ -167,7 +184,9 @@ async function Joincourse() {
 
 //https://gpersoon.com/koios/lib/smartcontracts/build/contracts/KOIOSNFT.json
 async function init() {
-	LinkClickButton("joincourse",Joincourse);
+	 
+    LinkVisible("ov_join",Joincourse)    
+    
 	console.log("Init in badges");
 	console.log(getElement("joincourse"))
 	
@@ -206,6 +225,9 @@ async function NextStep() {
     console.log("In NextStep");
     web3=getWeb3()
     var nid=(await web3.eth.net.getId());
+    if (nid !=4) {
+      DisplayMessage(`Make sure you are on the Rinkeby network (currently ${nid})`);   
+    }    
     accounts = await web3.eth.getAccounts();
 		
     var code=await web3.eth.getCode(contractJson.networks[nid].address)
