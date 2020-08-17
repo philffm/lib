@@ -9,7 +9,7 @@ let box;
 let space;
 let currentThread;
 var GlobalCommentList = new DomList("commententry");
-const FirstModerator="0xe88cAc4e10C4D316E0d52B82dd54f26ade3f0Bb2"; //For making the initial thread 
+const FirstModerator="0x88E5d3CCdA6b8C8dE104E2bfA138AaB34D49c48c"; //For making the initial thread 
 const KoiosSpace = "koiostestspace2";
 
 window.onerror = async function(message, source, lineno, colno, error) {   // especially for ios
