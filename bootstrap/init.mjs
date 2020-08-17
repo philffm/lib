@@ -71,7 +71,7 @@ async function Send(iframe,url) {
   
 function Receive(event) {
 	  //console.log(event.origin);
-	  console.log(event);
+	 // console.log(event);
      // IMPORTANT: check the origin of the data! 
      if (event.origin.includes('ipfs.io') || event.origin.includes('gpersoon')) { 
 	 console.log("In receive msssage");
