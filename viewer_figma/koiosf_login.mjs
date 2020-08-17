@@ -66,6 +66,10 @@ console.log("asyncloaded login")
     getElement("login","scr_comment").addEventListener('animatedclick',Login)    
     getElement("clearcachedprovider").addEventListener('animatedclick',ClearCachedProvider)        
 
+console.log("Setting name link to 3box");
+getElement("name").href="http://3box.io/hub"
+getElement("name").target="_blank"
+console.log(getElement("name"));
 
     console.log("login");
     await initpromise;
@@ -340,7 +344,6 @@ async function onDisconnect() {
 
 
     
-
  
 
  

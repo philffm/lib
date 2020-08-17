@@ -1,3 +1,14 @@
+Version 1.90
+Functional updates:
+- link to 3box.io via url in name
+- only showing tokens where you have a balance
+
+Technical updates:
+- Generation via figma
+
+Layout updates:
+- version number on profile page
+
 Version 1.02:
 
 Functional updates:

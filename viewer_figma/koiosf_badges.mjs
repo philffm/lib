@@ -124,12 +124,14 @@ async function getTokens() {
 		 balance = (balance / (10 ** decimals)).toFixed(0)
 		 
 		 console.log(`Name=${name} Balance=${balance} address=${address}`)
+		 if (balance > 0) {
 		 
-		 var urltarget = GlobalTokenList.AddListItem() 
-		 
-		var tokenImage=await GetTokenDetails(urltarget,contracttoken,balance)
-		tokenImage=GetResolvableIPFS(tokenImage);
-		SetLinkMetamask(urltarget,address,symbol,decimals,tokenImage)
+			 var urltarget = GlobalTokenList.AddListItem() 
+			 
+			var tokenImage=await GetTokenDetails(urltarget,contracttoken,balance)
+			tokenImage=GetResolvableIPFS(tokenImage);
+			SetLinkMetamask(urltarget,address,symbol,decimals,tokenImage)
+		 }
 	}
 }
 
