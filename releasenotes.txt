@@ -5,9 +5,11 @@ Functional updates:
 
 Technical updates:
 - Generation via figma
+- Updated ipfs link to smartcontract info in NFT smart contract, for opensea
 
 Layout updates:
 - version number on profile page
+- updated NFT images & redeployed on rinkeby
 
 Version 1.02:
 
