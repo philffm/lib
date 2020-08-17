@@ -11,9 +11,8 @@ module.exports = async function(deployer) {
 	var url=`https://api.figma.com/v1/files/${documentid}`  // to export the vectors: ?geometry=paths    
     var documentpart=(await FigmaApiGet(url,token)).document;
 	
-	
-	cidKoios=await MakeImage(ipfs, "Koioslogo",documentpart); 	
 	cidAdmin=await MakeImage(ipfs, "Admin",documentpart); 	
+	cidKoios=await MakeImage(ipfs, "Koioslogo",documentpart); 		
 	cidKeyGiver=await MakeImage(ipfs, "Key-giver",documentpart); 	
 	
     KOIOSNFTContract = await KOIOSNFT.deployed()
@@ -83,11 +82,13 @@ async function MakeImage(ipfs, name,documentpart) {
 	const image =result.path;  
 	//console.log(image);
 	
+	// note different pattern for ipfs especially for the contract image
+	
     var str=`
 {
     "name": "${name}",
     "description": "${name} token",
-    "image": "${image?"ipfs://ipfs/"+image:""}"
+    "image": "${image?"https://ipfs.io/ipfs/"+image:""}"
 }
 `   
     const cid = (await ipfs.add(str)).path;  
