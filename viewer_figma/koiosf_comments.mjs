@@ -193,6 +193,7 @@ async function SetUpVoteButton(domid,post,votecounter) {
                 ShowPosts(post)
             }
             else if (await space.public.get(`${getUserAddress()}+${post.postId}`) == "downvoted") {
+                votecounter = parseInt(votecounter)
                 console.log("Before: ", votecounter)
                 votecounter = votecounter + 2
                 console.log("After: ", votecounter)
