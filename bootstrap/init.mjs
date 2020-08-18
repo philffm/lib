@@ -52,8 +52,21 @@ async function start() {
 		var n = modulesource.indexOf(tag);
 		if (n <0 ) { console.error("Can't find tag");return;} 
 		modulesource = modulesource.substring(n+tag.length);		
-		console.log(modulesource);
+		//console.log(modulesource);
 		var url2=MakeBlob(modulesource,true);    
+        document.getElementsByTagName("html")[0].innerHTML=""
+        //document.getElementsByTagName("head")[0].innerHTML=""
+        //document.getElementsByTagName("body")[0].innerHTML=""
+        var html=document.getElementsByTagName("html")[0]
+              //  console.log(html);
+        
+        html.removeAttribute("data-wf-domain")
+        html.removeAttribute("data-wf-page")
+        html.removeAttribute("data-wf-site")
+        html.removeAttribute("class")
+        
+       // console.log(html);
+        
 		await import(url2);		   
 	}
 	
