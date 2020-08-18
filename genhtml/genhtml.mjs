@@ -1206,7 +1206,7 @@ function ConvertColor(color) {
         
         
         switch (figdata.type) {
-           case "TEXT": strtxt +=figdata.characters;
+           case "TEXT": strtxt+=figdata.characters.replace(/\n/g,"<br>"); // replace all newlines
            
                 switch(figdata.style.textAlignVertical) {
                    case "TOP":   break // is already default // display="flex";strstyle +="align-items: flex-start;";
