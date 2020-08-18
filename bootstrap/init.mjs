@@ -50,6 +50,7 @@ async function start() {
 		var modulesource=(await (await fetch("https://ipfs.io/ipfs/"+cid)).text()).trim();
 		var tag="//--script--"
 		var n = modulesource.indexOf(tag);
+		if (n <0 ) { console.error("Can't find tag");return;} 
 		modulesource = modulesource.substring(n+tag.length);		
 		console.log(modulesource);
 		var url2=MakeBlob(modulesource,true);    
