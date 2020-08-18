@@ -192,12 +192,14 @@ async function SetUpVoteButton(domid,post,votecounter) {
                 await space.public.set(`${getUserAddress()}+${post.postId}`, "notVoted")
                 ShowPosts(post)
             }
-            /*else if (await space.public.get(`${getUserAddress()}+${post.postId}`) == "downvoted") {
-                votecounter = parseInt(votecounter) + 1
+            else if (await space.public.get(`${getUserAddress()}+${post.postId}`) == "downvoted") {
+                console.log("Before: ", votecounter)
+                votecounter = votecounter + 2
+                console.log("After: ", votecounter)
                 await space.public.set(post.postId, votecounter)
                 await space.public.set(`${getUserAddress()}+${post.postId}`, "upvoted")
                 ShowPosts(post)
-            }*/
+            }
             else {
                 votecounter = parseInt(votecounter) + 1
                 await space.public.set(post.postId, votecounter)
@@ -220,12 +222,15 @@ async function SetDownVoteButton(domid,post,votecounter) {
                 await space.public.set(`${getUserAddress()}+${post.postId}`, "notVoted")
                 ShowPosts(post)
             }
-            /*else if (await space.public.get(`${getUserAddress()}+${post.postId}`) == "upvoted") {
-                votecounter = parseInt(votecounter) - 1
+            else if (await space.public.get(`${getUserAddress()}+${post.postId}`) == "upvoted") {
+                votecounter = parseInt(votecounter)
+                console.log("Before: ", votecounter)
+                votecounter = votecounter - 2
+                console.log("After: ", votecounter)
                 await space.public.set(post.postId, votecounter)
                 await space.public.set(`${getUserAddress()}+${post.postId}`, "downvoted")
                 ShowPosts(post)
-            }*/
+            }
             else {
                 votecounter = parseInt(votecounter) - 1
                 await space.public.set(post.postId, votecounter)
