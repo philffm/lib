@@ -469,11 +469,9 @@ export async function SaveAlsoOnIpfs() {
     str2 +="IPFS link 1: "+MakeUrl(`https://ipfs.io/ipfs/${resultjavascript}`); // 
     //str2 +="IPFS link 2: "+MakeUrl(`http://www.gpersoon.com:8080/ipfs/${result}`);
 	//str2 +="IPFS link 3 (no images): "+MakeUrl(`https://ipfs.infura.io/ipfs/${result}`); // doesn't show the images (type is correct)
-	//str2 +="Koios site link:"+MakeUrl(`https://www.koios.online/newviewer?ipfs=${result}`);	
-	str2 +="Koios embed link:"+MakeUrl(`https://www.koios.online/test/newviewer?embed=${resultjavascript}`);	
+	str2 +="Koios embedprod link:"+MakeUrl(`https://www.koios.online/newviewer?ipfs=${resultjavascript}`);	
+	str2 +="Koios embedtest link:"+MakeUrl(`https://www.koios.online/test/newviewer?ipfs=${resultjavascript}`);	
     document.getElementById("output").innerHTML += str2;
-	
-	
 }
  
 export async function AlsoInject() {
@@ -498,7 +496,7 @@ async function RenderAllPages(globalconnectto,fIPFS) {
             //console.log(globalconnectto[key]);
             var val = await globalconnectto[key];
             //console.log(val);
-            log(`Page ${i+1} of ${keys.length}  ${val?val.name:"(not found)"} (${key})`);
+            log(`Page ${i+1} of ${keys.length}  ${val?val.name:"not found:"} ${key}`);
             if (val) {                
                 var html= await recursehtml(val.htmlobj,fIPFS);    
             

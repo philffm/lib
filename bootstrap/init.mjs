@@ -28,24 +28,6 @@ async function start() {
 	var last=split[split.length-1]
 	var beforelast=split[split.length-2]
 	console.log(beforelast,last);
-		
-	var embed=url.searchParams.get("embed");   	
-	
-	if (embed) {
-		console.log(`embed ${embed}`)
-		var modulesource=(await (await fetch("https://ipfs.io/ipfs/"+embed)).text()).trim();
-				
-		var tag="//--script--"
-		var n = modulesource.indexOf(tag);
-	    modulesource = modulesource.substring(n+tag.length);		
-		console.log(modulesource);
-		
-		var url2=MakeBlob(modulesource,true);    
-	    await import(url2);
-	   return;
-	}
-	
-	
 	
 	var cid=url.searchParams.get("ipfs");   	
 	if (!cid) {	
@@ -63,7 +45,18 @@ async function start() {
 		console.log(`Loading config file ${loadfile}`)
 		cid=(await (await fetch(loadfile)).text()).trim();
 	}
-	console.log(cid)		
+	console.log(`cid ${cid}`)
+	if (cid) {
+		var modulesource=(await (await fetch("https://ipfs.io/ipfs/"+cid)).text()).trim();
+		var tag="//--script--"
+		var n = modulesource.indexOf(tag);
+		modulesource = modulesource.substring(n+tag.length);		
+		console.log(modulesource);
+		var url2=MakeBlob(modulesource,true);    
+		await import(url2);		   
+	}
+	
+	/*
     var iframe=document.createElement("iframe");
     iframe.src="https://ipfs.io/ipfs/"+cid
     iframe.width="100%"
@@ -79,6 +72,8 @@ async function start() {
 	console.log(`Loading ${iframe.src}`);
     document.body.appendChild(iframe);    	
 	await Send(iframe,url);
+	*/
+	
 }
 
 start();
