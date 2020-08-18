@@ -1,6 +1,7 @@
 import {loadScriptAsync,GetJsonIPFS,subscribe,publish,DomList,GetCidViaIpfsProvider,getElement,sortfunction,LinkToggleButton,FitOneLine,ForceButton } from '../lib/koiosf_util.mjs';
 import {GetCourseInfo,GlobalCourseList} from './koiosf_course.mjs';
 import {GlobalLessonList} from './koiosf_lessons.mjs';
+import {GetToggleState} from '../genhtml/startgen.mjs'
 
 var globalslideindex
 

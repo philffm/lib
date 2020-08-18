@@ -99,8 +99,8 @@ var keys = Object.keys(localStorage);
 }
 
 
-function MakeBlob(html) {
-    var blob = new Blob([html], {type: 'text/html'});
+function MakeBlob(html,fjavascript) {
+    var blob = new Blob([html], {type: (fjavascript?'text/javascript':'text/html')});
     var url = URL.createObjectURL(blob);      
     return url;
 }    
@@ -259,7 +259,7 @@ document.getElementById("SaveOnIpfs").innerHTML=""
     var result=await SaveToIPFS(data)
     console.log("saved SaveOnIpfs");
     console.log(result);
-    return "../ipfs/"+result; // fix to get it to work also on ipns
+    return "https://ipfs.io/ipfs/"+result; // fix to get it to work also on ipns
 
     //document.getElementById("output").innerHTML += str2;
     //return `http://www.gpersoon.com:8080/ipfs/${result}`;
@@ -427,10 +427,10 @@ console.log(ipfs);
     
      globalcompletepage=await RenderAllPages(globalconnectto,false);
     //console.log(completepage);
-    var html=await MakePage(globalcompletepage,globalembed,globalfonts,globalmediastyles,globalobjname,false)    
-    
+    var html=await MakePage(globalcompletepage,globalembed,globalfonts,globalmediastyles,globalobjname,false)        
     var url=MakeBlob(html);    
     
+	
     document.getElementById("output").innerHTML += `Complete page=${MakeUrl(url)}`   
 
 /*
@@ -453,19 +453,35 @@ console.log(ipfs);
 export async function SaveAlsoOnIpfs() {
     console.log(`SaveAlsoOnIpfs firstpage=${globalobjname}`);
     var completepage=await RenderAllPages(globalconnectto,true);
-    var html=await MakePage(completepage,globalembed,globalfonts,globalmediastyles,globalobjname,true)    
-    var result=await SaveOnIpfs(html)
+    //var html=await MakePage(completepage,globalembed,globalfonts,globalmediastyles,globalobjname,true)    
+	//var result=await SaveOnIpfs(html)
+	
+	
+	var javascript=await MakePage2(completepage,globalembed,globalfonts,globalmediastyles,globalobjname,true)    
+	var resultjavascript=await SaveOnIpfs(javascript)
+ 
+
+
     var str2=""
-    result=result.replace("../ipfs/","")
-    str2 +="IPFS link 1: "+MakeUrl(`https://ipfs.io/ipfs/${result}`);
-    str2 +="IPFS link 2: "+MakeUrl(`http://www.gpersoon.com:8080/ipfs/${result}`);
-	str2 +="IPFS link 3 (no images): "+MakeUrl(`https://ipfs.infura.io/ipfs/${result}`); // doesn't show the images (type is correct)
-	str2 +="Koios site link:"+MakeUrl(`https://www.koios.online/newviewer?ipfs=${result}`);
+    //result=result.replace("https://ipfs.io/ipfs/","")
+	resultjavascript=resultjavascript.replace("https://ipfs.io/ipfs/","")
+	
+    str2 +="IPFS link 1: "+MakeUrl(`https://ipfs.io/ipfs/${resultjavascript}`); // 
+    //str2 +="IPFS link 2: "+MakeUrl(`http://www.gpersoon.com:8080/ipfs/${result}`);
+	//str2 +="IPFS link 3 (no images): "+MakeUrl(`https://ipfs.infura.io/ipfs/${result}`); // doesn't show the images (type is correct)
+	//str2 +="Koios site link:"+MakeUrl(`https://www.koios.online/newviewer?ipfs=${result}`);	
+	str2 +="Koios embed link:"+MakeUrl(`https://www.koios.online/test/newviewer?embed=${resultjavascript}`);	
     document.getElementById("output").innerHTML += str2;
+	
+	
 }
  
 export async function AlsoInject() {
-    InjectPage(globalcompletepage,globalembed,globalfonts,globalmediastyles,globalobjname,false)
+	var html2=await MakePage2(globalcompletepage,globalembed,globalfonts,globalmediastyles,globalobjname,false)    
+	var url2=MakeBlob(html2,true);    
+	
+	await import(url2);
+ //   InjectPage(globalcompletepage,globalembed,globalfonts,globalmediastyles,globalobjname,false)
 }
 
  
@@ -548,9 +564,10 @@ function GetMediaStyles(globalmediastyles) {
     }
     return stylestr;
 }
-        
+      
 
-function GetFonts(globalfonts) { 
+function GetFontsArray(globalfonts) { 
+    var list=[]
     var fontstr=""
     var keys = Object.keys(globalfonts);
     if (keys.length > 0) {
@@ -560,12 +577,22 @@ function GetFonts(globalfonts) {
                 case "Arial": break; // standard font                
                 case "FontAwesome":             
                 case "Font Awesome 5 Free":  
-                case "Font Awesome 5 Brands":   fontstr +='<link href="https://use.fontawesome.com/releases/v5.0.1/css/all.css" rel="stylesheet">'; break;
-                default:                        fontstr +=`<link href="https://fonts.googleapis.com/css2?family=${key}&display=swap" rel="stylesheet">`;
+                case "Font Awesome 5 Brands": list.push("https://use.fontawesome.com/releases/v5.0.1/css/all.css");break;
+                default:                      list.push(`https://fonts.googleapis.com/css2?family=${key}&display=swap`);break;
             }
         }
         console.log(fontstr);
     }
+    return list;
+}    
+	  
+
+function GetFonts(globalfonts) { 
+	var list =GetFontsArray(globalfonts)
+	var fontstr=""
+	for (var i=0;i<list.length;i++)
+		fontstr +=`<link href="${list[0]}" rel="stylesheet">`
+	console.log(fontstr);
     return fontstr;
 }    
 
@@ -618,6 +645,7 @@ function MakeHeader(embed,globalfonts,globalmediastyles) {
     
 // this script is embedded in the destination page==========================================================================// dont use reverse quotes    
 var loadimagescript= "./startgen.mjs"
+var loadimagescript2= "https://gpersoon.com/koios/lib/genhtml/startgen.mjs"
 // end ==========================================================================        
     
 async function MakePage(strinput,embed,globalfonts,globalmediastyles,firstpage,fIPFS) {
@@ -632,13 +660,71 @@ async function MakePage(strinput,embed,globalfonts,globalmediastyles,firstpage,f
     body += strinput    
     var x=await fetch(loadimagescript);
     var y=await x.text()    
-    var scriptwithtag=MakeScriptTag(false,undefined,y); // not as a module: function's have to be exported & imported then    
+    var scriptwithtag=MakeScriptTag(true,undefined,y); // not as a module: function's have to be exported & imported then    
     body +=scriptwithtag;    
     str += body;
     str +='</body>'
     str +='</html>'    
     return str;
 }   
+
+
+async function MakePage2(strinput,embed,globalfonts,globalmediastyles,firstpage,fIPFS) {
+	var injectscript=""
+	injectscript+=`
+		var head=document.getElementsByTagName("head")[0]
+		var meta = document.createElement('meta');
+		meta.name="viewport"
+		meta.content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"	
+		head.appendChild(meta)
+	`
+		
+	var list=GetFontsArray(globalfonts)
+	for (var i=0;i<list.length;i++) {
+		injectscript+=`
+			var link=document.createElement('link');
+			link.href="${list[i]}"
+			link.rel="stylesheet"
+			head.appendChild(link)
+		`
+	}	
+	// add errorscript
+	injectscript +=`document.getElementsByTagName("body")[0].innerHTML = \`${strinput}\`;\n`    // this is a synchronous actions
+	injectscript +='console.log("Right after body");\n';
+	injectscript +='async function init() { \n'
+	injectscript +=`await import("${loadimagescript2}");\n`  // note async
+	injectscript +='console.log("Right after loadimage");';
+	if (embed) injectscript +=`await import("${embed}");\n` // note async
+	injectscript +='console.log("Right after embed");';
+	injectscript +=`	
+		var event = new Event('DOMContentLoaded',{  bubbles: true,  cancelable: true});
+		window.document.dispatchEvent(event);    
+	`
+	injectscript +='} \n'
+	injectscript +='init();\n'
+	
+//	return injectscript;
+	
+
+    var str="" 	
+    str +='<html>' 
+	str +='<head>'	
+	str +='<meta charset="utf-8" />'   	// charset has to be set here
+	str +='<script type="module">\n'	
+	str +='//--script--'   // magic string to indicate the start of the javascript
+	str +=injectscript
+	str +='\n'
+	str +='//' // javascript ignores the rest
+	str +='</script>'
+	str +='</head>'
+    str +='<body>'    
+    str +='</body>'
+    str +='</html>'
+    return str;	
+	
+}
+
+
         
 
 async function InjectPage(strinput,embed,globalfonts,globalmediastyles,firstpage,fIPFS) {

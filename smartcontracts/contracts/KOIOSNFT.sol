@@ -12,7 +12,7 @@ contract KOIOSNFT {
     string public  name;
     string public  symbol;
     address public  admin;
-    uint256 public  counter = 10;
+    uint256 public  counter = 0;
     
     
     uint256[]                      public allTokens; 
@@ -41,6 +41,7 @@ contract KOIOSNFT {
     Template[] public templates;
     // Base URI
     string private baseURI;
+	string private storecontractURI;
     
     address public receivedOperator;    // public to easily check
     address public receivedFrom;        // public to easily check
@@ -51,8 +52,8 @@ contract KOIOSNFT {
     bytes4 internal constant ERC721_ENUMERABLE_INTERFACE_SIGNATURE = 0x780e9d63;
     bytes4 internal constant ONERC721RECEIVED_FUNCTION_SIGNATURE = 0x150b7a02;
 
-    uint256 public constant ADMINTOKEN   = 0;    
-    uint256 public constant CONTRACTINFOTOKEN = 1;
+	uint256 public constant CONTRACTTOKEN     = 0;    
+    uint256 public constant ADMINTOKEN        = 1;    	
     uint256 public constant BADGECREATORTOKEN = 2;
 
     modifier tokenExists(uint256 _tokenId) {
@@ -262,9 +263,13 @@ contract KOIOSNFT {
     function setBaseURI(string memory _baseURI) public isAdmin {
          baseURI = _baseURI;
     }
+
+    function setContractURI(string memory _contractURI) public isAdmin {
+         storecontractURI = _contractURI;
+    }
     
-    function contractURI() public view returns (string memory) { // for opensea, use the template#0
-        return string(abi.encodePacked(baseURI, templates[CONTRACTINFOTOKEN].cid));
+    function contractURI() public view returns (string memory) { // for opensea
+        return storecontractURI;
     }
 
 

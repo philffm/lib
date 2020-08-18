@@ -151,7 +151,7 @@ var globalprevpage;
 var currentoverlay
 var mainurl=""
 
-function SwitchPage(newpage,callerthis,fbackbutton) {    
+export function SwitchPage(newpage,callerthis,fbackbutton) {    
     console.log(`SwitchPage to ${newpage} from `) 	
     console.log(globalprevpage)
     
@@ -218,7 +218,7 @@ if (newpage && newpage.includes("http")) {// must be webpage
 }    
 
 
-function GetToggleState(domid,key) {
+export function GetToggleState(domid,key) {
    if (!domid.dataset[key]) return false
    return domid.dataset[key]=="true"
 }    
@@ -386,7 +386,7 @@ async function ontoggleactivehandler(event) {
      this.dispatchEvent(ev2);                    
 }    
 
-function SetAllEventHandlers(domid) {
+export function SetAllEventHandlers(domid) {
     //console.log("In SetAllEventHandlers for")
     //console.log(domid);
     SetEventHandlers(domid,"@toggle",)
