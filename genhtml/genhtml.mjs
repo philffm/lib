@@ -475,12 +475,16 @@ export async function SaveAlsoOnIpfs() {
 }
  
 export async function AlsoInject() {
-	var html2=await MakePage2(globalcompletepage,globalembed,globalfonts,globalmediastyles,globalobjname,false)    
-	var url2=MakeBlob(html2,true);    
-	
-	await import(url2);
- //   InjectPage(globalcompletepage,globalembed,globalfonts,globalmediastyles,globalobjname,false)
-}
+	var modulesource=await MakePage2(globalcompletepage,globalembed,globalfonts,globalmediastyles,globalobjname,false)     
+    var tag="//--script--"
+    var n = modulesource.indexOf(tag);
+    if (n <0 ) { console.error("Can't find tag");return;} 
+    modulesource = modulesource.substring(n+tag.length);		
+    var url2=MakeBlob(modulesource,true);    
+    document.getElementsByTagName("html")[0].innerHTML=""
+    var html=document.getElementsByTagName("html")[0]
+    await import(url2);		   
+} //   InjectPage(globalcompletepage,globalembed,globalfonts,globalmediastyles,globalobjname,false)
 
  
     
@@ -669,36 +673,34 @@ async function MakePage(strinput,embed,globalfonts,globalmediastyles,firstpage,f
 
 async function MakePage2(strinput,embed,globalfonts,globalmediastyles,firstpage,fIPFS) {
 	var injectscript=""
-	injectscript+=`
-		var head=document.getElementsByTagName("head")[0]
-		var meta = document.createElement('meta');
-		meta.name="viewport"
-		meta.content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"	
-		head.appendChild(meta)
-	`
+	injectscript+='   var head=document.getElementsByTagName("head")[0];\n'
+    injectscript+='   var meta=document.createElement("meta");\n'
+    injectscript+='   meta.name="viewport";\n'
+    injectscript+='   meta.content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0";\n'
+    injectscript+='   head.appendChild(meta);\n'
 		
 	var list=GetFontsArray(globalfonts)
 	for (var i=0;i<list.length;i++) {
-		injectscript+=`
-			var link=document.createElement('link');
-			link.href="${list[i]}"
-			link.rel="stylesheet"
-			head.appendChild(link)
-		`
+		injectscript+='   var link=document.createElement("link");\n'
+        injectscript+=`   link.href="${list[i]}";\n`
+        injectscript+='   link.rel="stylesheet";\n'
+        injectscript+='   head.appendChild(link);\n'
 	}	
 	// add errorscript
-	injectscript +=`document.getElementsByTagName("body")[0].innerHTML = \`${strinput}\`;\n`    // this is a synchronous actions
-	injectscript +='console.log("Right after body");\n';
-	injectscript +='async function init() { \n'
-	injectscript +=`await import("${loadimagescript2}");\n`  // note async
-	injectscript +='console.log("Right after loadimage");';
-	if (embed) injectscript +=`await import("${embed}");\n` // note async
-	injectscript +='console.log("Right after embed");';
-	injectscript +=`	
-		var event = new Event('DOMContentLoaded',{  bubbles: true,  cancelable: true});
-		window.document.dispatchEvent(event);    
-	`
-	injectscript +='} \n'
+	
+	injectscript +='\nasync function init() { \n'
+    injectscript +=`   document.getElementsByTagName("body")[0].innerHTML = newbody;\n`    // this is a synchronous actions
+	injectscript +=`   await import("${loadimagescript2}");\n`  // note async
+	injectscript +='   console.log("Right after loadimage");\n';
+if (embed) 
+    injectscript +=`   await import("${embed}");\n` // note async
+
+	injectscript +='   console.log("Right after embed");\n';
+	injectscript +='   var event = new Event("DOMContentLoaded",{  bubbles: true,  cancelable: true});'
+	injectscript +='   window.document.dispatchEvent(event);\n'	
+	injectscript +='}\n\n'    
+    injectscript +=`var newbody=\`\n${strinput}\`;\n\n`    
+    injectscript +='console.log("Starting init");\n';
 	injectscript +='init();\n'
 	
 //	return injectscript;
@@ -709,7 +711,7 @@ async function MakePage2(strinput,embed,globalfonts,globalmediastyles,firstpage,
 	str +='<head>'	
 	str +='<meta charset="utf-8" />'   	// charset has to be set here
 	str +='<script type="module">\n'	
-	str +='//--script--'   // magic string to indicate the start of the javascript
+	str +='//--script--\n'   // magic string to indicate the start of the javascript
 	str +=injectscript
 	str +='\n'
 	str +='//' // javascript ignores the rest
