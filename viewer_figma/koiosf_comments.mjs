@@ -3,12 +3,13 @@ import { } from "../lib/3box.js"; // from "https://unpkg.com/3box/dist/3box.js";
 import { getUserAddress, getWeb3Provider,authorize } from "./koiosf_login.mjs";
 import {DomList,getElement,FitOneLine,LinkVisible,subscribe,GetImageIPFS} from '../lib/koiosf_util.mjs';
 import {log} from '../lib/koiosf_log.mjs'; 
+import {DisplayMessage} from "./koiosf_messages.mjs";
 
 let box;
 let space;
 let currentThread;
 var GlobalCommentList = new DomList("commententry");
-const FirstModerator="0xe88cAc4e10C4D316E0d52B82dd54f26ade3f0Bb2"; //For making the initial thread 
+const FirstModerator="0x88E5d3CCdA6b8C8dE104E2bfA138AaB34D49c48c"; //For making the initial thread 
 const KoiosSpace = "koiostestspace2";
 
 window.onerror = async function(message, source, lineno, colno, error) {   // especially for ios
@@ -121,9 +122,9 @@ async function ShowPosts(posts) {
                 votecounter.innerHTML = 0
             }  
             var upvotebutton=target.getElementsByClassName("commentupvote")[0]
-            SetUpVoteButton(upvotebutton,posts[i],votecounter.innerHTML,did);
+            SetUpVoteButton(upvotebutton,posts[i],votecounter.innerHTML);
             var downvotebutton=target.getElementsByClassName("commentdownvote")[0]
-            SetDownVoteButton(downvotebutton,posts[i],votecounter.innerHTML,did);
+            SetDownVoteButton(downvotebutton,posts[i],votecounter.innerHTML);
         }
     }
     
@@ -154,9 +155,10 @@ async function SetDeleteButton(domid,postid) {
     async function DeleteForumEntry() {
         console.log(currentThread);
         try {
-          await currentThread.deletePost(postid);
+            DisplayMessage("Are you sure you want to delete this?");
+            await currentThread.deletePost(postid);
         } catch (error) {
-          console.log(error);
+            console.log(error);
         }
     }
 }
@@ -182,28 +184,58 @@ async function PostComment() {
       }
 }  
 
-async function SetUpVoteButton(domid,post,votecounter,did) { 
+async function SetUpVoteButton(domid,post,votecounter) { 
     domid.addEventListener('animatedclick',UpVoteMessage)
     async function UpVoteMessage() {
         try {
-            votecounter = parseInt(votecounter) + 1
-            await space.public.set(post.postId, votecounter)
-            await space.public.set(did, post.postId)
-            ShowPosts(post)
+            if (await space.public.get(`${getUserAddress()}+${post.postId}`) == "upvoted") {
+                votecounter = parseInt(votecounter) - 1
+                await space.public.set(post.postId, votecounter)
+                await space.public.set(`${getUserAddress()}+${post.postId}`, "notVoted")
+                ShowPosts(post)
+            }
+            else if (await space.public.get(`${getUserAddress()}+${post.postId}`) == "downvoted") {
+                votecounter = await space.public.get(post.postId)
+                votecounter = parseInt(votecounter) + 2
+                await space.public.set(post.postId, votecounter)
+                await space.public.set(`${getUserAddress()}+${post.postId}`, "upvoted")
+                ShowPosts(post)
+            }
+            else {
+                votecounter = parseInt(votecounter) + 1
+                await space.public.set(post.postId, votecounter)
+                await space.public.set(`${getUserAddress()}+${post.postId}`, "upvoted")
+                ShowPosts(post)
+            }
         } catch (error) {
             console.log(error);
         }
     }
 }
 
-async function SetDownVoteButton(domid,post,votecounter,did) { 
+async function SetDownVoteButton(domid,post,votecounter) { 
     domid.addEventListener('animatedclick',DownVoteMessage)
     async function DownVoteMessage() {
         try {
-            votecounter = parseInt(votecounter) + 1
-            await space.public.set(post.postId, votecounter)
-            await space.public.set(did, "not voted")
-            ShowPosts(post)   
+            if (await space.public.get(`${getUserAddress()}+${post.postId}`) == "downvoted") {
+                votecounter = parseInt(votecounter) + 1
+                await space.public.set(post.postId, votecounter)
+                await space.public.set(`${getUserAddress()}+${post.postId}`, "notVoted")
+                ShowPosts(post)
+            }
+            else if (await space.public.get(`${getUserAddress()}+${post.postId}`) == "upvoted") {
+                votecounter = await space.public.get(post.postId)
+                votecounter = parseInt(votecounter) - 2
+                await space.public.set(post.postId, votecounter)
+                await space.public.set(`${getUserAddress()}+${post.postId}`, "downvoted")
+                ShowPosts(post)
+            }
+            else {
+                votecounter = parseInt(votecounter) - 1
+                await space.public.set(post.postId, votecounter)
+                await space.public.set(`${getUserAddress()}+${post.postId}`, "downvoted")
+                ShowPosts(post)
+            } 
         } catch (error) {
             console.log(error);
         }
