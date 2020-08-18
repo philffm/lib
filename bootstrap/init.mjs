@@ -13,6 +13,12 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function MakeBlob(html,fjavascript) {
+    var blob = new Blob([html], {type: (fjavascript?'text/javascript':'text/html')});
+    var url = URL.createObjectURL(blob);      
+    return url;
+}   
+
 
 async function start() { 
 	let url = (new URL(document.location));
@@ -22,6 +28,24 @@ async function start() {
 	var last=split[split.length-1]
 	var beforelast=split[split.length-2]
 	console.log(beforelast,last);
+		
+	var embed=url.searchParams.get("embed");   	
+	
+	if (embed) {
+		console.log(`embed ${embed}`)
+		var modulesource=(await (await fetch("https://ipfs.io/ipfs/"+embed)).text()).trim();
+				
+		var tag="//--script--"
+		var n = modulesource.indexOf(tag);
+	    modulesource = modulesource.substring(n+tag.length);		
+		console.log(modulesource);
+		
+		var url2=MakeBlob(modulesource,true);    
+	    await import(url2);
+	   return;
+	}
+	
+	
 	
 	var cid=url.searchParams.get("ipfs");   	
 	if (!cid) {	
