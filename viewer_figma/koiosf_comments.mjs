@@ -186,22 +186,22 @@ async function SetUpVoteButton(domid,post,votecounter) {
     domid.addEventListener('animatedclick',UpVoteMessage)
     async function UpVoteMessage() {
         try {
-            if (await space.public.get(getUserAddress()) == "upvoted") {
+            if (await space.public.get(`${getUserAddress()}+${post.postId}`) == "upvoted") {
                 votecounter = parseInt(votecounter) - 1
                 await space.public.set(post.postId, votecounter)
-                await space.public.set(getUserAddress(), "notVoted")
+                await space.public.set(`${getUserAddress()}+${post.postId}`, "notVoted")
                 ShowPosts(post)
             }
-            else if (await space.public.get(getUserAddress()) == "downvoted") {
+            else if (await space.public.get(`${getUserAddress()}+${post.postId}`) == "downvoted") {
                 votecounter = parseInt(votecounter) + 2
                 await space.public.set(post.postId, votecounter)
-                await space.public.set(getUserAddress(), "upvoted")
+                await space.public.set(`${getUserAddress()}+${post.postId}`, "upvoted")
                 ShowPosts(post)
             }
             else {
                 votecounter = parseInt(votecounter) + 1
                 await space.public.set(post.postId, votecounter)
-                await space.public.set(getUserAddress(), "upvoted")
+                await space.public.set(`${getUserAddress()}+${post.postId}`, "upvoted")
                 ShowPosts(post)
             }
         } catch (error) {
@@ -214,22 +214,22 @@ async function SetDownVoteButton(domid,post,votecounter) {
     domid.addEventListener('animatedclick',DownVoteMessage)
     async function DownVoteMessage() {
         try {
-            if (await space.public.get(getUserAddress()) == "downvoted") {
+            if (await space.public.get(`${getUserAddress()}+${post.postId}`) == "downvoted") {
                 votecounter = parseInt(votecounter) + 1
                 await space.public.set(post.postId, votecounter)
-                await space.public.set(getUserAddress(), "notVoted")
+                await space.public.set(`${getUserAddress()}+${post.postId}`, "notVoted")
                 ShowPosts(post)
             }
-            else if (await space.public.get(getUserAddress()) == "upvoted") {
+            else if (await space.public.get(`${getUserAddress()}+${post.postId}`) == "upvoted") {
                 votecounter = parseInt(votecounter) - 2
                 await space.public.set(post.postId, votecounter)
-                await space.public.set(getUserAddress(), "downvoted")
+                await space.public.set(`${getUserAddress()}+${post.postId}`, "downvoted")
                 ShowPosts(post)
             }
             else {
                 votecounter = parseInt(votecounter) - 1
                 await space.public.set(post.postId, votecounter)
-                await space.public.set(getUserAddress(), "downvoted")
+                await space.public.set(`${getUserAddress()}+${post.postId}`, "downvoted")
                 ShowPosts(post)
             } 
         } catch (error) {
