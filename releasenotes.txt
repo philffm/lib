@@ -1,3 +1,12 @@
+Version 1.91
+
+Functional updates:
+Technical updates:
+- webflow traces delete further to prevent interference
+- add koios.online/blockchain & koios.online/trading
+
+Layout updates:
+
 Version 1.90
 Functional updates:
 - link to 3box.io via url in name
