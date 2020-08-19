@@ -39,13 +39,16 @@ class SlideList {
     async LoadList(match) {
         console.log(`In LoadList ${match}`);
         if (this.currentList) {
-            for (var i=0;i<this.currentList.length;i++)
-               URL.revokeObjectURL(this.currentList[i])   
+            for (var i=0;i<this.currentList.length;i++) {
+				console.log("revoke");
+				URL.revokeObjectURL(this.currentList[i])  
+			}			   
         }    
-        
+        console.log("next");
         this.currentList=[]        
         this.match=match;
         var list = await this.GetList()    
+		console.log(list)
         if (list)        
             for (var i=0;i<list.length;i++) {
                 if ( ! ((list[i].chapter === this.match) && (list[i].png) )) continue; // skip this one
@@ -85,7 +88,7 @@ async function InitShowSlides() {
 }
 
 async function GetSlidesFromVideo(vidinfo) {    
-    
+    ClearSlides();
     console.log("In GetSlidesFromVideo");
     console.log(vidinfo);    
     if (!vidinfo) return
@@ -113,18 +116,27 @@ export function UpdateSlide(CurrentPos) {   // called frequently
  
 
 
- 
+function ClearSlides() {
+	var url="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" // otherwise previous slide is still shown
+	var slide=getElement("slideimage")
+    slide.src=url;
+    slide.style.width="100%"
+    slide.style.height="";
+    slide.style.left="0px"
+    slide.style.top="0px"
+    slide.style.objectFit="contain"    
+}	
 
-async function ShowSlide() {    
+function ShowSlide() {    
     var url=GlobalSlideList.GetCurrentSlide()
-    if (!url) url="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" // otherwise previous slide is still shown
+	if (!url) url=getElement("noslides").src
     var slide=getElement("slideimage")
     slide.src=url;
     slide.style.width="100%"
     slide.style.height="";
     slide.style.left="0px"
     slide.style.top="0px"
-    
+    slide.style.objectFit="contain"
     
 
 } 

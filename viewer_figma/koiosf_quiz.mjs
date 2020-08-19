@@ -217,7 +217,8 @@ async function NewVideoSelected() {
      var btn=getElement("btnquiz","scr_viewer")
      
      console.log(btn);
-     btn.dispatchEvent(new CustomEvent((nrquestions >0 )?"show":"hide"));
+	 if (btn)
+		btn.dispatchEvent(new CustomEvent((nrquestions >0 )?"show":"hide"));
     
 }
 
