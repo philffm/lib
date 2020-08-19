@@ -40,8 +40,8 @@ async function start() {
 		var cidlocation=(beforelast=="test")?test:prod;
 		var cidfile=last;
 		switch (last) {
-			case "viewer.test.koios.online": cidlocation=test;cidfile="viewer";break;
-			case "viewer.koios.online": 	 cidlocation=prod;cidfile="viewer";break;
+			case "viewer.test.koios.online": cidlocation=test;cidfile="newviewer";break;
+			case "viewer.koios.online": 	 cidlocation=prod;cidfile="newviewer";break;
 		}
 		var loadfile=cidlocation+"/"+cidfile
 		console.log(`Loading config file ${loadfile}`)
