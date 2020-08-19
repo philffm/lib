@@ -282,27 +282,33 @@ async function OvBadgeMadeVisible(event) {
 	   show(`With number of them: ${nr}<br>`)
 	   for (var i=0;i<nr;i++) {
 		   var studenttokenid = await nft_contract.methods.tokenOfTypeByIndex(templatestudentbadge,i).call();
-		   var owneraddress = await nft_contract.methods.ownerOf(studenttokenid).call();		   		   
-		   var opensea=`https://rinkeby.opensea.io/assets/${nft_address}/${studenttokenid}`		   
-		   show(`id=${studenttokenid} `)
-		   
-		   show(`<a href="${opensea}" target="_blank">opensea</a> `)
-		   var box3=`https://3box.io/${owneraddress}`;
-		   show(`<a href="${box3}" target="_blank">3box</a> `)
-		   
-		   var etherscan=`https://rinkeby.etherscan.io/token/${nft_address}?a=${owneraddress}`
-		   show(`<a href="${etherscan}" target="_blank">etherscan</a>`)
-		   
-		   show(`<br>`)
-		   show(`address:${owneraddress}<br>`)
-		   
+		   await ShowGetBadgeInfo(studenttokenid,show)
 	   }   
 		   
-    } 
+    } 	
+}	
+
+
+async function ShowGetBadgeInfo(tokenid,show) {
+	show(`Badge with id=${tokenid}`)
+	var owneraddress = await nft_contract.methods.ownerOf(tokenid).call();		   		   
+	var opensea=`https://rinkeby.opensea.io/assets/${nft_address}/${tokenid}`		   
 	
-	
+
+	show(`<a href="${opensea}" target="_blank">opensea</a> `)
+	var box3=`https://3box.io/${owneraddress}`;
+	show(`<a href="${box3}" target="_blank">3box</a> `)
+
+	var etherscan=`https://rinkeby.etherscan.io/token/${nft_address}?a=${owneraddress}`
+	show(`<a href="${etherscan}" target="_blank">etherscan</a>`)
+
+	show(`<br>`)
+	show(`address:${owneraddress}<br>`)
+		   
 	
 }	
+
+
 
 
 //&nft_jsonurl=https://gpersoon.com/koios/lib/smartcontracts/build/contracts/KOIOSNFT.json

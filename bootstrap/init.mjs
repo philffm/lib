@@ -1,8 +1,67 @@
 console.log(`In ${window.location.href} starting script: ${import.meta.url}`);
 console.log("This is init.mjs, located at https://koiosonline.github.io/lib/bootstrap/init.mjs")
 
+/*
+while (document.firstChild) {
+  document.removeChild(document.firstChild);
+}
+
+var html=document.createElement("html")
+document.appendChild(html);
+var head=document.createElement("head")
+html.appendChild(head);
+var body=document.createElement("body")
+html.appendChild(body);
+*/
+/*
 document.getElementsByTagName("html")[0].innerHTML=""
+
+
+var head=document.getElementsByTagName("head")[0]
+head.innerHTML=""
+
+console.log(document.getElementsByTagName("body").length)
+console.log(document.getElementsByTagName("head").length)
+var body=document.getElementsByTagName("body")[0]
+body.innerHTML=""
+document.getElementsByTagName("body")[1].outerHTML="" // sometimes
+
+var html=document.getElementsByTagName("html")[0]
+// html.innerHTML=
+
+
+	var list=document.childNodes
+	console.log(list.length)
+	for (var i=0;i<list.length;i++) { // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
+		if (list[i].nodeType === Node.COMMENT_NODE)	   
+			document.removeChild(list[i]);		
+    }
+*/
+
+
+var html=document.getElementsByTagName("html")[0]
 console.log("Cleaned html");
+html.removeAttribute("data-wf-domain") // remove webflow stuff
+html.removeAttribute("data-wf-page")
+html.removeAttribute("data-wf-site")
+html.removeAttribute("class")
+
+delete window.$
+delete window.WebFont
+delete window.Webflow
+delete window.GoogleAnalyticsObject
+delete window.ga
+delete window.jQuery
+delete window.google_tag_data
+delete window.google_tag_manager
+delete window.gaplugins
+delete window.gaGlobal
+delete window.gaData
+delete window.datalayer
+delete window.google_optimize
+console.log(window)
+// for (var i in window) if (delete window[i]) console.log(i)
+// delete window.gtag
 
 // http://gpersoon.com/koios/lib/bootstrap/test.html
 // dnslink=/ipfs/QmZEgAo2Su99vcSwCf14AGokucaPCcshxr8zK3fZ5fKjf5
@@ -25,6 +84,7 @@ function MakeBlob(html,fjavascript) {
 
 
 async function start() { 
+console.log("start");
 	let url = (new URL(document.location));
 	console.log(url)
     var split=url.pathname.split("/");
@@ -45,7 +105,7 @@ async function start() {
 		}
 		var loadfile=cidlocation+"/"+cidfile
 		console.log(`Loading config file ${loadfile}`)
-		cid=(await (await fetch(loadfile)).text()).trim();
+		try { cid=(await (await fetch(loadfile)).text()).trim(); } catch (error) { console.log(error); }
 	}
 	console.log(`cid ${cid}`)
 	if (cid) {
@@ -62,10 +122,6 @@ async function start() {
         var html=document.getElementsByTagName("html")[0]
               //  console.log(html);
         
-        html.removeAttribute("data-wf-domain")
-        html.removeAttribute("data-wf-page")
-        html.removeAttribute("data-wf-site")
-        html.removeAttribute("class")
         
 		
 		let list = html.classList;
@@ -98,6 +154,19 @@ async function start() {
     document.body.appendChild(iframe);    	
 	await Send(iframe,url);
 	*/
+	
+	console.log("checking scripts")
+	console.log(document)
+	await sleep(1000)
+	var todelete=[]
+	var scriptlist=document.getElementsByTagName("script")
+	for (var i=0;i<scriptlist.length;i++) {
+		if (scriptlist[i].outerHTML.includes("google-analytics"))
+		   todelete.push(scriptlist[i])
+	}
+	
+	for (var i=0;i<todelete.length;i++)
+		todelete[i].parentNode.removeChild(todelete[i])
 	
 }
 
