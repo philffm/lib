@@ -1,5 +1,9 @@
 console.log(`In ${window.location.href} starting script: ${import.meta.url}`);
 console.log("This is init.mjs, located at https://koiosonline.github.io/lib/bootstrap/init.mjs")
+
+document.getElementsByTagName("html")[0].innerHTML=""
+console.log("Cleaned html");
+
 // http://gpersoon.com/koios/lib/bootstrap/test.html
 // dnslink=/ipfs/QmZEgAo2Su99vcSwCf14AGokucaPCcshxr8zK3fZ5fKjf5
 // https://ipfs.io/ipns/koios.online
@@ -34,12 +38,10 @@ async function start() {
 		var prod="https://koiosonline.github.io/lib/bootstrap"
 		var test="https://gpersoon.com/koios/lib/bootstrap"
 		var cidlocation=(beforelast=="test")?test:prod;
-		var cidfile="viewer"
+		var cidfile=last;
 		switch (last) {
-			case "viewer.test.koios.online": cidlocation=test;break;
-			case "viewer.koios.online": 	 cidlocation=prod;break;
-			case "newviewer": break;
-			case "homepage": cidfile="homepage";break;						  							  
+			case "viewer.test.koios.online": cidlocation=test;cidfile="viewer";break;
+			case "viewer.koios.online": 	 cidlocation=prod;cidfile="viewer";break;
 		}
 		var loadfile=cidlocation+"/"+cidfile
 		console.log(`Loading config file ${loadfile}`)
@@ -54,7 +56,7 @@ async function start() {
 		modulesource = modulesource.substring(n+tag.length);		
 		//console.log(modulesource);
 		var url2=MakeBlob(modulesource,true);    
-        document.getElementsByTagName("html")[0].innerHTML=""
+      
         //document.getElementsByTagName("head")[0].innerHTML=""
         //document.getElementsByTagName("body")[0].innerHTML=""
         var html=document.getElementsByTagName("html")[0]
@@ -65,9 +67,18 @@ async function start() {
         html.removeAttribute("data-wf-site")
         html.removeAttribute("class")
         
-       // console.log(html);
+		
+		let list = html.classList;
+		console.log(list)
+		for (var i=0;i<list.length;i++) {
+			console.log(list[i])
+			list.remove(list[i])
+		}
+		
+        console.log(html);
         
-		await import(url2);		   
+		await import(url2);		
+		html.removeAttribute("class")		 // try again
 	}
 	
 	/*
