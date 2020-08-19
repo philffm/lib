@@ -827,6 +827,7 @@ async function recurse(figdata,figmadocument,documentid,token,fpartofgrid,fparto
         
         
         var fsvg=    GetAtParam(figdata,"@svg")            // console.log(`fsvg=${fsvg}`)
+		var fpng=    GetAtParam(figdata,"@png")            // console.log(`fsvg=${fsvg}`)
         var faspect= GetAtParam(figdata,"@aspect")      //  console.log(`faspect=${faspect}`)
         var fhidden= GetAtParam(figdata,"@hidden")      //  console.log(`faspect=${faspect}`)
         
@@ -1242,14 +1243,19 @@ function ConvertColor(color) {
         if (fsvg) { // then make this into an svg {            
             image = `https://api.figma.com/v1/images/${documentid}?ids=${figdata.id}&format=svg`                
             objecttype="image"
-        }    
+        } 
+		if (fpng){ // then make this into an png
+            image = `https://api.figma.com/v1/images/${documentid}?ids=${figdata.id}&format=png` 
+            objecttype="image"
+        } 
+			
         
         if (figdata.rectangleCornerRadii) {
             let r=figdata.rectangleCornerRadii;
             strstyle +=`border-radius: ${r[0]}px ${r[1]}px ${r[2]}px ${r[3]}px;`; // (first value applies to top-left corner, second value applies to top-right corner, third value applies to bottom-right corner, and fourth value applies to bottom-left corner)
         }
         
-        if (!fsvg) {  // don't draw boxed for svgs and for vector images
+        if (!fsvg && !fpng) {  // don't draw boxed for svgs and for vector images
             if (figdata.type!="TEXT")
                 backgroundrgba = rgba;
             if (backgroundrgba)
@@ -1364,7 +1370,7 @@ function ConvertColor(color) {
         
         var children=figdata.children;
     //    figdata.children=[];     (why was this done?)
-        if (children && !fsvg ) // allways recurse to try and find the intended object // don't recurse when @svg is shown
+        if (children && !fsvg &&!fpng) // allways recurse to try and find the intended object // don't recurse when @svg is shown
             for (var i=0;i<children.length;i++) {
                 
                 if (fflex) {
