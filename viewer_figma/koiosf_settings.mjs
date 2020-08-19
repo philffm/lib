@@ -91,10 +91,10 @@ function FullScreenOnOff(event) {
     
 	var fOn=GetToggleState(this,"displayactive")    
 	
-    
+    /* was used when running in an iframe
     var x=window.parent.postMessage({"fullscreen":fOn}, "*"); // 'https://ipfs.io'); received in util
     console.log(`After postmessage ${x}`)
-    
+    */
 	
     fFullScreen =  fOn; // !fFullScreen
  
