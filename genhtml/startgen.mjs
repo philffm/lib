@@ -171,7 +171,7 @@ if (newpage && newpage.includes("http")) {// must be webpage
     
     if (!fbackbutton && (newpage!="close") && (newpage!="scr_intro")) { // don't store intro, to be able to get back to page from which we started
         try {
-            history.pushState({page: newpage},`newpage ${newpage}`, `${mainurl}?page=${newpage}`);
+            history.pushState({page: newpage},`newpage ${newpage}`, `${mainurl}`); // ?page=${newpage}
         } catch(error) { console.log(error);}
     }
     console.log("history");
