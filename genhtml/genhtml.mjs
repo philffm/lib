@@ -1348,7 +1348,7 @@ function ConvertColor(color) {
            // console.log(`insrtstyle ${insrtstyle}`)
         switch (objecttype) {
             case "image":   
-                htmlobjects.push(`<${objecttype} src=`)
+                htmlobjects.push(`<${objecttype} data-src=`)
                 htmlobjects.push('"') // data-src= 
                 if (!imagelist[image]) {
                     imagelist[image]=true;
