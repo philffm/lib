@@ -21,6 +21,7 @@ async function asyncloaded() {
 
        
 function ShowVideoInfoInNotes(vidinfo) {
+	if (!vidinfo) return;
     GlobalNotesArea.UpdateId(vidinfo.videoid);
     setElementVal("videotitle","Notes for: "+vidinfo.txt);
 }  
