@@ -1,5 +1,7 @@
 import {getElement,DomList,LinkClickButton,subscribe, FitOneLine} from '../lib/koiosf_util.mjs';
 import {LessonFormat} from '../upload/koios_ipfs.mjs';
+import {uploadFilesIntoPlatform} from '../upload/koios_File_Uploader.mjs'
+
 
 
 
@@ -11,19 +13,33 @@ import {LessonFormat} from '../upload/koios_ipfs.mjs';
 
    var rownum=1;
 
+  var temp;
 
+    //INPUT FIELDS
     var target=getElement("input");
     target.contentEditable="true"; // make div editable
     target.style.whiteSpace = "pre"; //werkt goed in combi met innerText
 
+    var ytlinkinput = getElement("input1");
+    ytlinkinput.contentEditable="true";
+    ytlinkinput.style.whiteSpace = "pre";
+
+    var lessontitleinput = getElement("input2");
+    lessontitleinput.contentEditable="true";
+    lessontitleinput.style.whiteSpace = "pre";
+
+    var lessondescriptioninput = getElement("input3");
+    lessondescriptioninput.contentEditable="true";
+    lessondescriptioninput.style.whiteSpace = "pre";
+
     console.log("link");
-    getElement("addbutton").addEventListener('animatedclick',onInput)
+    getElement("addbutton").addEventListener('animatedclick',onInput);
     FitOneLine(getElement("input"));
     uploadEvents();
 
 
     async function onInput() {          //for test try PL_tbH3aD86KtN40_30P9S_rPryycQPr9k
-      var temp = await LessonFormat(getInput());
+      temp = await LessonFormat(getInput());
       console.log(temp);
       plotParagraphs(temp);
     }
@@ -65,21 +81,30 @@ import {LessonFormat} from '../upload/koios_ipfs.mjs';
     }
 
     function uploadEvents() {
-      var files = document.createElement("input");
-      files.id = "file-input";
-      files.type = "file";
-      files.name= "files[]";
-      files.multiple = 1;
-      files.style = "display: none;";
+      var fileElement = document.createElement("input");
+      fileElement.id = "file-input";
+      fileElement.type = "file";
+      fileElement.name= "files[]";
+      fileElement.multiple = 1;
+      fileElement.style = "display: none;";
       var upOpBut = getElement("openuploader");
-      upOpBut.addEventListener("click", upEv);
+      upOpBut.addEventListener("click", upEvent);
 
-      async function upEv() {
+      async function upEvent() {
         await sleep(500);
-        var upBut = getElement("filesButton");
-        upBut.addEventListener("click", upup);
-        function upup() {
-          files.click();
+        var selectFilesBut = getElement("filesButton");
+        selectFilesBut.addEventListener("click", selectFiles);
+        function selectFiles() {
+          fileElement.click();
+        }
+        var uploadBut = getElement("uploadButton");
+        uploadBut.addEventListener("click", uploadFiles);
+
+        async function uploadFiles(){
+          console.log("uploading!");
+          const files = fileElement.files;
+          uploadFilesIntoPlatform(files);
+
         }
       }
 

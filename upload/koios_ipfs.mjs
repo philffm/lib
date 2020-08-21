@@ -5,6 +5,7 @@ import {
 import {
   loadScriptAsync
 } from '../lib/koiosf_util.mjs';
+import {getSubtitles} from './koios_youtube.mjs';
 
 
 export async function setupIPFS()
@@ -16,9 +17,11 @@ export async function setupIPFS()
     loadScriptAsync("https://unpkg.com/ipfs-http-client/dist/index.min.js")
   ]);
   console.log("Ipfs & buffer libraries loaded");
+  setupIPFS = async function (){
+    return await window.IpfsHttpClient('https://ipfs.infura.io:5001'); //for infura node
+  };
+  return await window.IpfsHttpClient('https://ipfs.infura.io:5001');
   //var ipfs = await window.Ipfs.create(); //await?? //for node in browser
-  var ipfs = await window.IpfsHttpClient('https://ipfs.infura.io:5001'); //for infura node
-  return ipfs;
 }
 
 /*
@@ -44,7 +47,7 @@ export async function uploadToDB() {
 
 }
 
-export async function LessonFormat(_playid = "PL_tbH3aD86KvZcwoEAdFyMCWijbYGDBIo") {
+export async function LessonFormat(_playid = "PL_tbH3aD86KvZcwoEAdFyMCWijbYGDBIo") {        //Needs to be placed somewhere else
   var list = await GetYouTubePlayListItems(_playid);
   console.log(list);
   console.log("This is list!!!!");
@@ -93,13 +96,20 @@ export async function LessonFormat(_playid = "PL_tbH3aD86KvZcwoEAdFyMCWijbYGDBIo
 }
 
 
-
+export async function upload(file) {
+  var hash;
+  const ipfs = await setupIPFS();
+  var response = await ipfs.add(file);
+  hash = response.cid.string;
+  return hash;
+}
 
 export async function uploadYtDataToIpfs()        //Puts the object on ipfs
+//Split into uploadToIPFS and uploadYtData
 {
     var ipfs = await setupIPFS();
     var list=await includeSubtitlesforIpfsExport()
-    var res=[]
+    var res=[];
 
     for (var i=0;i<list.length;i++) {
         console.log(`Storing ${list[i].id}`)
@@ -115,19 +125,29 @@ export async function uploadYtDataToIpfs()        //Puts the object on ipfs
 }
 
 
-export async function getYtInfoIpfs(hash)           //Gets the json string from ipfs and parses it into an object /// not used, see ipfsgetjson
-{
- // await setupBuffer();
-
-  var ipfs = await setupIPFS();
+export async function get(hash, ipfs) {
   var Buf = window.buffer.Buffer;
-  var videoAndPlaylistInfo;
   var chunks = [];
   for await (const chunk of ipfs.cat(hash))
   {
     chunks.push(chunk);
   }
-  videoAndPlaylistInfo = JSON.parse(Buf.concat(chunks).toString());
+  return Buf.concat(chunks).toString();
+}
+
+export async function getYtInfoIpfs(hash)           //Gets the json string from ipfs and parses it into an object /// not used, see ipfsgetjson
+//Split into GET and getYTinfo
+{
+
+  var ipfs = await setupIPFS();
+  //var Buf = window.buffer.Buffer;
+  var videoAndPlaylistInfo;
+  //var chunks = [];
+  //for await (const chunk of ipfs.cat(hash))
+  //{
+  //  chunks.push(chunk);
+  //}
+  videoAndPlaylistInfo = JSON.parse(await get(hash, ipfs));
   //console.log(videoAndPlaylistInfo);
   return videoAndPlaylistInfo;
 }
@@ -141,7 +161,7 @@ export async function includeSubtitlesforIpfsExport()   //Adds the subtitle obje
     console.log(`Playlist ${data[i].id}`);
     for(var x = 0; x<data[i].videos.length;x++)
     {
-      data[i].videos[x].subtitles = await getSubTitles(data[i].videos[x].videoid);
+      data[i].videos[x].subtitles = await getSubtitles(data[i].videos[x].videoid);
 
       var lan=data[i].videos[x].subtitles.length;
       var subs=lan?data[i].videos[x].subtitles[0].subtitle.length:0
@@ -151,66 +171,4 @@ export async function includeSubtitlesforIpfsExport()   //Adds the subtitle obje
   }
   console.log(data);
   return data;
-}
-
-
-var parser = new DOMParser();
-
-export async function getYouTubeSubTitle(language, videoId)   //Gets one specific subtitle
-{
-  var array = [];
-  var subtitleUrl = `https://video.google.com/timedtext?v=${videoId}&lang=${language}`;
-  var data = await fetch(subtitleUrl).catch(console.log);
-  var t = await data.text();
-  var captions = parser.parseFromString(t, "text/html").getElementsByTagName('text');
-  for (var i = 0; i < captions.length; i++)
-  {
-    var s = captions[i].innerHTML;
-    s = s.replace(/&amp;/g, "&");
-    s = s.replace(/&quot;/g, "'");
-    s = s.replace(/&#39;/g, "'");
-    array.push({
-      start: captions[i].getAttribute('start'),
-      dur: captions[i].getAttribute('dur'),
-      text: s
-    });
-  }
-  return array;
-}
-
-
-export async function getSubtitleList(videoId)    //Gets a list of all subtitles languages available for a specific video(ID)
-{
-  var subtitleUrl = `https://video.google.com/timedtext?type=list&v=${videoId}`;
-  var data = await fetch(subtitleUrl).catch(console.log);
-  var t = await data.text();
-  var subtitleList = parser.parseFromString(t, "text/xml").getElementsByTagName('track');
-  //console.log(subtitleList);
-  return subtitleList;
-}
-
-
-export async function getSubTitles(videoId)       //Gets all subtitles associated with one specific video(ID)
-{
-  var captions = await getSubtitleList(videoId);
-  var allVidSubs = [];
-
-  //console.log(`Video: ${videoId} #Captions: ${captions.length}`);
-
-  for (var i=0; i<captions.length; i++){
-
-    var language = captions[i].getAttribute('lang_code');
-    //console.log(`Found language: ${language}`);
-    allVidSubs.push({
-      lang: language,
-      subtitle: await getYouTubeSubTitle(language, videoId)
-    });
-    /*if (language != "vor")
-    { // reserved for slide info
-      var arraypromise = getYouTubeSubTitle();
-    }
-    */
-  }
-  //console.log(allVidSubs);
-  return allVidSubs;
 }

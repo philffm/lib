@@ -157,3 +157,69 @@ export async function forIPFSexport()     //creates an array of objects in the r
   }
   return totalYoutubeInfo;
 }
+
+
+
+
+
+
+var parser = new DOMParser();
+
+export async function getYouTubeSubTitle(language, videoId)   //Gets one specific subtitle
+{
+  var array = [];
+  var subtitleUrl = `https://video.google.com/timedtext?v=${videoId}&lang=${language}`;
+  var data = await fetch(subtitleUrl).catch(console.log);
+  var t = await data.text();
+  var captions = parser.parseFromString(t, "text/html").getElementsByTagName('text');
+  for (var i = 0; i < captions.length; i++)
+  {
+    var s = captions[i].innerHTML;
+    s = s.replace(/&amp;/g, "&");
+    s = s.replace(/&quot;/g, "'");
+    s = s.replace(/&#39;/g, "'");
+    array.push({
+      start: captions[i].getAttribute('start'),
+      dur: captions[i].getAttribute('dur'),
+      text: s
+    });
+  }
+  return array;
+}
+
+
+export async function getSubtitleList(videoId)    //Gets a list of all subtitles languages available for a specific video(ID)
+{
+  var subtitleUrl = `https://video.google.com/timedtext?type=list&v=${videoId}`;
+  var data = await fetch(subtitleUrl).catch(console.log);
+  var t = await data.text();
+  var subtitleList = parser.parseFromString(t, "text/xml").getElementsByTagName('track');
+  //console.log(subtitleList);
+  return subtitleList;
+}
+
+
+export async function getSubtitles(videoId)       //Gets all subtitles associated with one specific video(ID)
+{
+  var captions = await getSubtitleList(videoId);
+  var allVidSubs = [];
+
+  //console.log(`Video: ${videoId} #Captions: ${captions.length}`);
+
+  for (var i=0; i<captions.length; i++){
+
+    var language = captions[i].getAttribute('lang_code');
+    //console.log(`Found language: ${language}`);
+    allVidSubs.push({
+      lang: language,
+      subtitle: await getYouTubeSubTitle(language, videoId)
+    });
+    /*if (language != "vor")
+    { // reserved for slide info
+      var arraypromise = getYouTubeSubTitle();
+    }
+    */
+  }
+  //console.log(allVidSubs);
+  return allVidSubs;
+}
