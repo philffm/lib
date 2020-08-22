@@ -30,8 +30,6 @@ async function asyncloaded() {
 }
 
 async function ScrCommentMadeVisible() {
-    console.log("In ScrCommentMadeVisible");
-    
     await authorize()
     console.log(init3boxpromise);
     await init3boxpromise;
@@ -50,28 +48,17 @@ async function NextStep() {
 }     
 
 async function Init3box() {
-    console.log("Init3box");
     var ga=getUserAddress()
     var pr=getWeb3Provider()
-    console.log(ga)
-    console.log(pr);
-    console.log("Start openbox")
-    console.log(Box);
     box = await Box.openBox(ga,pr);    
-    console.log("after openbox");
-   // await box.syncDone
-    console.log("after syncdone");
-    console.log(box);
     space = await box.openSpace(KoiosSpace);
-    console.log("after openspace");  
 }
 
 subscribe("loadvideo",NewVideo) 
 
 var currentvideo;
 
-async function NewVideo(vidinfo) {
-    console.log(`new video ${vidinfo.videoid}`)        
+async function NewVideo(vidinfo) {    
     currentvideo=vidinfo
     if (!space) return; //  no connection to 3box yet; fixed elsewhere
     WriteThread(currentvideo)
@@ -91,7 +78,6 @@ async function WriteThread(vidinfo) {
     })
     currentThread.onNewCapabilities((event, did) => console.log(did, event, ' the chat'))
     const posts = await currentThread.getPosts()
-    console.log("posts: ", posts);
     await ShowPosts(posts);
 }
 
@@ -102,9 +88,7 @@ async function ShowPosts(posts) {
 
     for (var i=0;i<posts.length;i++) {        
         if (!document.getElementById(posts[i].postId) ){ // check if post is already shown
-            console.log(posts[i]);
             var did=posts[i].author;           
-            console.log(`${i} ${posts[i].message} ${did}`)
             
             var target = GlobalCommentList.AddListItem() // make new entry
             target.getElementsByClassName("commentmessagetext")[0].innerHTML = posts[i].message            
@@ -153,7 +137,6 @@ async function SetDeleteButton(domid,postid) {
     domid.addEventListener('animatedclick',DeleteForumEntry)
     
     async function DeleteForumEntry() {
-        console.log(currentThread);
         try {
             DisplayMessage("Are you sure you want to delete this?");
             await currentThread.deletePost(postid);
@@ -169,7 +152,6 @@ async function FindSender (target,did,profilepicture) {
     if (profile.image) {
         var imagecid=profile.image[0].contentUrl
         imagecid=imagecid[`\/`]
-        console.log(imagecid);
         profilepicture.src=await GetImageIPFS(imagecid)
     }           
 }
