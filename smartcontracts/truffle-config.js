@@ -76,7 +76,8 @@ module.exports = {
             gas: 9500000, // 30000000,
             //confirmations: 2,    // # of confs to wait between deployments. (default: 0)
             timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
-            skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
+            skipDryRun: true ,    // Skip dry run before migrations? (default: false for public nets )
+		    websockets: true,	// enabled to use the confirmations listener or to hear Events using .on or .once
         },
 
         ava: {
@@ -99,6 +100,7 @@ module.exports = {
 
     // Set default mocha options here, use special reporters etc.
     mocha: {
+		enableTimeouts: false
         // timeout: 100000
     },
 

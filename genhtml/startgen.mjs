@@ -11,24 +11,24 @@ window.addEventListener("popstate", function(e) {
     
     
     
-    
-    /*
-    async function LoadImage(src) {
-        console.log("Loading image "+src)
-        
-        // later convert this to native ipfs
-        var data=await fetch(src)
-        var text=await data.text()
-        //console.log(text);
-        
-        
-        var blob2 = new Blob([text], { type: "image/svg+xml" });
-        console.log(blob2);
-        var url=URL.createObjectURL(blob2)          
-        console.log(url);
-        return url;
-    } 
-*/    
+
+
+async function LoadImage(src) {
+	console.log("Loading image "+src)
+	
+	// later convert this to native ipfs
+	var data=await fetch(src)
+	var text=await data.text()
+	//console.log(text);
+	
+	
+	var blob2 = new Blob([text], { type: "image/svg+xml" });
+	//console.log(blob2);
+	var url=URL.createObjectURL(blob2)          
+	console.log(url);
+	return url;
+} 
+  
 
 
 
@@ -151,7 +151,7 @@ var globalprevpage;
 var currentoverlay
 var mainurl=""
 
-function SwitchPage(newpage,callerthis,fbackbutton) {    
+export function SwitchPage(newpage,callerthis,fbackbutton) {    
     console.log(`SwitchPage to ${newpage} from `) 	
     console.log(globalprevpage)
     
@@ -171,7 +171,7 @@ if (newpage && newpage.includes("http")) {// must be webpage
     
     if (!fbackbutton && (newpage!="close") && (newpage!="scr_intro")) { // don't store intro, to be able to get back to page from which we started
         try {
-            history.pushState({page: newpage},`newpage ${newpage}`, `${mainurl}?page=${newpage}`);
+            history.pushState({page: newpage},`newpage ${newpage}`, `${mainurl}`); // ?page=${newpage}
         } catch(error) { console.log(error);}
     }
     console.log("history");
@@ -218,7 +218,7 @@ if (newpage && newpage.includes("http")) {// must be webpage
 }    
 
 
-function GetToggleState(domid,key) {
+export function GetToggleState(domid,key) {
    if (!domid.dataset[key]) return false
    return domid.dataset[key]=="true"
 }    
@@ -386,7 +386,7 @@ async function ontoggleactivehandler(event) {
      this.dispatchEvent(ev2);                    
 }    
 
-function SetAllEventHandlers(domid) {
+export function SetAllEventHandlers(domid) {
     //console.log("In SetAllEventHandlers for")
     //console.log(domid);
     SetEventHandlers(domid,"@toggle",)
@@ -436,6 +436,10 @@ function GetURLParam(id) {
     
 async function main() {
     console.log("DOMContentLoaded in startgen");
+	
+	
+	lazyImageObserver = new IntersectionObserver(FixImages); // do this just once
+	PrepLazy();
     SetAllEventHandlers()
     /* doesn't work
     let url1 = new URL(document.location)
@@ -457,5 +461,49 @@ async function main() {
 		}	
     }
     SwitchPage(firstname)    
+
+
+     
 }
 
+var lazyImageObserver
+
+async function Loaddirect(lazyImage) {
+	console.log(JSON.stringify(lazyImage))
+	let src=lazyImage.dataset.src;  // get the src element of the dataset (e.g. data-src)
+
+	var urlpromise = loadedimages[src]
+	if (!urlpromise) {             
+	  //loadedimages[src]=true; // make sure it isn't loaded again              
+	  loadedimages[src] = urlpromise = LoadImage(src);
+	}
+	lazyImage.src = await urlpromise;
+	// console.log(JSON.stringify(lazyImage))
+	//lazyImage.srcset = lazyImage.dataset.srcset;
+	lazyImage.classList.remove("lazy");
+	
+}	
+
+async function FixEntry(entry) {
+	if (!entry.isIntersecting)
+		return		
+	let lazyImage = entry.target;
+	Loaddirect(lazyImage)
+	lazyImageObserver.unobserve(lazyImage);	
+}
+
+
+async function FixImages(entries, observer) { entries.forEach(FixEntry);  }
+
+
+export function PrepLazy(domid,floaddirect) {
+	if ( !("IntersectionObserver" in window))
+		return;
+	if (!domid) domid=document;
+	
+	var lazyImages = [].slice.call(domid.querySelectorAll("img.lazy"));
+	if (floaddirect)
+		lazyImages.forEach(lazyImage => Loaddirect(lazyImage));
+	else
+		lazyImages.forEach(lazyImage => lazyImageObserver.observe(lazyImage));
+}      

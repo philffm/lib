@@ -1,6 +1,7 @@
-import {loadScriptAsync,GetJsonIPFS,subscribe,publish,DomList,GetCidViaIpfsProvider,getElement,sortfunction,LinkToggleButton,FitOneLine,ForceButton } from '../lib/koiosf_util.mjs';
+import {loadScriptAsync,GetJsonIPFS,subscribe,publish,DomList,GetCidViaIpfsProvider,getElement,sortfunction,LinkToggleButton,FitOneLine,ForceButton,FetchIPFS } from '../lib/koiosf_util.mjs';
 import {GetCourseInfo,GlobalCourseList} from './koiosf_course.mjs';
 import {GlobalLessonList} from './koiosf_lessons.mjs';
+import {GetToggleState} from '../genhtml/startgen.mjs'
 
 var globalslideindex
 
@@ -85,12 +86,12 @@ async function GetLiteratureForVideo() {
     if (!globalslideindex) return; // not loaded yet
     var slideindex=globalslideindex
 
-	SearchArray(slideindex,match)
-	SearchArray(lit,match)
+	await SearchArray(slideindex,match)
+	await SearchArray(lit,match)
  
 }
 
-function SearchArray(slideindex,match) {
+async function SearchArray(slideindex,match) {
 	if (!slideindex) return;
     var str="";
        for (var i=0;i<slideindex.length;i++) {
@@ -103,9 +104,16 @@ function SearchArray(slideindex,match) {
         if (url) type="topicweb"
         
         if (!url && slideindex[i].cid) {
-            type="topiclit"
-            url = slideindex[i].cid
-            url = GetCidViaIpfsProvider(slideindex[i].cid,0)
+            type="topiclit"            
+			console.log(`Trying to find ${slideindex[i].cid}`)
+			var result=await FetchIPFS(slideindex[i].cid)
+			console.log(result);
+			if (result) 
+				url=result.url;   // this one works, because just loaded
+			else {
+				console.log(`Not found ${slideindex[i].cid}`)
+                url = GetCidViaIpfsProvider(slideindex[i].cid,0)
+			}
             url = `https://docs.google.com/viewerng/viewer?url=${url}&embedded=true`;
         }
         if (!url && slideindex[i].pdf) {      

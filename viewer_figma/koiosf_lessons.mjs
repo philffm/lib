@@ -31,6 +31,7 @@ class LessonList {
         if (source) {// otherwise no lessonlist yet
             this.LessonListPromise=GetJsonIPFS(source).then(items=>{ // so we can wait for it later            
                 console.log(items)
+				if (!items) return;
                 this.CurrentCourseTitle=items.title;
                 var currentchapter=""
                 for (var i=0;i<items.videos.length;i++) 
@@ -89,6 +90,7 @@ class LessonList {
          localStorage.setItem(`lesson-${currentcourse}`, lessonid);  
          
          var lessons=await this.GetLessonsList()
+		 console.log(lessons[lessonid]);
          publish("loadvideo",lessons[lessonid])
          return lessonid;
     }

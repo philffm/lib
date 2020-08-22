@@ -1,5 +1,6 @@
 import {loadScriptAsync,DomList,LinkToggleButton,subscribe,getElement,MonitorVisible,ForAllElements,setElementVal,publish,GetJson,LinkClickButton,LinkVisible,sleep} from '../lib/koiosf_util.mjs';
 import {DisplayMessage,SwitchDisplayMessageContinous,DisplayMessageContinous} from './koiosf_messages.mjs';  
+import {GetToggleState} from '../genhtml/startgen.mjs'
 
 var globalplayer=0;
 var globalVideospeed=0;
@@ -90,10 +91,10 @@ function FullScreenOnOff(event) {
     
 	var fOn=GetToggleState(this,"displayactive")    
 	
-    
+    /* was used when running in an iframe
     var x=window.parent.postMessage({"fullscreen":fOn}, "*"); // 'https://ipfs.io'); received in util
     console.log(`After postmessage ${x}`)
-    
+    */
 	
     fFullScreen =  fOn; // !fFullScreen
  

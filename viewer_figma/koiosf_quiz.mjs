@@ -4,7 +4,7 @@
 import {loadScriptAsync,DomList,LinkToggleButton,subscribe,getElement,MonitorVisible,ForAllElements,setElementVal,publish,GetJson,LinkClickButton,LinkVisible,GetCSVIPFS} from '../lib/koiosf_util.mjs';
 import {GetCourseInfo,GlobalCourseList} from './koiosf_course.mjs';
 import {GlobalLessonList} from './koiosf_lessons.mjs';
-
+import {GetToggleState} from '../genhtml/startgen.mjs'
 
 
 
@@ -217,7 +217,8 @@ async function NewVideoSelected() {
      var btn=getElement("btnquiz","scr_viewer")
      
      console.log(btn);
-     btn.dispatchEvent(new CustomEvent((nrquestions >0 )?"show":"hide"));
+	 if (btn)
+		btn.dispatchEvent(new CustomEvent((nrquestions >0 )?"show":"hide"));
     
 }
 

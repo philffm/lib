@@ -99,8 +99,8 @@ var keys = Object.keys(localStorage);
 }
 
 
-function MakeBlob(html) {
-    var blob = new Blob([html], {type: 'text/html'});
+function MakeBlob(html,fjavascript) {
+    var blob = new Blob([html], {type: (fjavascript?'text/javascript':'text/html')});
     var url = URL.createObjectURL(blob);      
     return url;
 }    
@@ -259,7 +259,7 @@ document.getElementById("SaveOnIpfs").innerHTML=""
     var result=await SaveToIPFS(data)
     console.log("saved SaveOnIpfs");
     console.log(result);
-    return "../ipfs/"+result; // fix to get it to work also on ipns
+    return "https://ipfs.io/ipfs/"+result; // fix to get it to work also on ipns
 
     //document.getElementById("output").innerHTML += str2;
     //return `http://www.gpersoon.com:8080/ipfs/${result}`;
@@ -427,10 +427,10 @@ console.log(ipfs);
     
      globalcompletepage=await RenderAllPages(globalconnectto,false);
     //console.log(completepage);
-    var html=await MakePage(globalcompletepage,globalembed,globalfonts,globalmediastyles,globalobjname,false)    
-    
+    var html=await MakePage(globalcompletepage,globalembed,globalfonts,globalmediastyles,globalobjname,false)        
     var url=MakeBlob(html);    
     
+	
     document.getElementById("output").innerHTML += `Complete page=${MakeUrl(url)}`   
 
 /*
@@ -453,20 +453,38 @@ console.log(ipfs);
 export async function SaveAlsoOnIpfs() {
     console.log(`SaveAlsoOnIpfs firstpage=${globalobjname}`);
     var completepage=await RenderAllPages(globalconnectto,true);
-    var html=await MakePage(completepage,globalembed,globalfonts,globalmediastyles,globalobjname,true)    
-    var result=await SaveOnIpfs(html)
+    //var html=await MakePage(completepage,globalembed,globalfonts,globalmediastyles,globalobjname,true)    
+	//var result=await SaveOnIpfs(html)
+	
+	
+	var javascript=await MakePage2(completepage,globalembed,globalfonts,globalmediastyles,globalobjname,true)    
+	var resultjavascript=await SaveOnIpfs(javascript)
+ 
+
+
     var str2=""
-    result=result.replace("../ipfs/","")
-    str2 +="IPFS link 1: "+MakeUrl(`https://ipfs.io/ipfs/${result}`);
-    str2 +="IPFS link 2: "+MakeUrl(`http://www.gpersoon.com:8080/ipfs/${result}`);
-	str2 +="IPFS link 3 (no images): "+MakeUrl(`https://ipfs.infura.io/ipfs/${result}`); // doesn't show the images (type is correct)
-	str2 +="Koios site link:"+MakeUrl(`https://www.koios.online/newviewer?ipfs=${result}`);
+    //result=result.replace("https://ipfs.io/ipfs/","")
+	resultjavascript=resultjavascript.replace("https://ipfs.io/ipfs/","")
+	
+    str2 +="IPFS link 1: "+MakeUrl(`https://ipfs.io/ipfs/${resultjavascript}`); // 
+    //str2 +="IPFS link 2: "+MakeUrl(`http://www.gpersoon.com:8080/ipfs/${result}`);
+	//str2 +="IPFS link 3 (no images): "+MakeUrl(`https://ipfs.infura.io/ipfs/${result}`); // doesn't show the images (type is correct)
+	str2 +="Koios embedprod link:"+MakeUrl(`https://www.koios.online/newviewer?ipfs=${resultjavascript}`);	
+	str2 +="Koios embedtest link:"+MakeUrl(`https://www.koios.online/test/newviewer?ipfs=${resultjavascript}`);	
     document.getElementById("output").innerHTML += str2;
 }
  
 export async function AlsoInject() {
-    InjectPage(globalcompletepage,globalembed,globalfonts,globalmediastyles,globalobjname,false)
-}
+	var modulesource=await MakePage2(globalcompletepage,globalembed,globalfonts,globalmediastyles,globalobjname,false)     
+    var tag="//--script--"
+    var n = modulesource.indexOf(tag);
+    if (n <0 ) { console.error("Can't find tag");return;} 
+    modulesource = modulesource.substring(n+tag.length);		
+    var url2=MakeBlob(modulesource,true);    
+    document.getElementsByTagName("html")[0].innerHTML=""
+    var html=document.getElementsByTagName("html")[0]
+    await import(url2);		   
+} //   InjectPage(globalcompletepage,globalembed,globalfonts,globalmediastyles,globalobjname,false)
 
  
     
@@ -482,7 +500,7 @@ async function RenderAllPages(globalconnectto,fIPFS) {
             //console.log(globalconnectto[key]);
             var val = await globalconnectto[key];
             //console.log(val);
-            log(`Page ${i+1} of ${keys.length}  ${val?val.name:"(not found)"} (${key})`);
+            log(`Page ${i+1} of ${keys.length}  ${val?val.name:"not found:"} ${key}`);
             if (val) {                
                 var html= await recursehtml(val.htmlobj,fIPFS);    
             
@@ -548,9 +566,10 @@ function GetMediaStyles(globalmediastyles) {
     }
     return stylestr;
 }
-        
+      
 
-function GetFonts(globalfonts) { 
+function GetFontsArray(globalfonts) { 
+    var list=[]
     var fontstr=""
     var keys = Object.keys(globalfonts);
     if (keys.length > 0) {
@@ -560,12 +579,22 @@ function GetFonts(globalfonts) {
                 case "Arial": break; // standard font                
                 case "FontAwesome":             
                 case "Font Awesome 5 Free":  
-                case "Font Awesome 5 Brands":   fontstr +='<link href="https://use.fontawesome.com/releases/v5.0.1/css/all.css" rel="stylesheet">'; break;
-                default:                        fontstr +=`<link href="https://fonts.googleapis.com/css2?family=${key}&display=swap" rel="stylesheet">`;
+                case "Font Awesome 5 Brands": list.push("https://use.fontawesome.com/releases/v5.0.1/css/all.css");break;
+                default:                      list.push(`https://fonts.googleapis.com/css2?family=${key}&display=swap`);break;
             }
         }
         console.log(fontstr);
     }
+    return list;
+}    
+	  
+
+function GetFonts(globalfonts) { 
+	var list =GetFontsArray(globalfonts)
+	var fontstr=""
+	for (var i=0;i<list.length;i++)
+		fontstr +=`<link href="${list[0]}" rel="stylesheet">`
+	console.log(fontstr);
     return fontstr;
 }    
 
@@ -618,6 +647,7 @@ function MakeHeader(embed,globalfonts,globalmediastyles) {
     
 // this script is embedded in the destination page==========================================================================// dont use reverse quotes    
 var loadimagescript= "./startgen.mjs"
+var loadimagescript2= "https://gpersoon.com/koios/lib/genhtml/startgen.mjs"
 // end ==========================================================================        
     
 async function MakePage(strinput,embed,globalfonts,globalmediastyles,firstpage,fIPFS) {
@@ -632,13 +662,69 @@ async function MakePage(strinput,embed,globalfonts,globalmediastyles,firstpage,f
     body += strinput    
     var x=await fetch(loadimagescript);
     var y=await x.text()    
-    var scriptwithtag=MakeScriptTag(false,undefined,y); // not as a module: function's have to be exported & imported then    
+    var scriptwithtag=MakeScriptTag(true,undefined,y); // not as a module: function's have to be exported & imported then    
     body +=scriptwithtag;    
     str += body;
     str +='</body>'
     str +='</html>'    
     return str;
 }   
+
+
+async function MakePage2(strinput,embed,globalfonts,globalmediastyles,firstpage,fIPFS) {
+	var injectscript=""
+	injectscript+='   var head=document.getElementsByTagName("head")[0];\n'
+    injectscript+='   var meta=document.createElement("meta");\n'
+    injectscript+='   meta.name="viewport";\n'
+    injectscript+='   meta.content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0";\n'
+    injectscript+='   head.appendChild(meta);\n'
+		
+	var list=GetFontsArray(globalfonts)
+	for (var i=0;i<list.length;i++) {
+		injectscript+='   var link=document.createElement("link");\n'
+        injectscript+=`   link.href="${list[i]}";\n`
+        injectscript+='   link.rel="stylesheet";\n'
+        injectscript+='   head.appendChild(link);\n'
+	}	
+	// add errorscript
+	
+	injectscript +='\nasync function init() { \n'
+    injectscript +=`   document.getElementsByTagName("body")[0].innerHTML = newbody;\n`    // this is a synchronous actions
+	injectscript +=`   await import("${loadimagescript2}");\n`  // note async
+	injectscript +='   console.log("Right after loadimage");\n';
+if (embed) 
+    injectscript +=`   await import("${embed}");\n` // note async
+
+	injectscript +='   console.log("Right after embed");\n';
+	injectscript +='   var event = new Event("DOMContentLoaded",{  bubbles: true,  cancelable: true});'
+	injectscript +='   window.document.dispatchEvent(event);\n'	
+	injectscript +='}\n\n'    
+    injectscript +=`var newbody=\`\n${strinput}\`;\n\n`    
+    injectscript +='console.log("Starting init");\n';
+	injectscript +='init();\n'
+	
+//	return injectscript;
+	
+
+    var str="" 	
+    str +='<html>' 
+	str +='<head>'	
+	str +='<meta charset="utf-8" />'   	// charset has to be set here
+	str +='<script type="module">\n'	
+	str +='//--script--\n'   // magic string to indicate the start of the javascript
+	str +=injectscript
+	str +='\n'
+	str +='//' // javascript ignores the rest
+	str +='</script>'
+	str +='</head>'
+    str +='<body>'    
+    str +='</body>'
+    str +='</html>'
+    return str;	
+	
+}
+
+
         
 
 async function InjectPage(strinput,embed,globalfonts,globalmediastyles,firstpage,fIPFS) {
@@ -741,6 +827,7 @@ async function recurse(figdata,figmadocument,documentid,token,fpartofgrid,fparto
         
         
         var fsvg=    GetAtParam(figdata,"@svg")            // console.log(`fsvg=${fsvg}`)
+		var fpng=    GetAtParam(figdata,"@png")            // console.log(`fsvg=${fsvg}`)
         var faspect= GetAtParam(figdata,"@aspect")      //  console.log(`faspect=${faspect}`)
         var fhidden= GetAtParam(figdata,"@hidden")      //  console.log(`faspect=${faspect}`)
         
@@ -1120,7 +1207,7 @@ function ConvertColor(color) {
         
         
         switch (figdata.type) {
-           case "TEXT": strtxt +=figdata.characters;
+           case "TEXT": strtxt+=figdata.characters.replace(/\n/g,"<br>"); // replace all newlines
            
                 switch(figdata.style.textAlignVertical) {
                    case "TOP":   break // is already default // display="flex";strstyle +="align-items: flex-start;";
@@ -1156,14 +1243,19 @@ function ConvertColor(color) {
         if (fsvg) { // then make this into an svg {            
             image = `https://api.figma.com/v1/images/${documentid}?ids=${figdata.id}&format=svg`                
             objecttype="image"
-        }    
+        } 
+		if (fpng){ // then make this into an png
+            image = `https://api.figma.com/v1/images/${documentid}?ids=${figdata.id}&format=png` 
+            objecttype="image"
+        } 
+			
         
         if (figdata.rectangleCornerRadii) {
             let r=figdata.rectangleCornerRadii;
             strstyle +=`border-radius: ${r[0]}px ${r[1]}px ${r[2]}px ${r[3]}px;`; // (first value applies to top-left corner, second value applies to top-right corner, third value applies to bottom-right corner, and fourth value applies to bottom-left corner)
         }
         
-        if (!fsvg) {  // don't draw boxed for svgs and for vector images
+        if (!fsvg && !fpng) {  // don't draw boxed for svgs and for vector images
             if (figdata.type!="TEXT")
                 backgroundrgba = rgba;
             if (backgroundrgba)
@@ -1256,7 +1348,7 @@ function ConvertColor(color) {
            // console.log(`insrtstyle ${insrtstyle}`)
         switch (objecttype) {
             case "image":   
-                htmlobjects.push(`<${objecttype} src=`)
+                htmlobjects.push(`<${objecttype} data-src=`)
                 htmlobjects.push('"') // data-src= 
                 if (!imagelist[image]) {
                     imagelist[image]=true;
@@ -1278,7 +1370,7 @@ function ConvertColor(color) {
         
         var children=figdata.children;
     //    figdata.children=[];     (why was this done?)
-        if (children && !fsvg ) // allways recurse to try and find the intended object // don't recurse when @svg is shown
+        if (children && !fsvg &&!fpng) // allways recurse to try and find the intended object // don't recurse when @svg is shown
             for (var i=0;i<children.length;i++) {
                 
                 if (fflex) {

@@ -1,7 +1,7 @@
 //console.log(`In ${window.location.href} starting script: ${import.meta.url}`);
 
 
-import {loadScriptAsync,DomList,LinkToggleButton,subscribe,getElement,MonitorVisible,ForAllElements,setElementVal,publish,GetJson,LinkClickButton,LinkVisible,GetURLParam} from '../lib/koiosf_util.mjs';
+import {loadScriptAsync,DomList,LinkToggleButton,subscribe,getElement,MonitorVisible,ForAllElements,setElementVal,publish,GetJson,LinkClickButton,LinkVisible,GetURLParam,FindDomidWithId} from '../lib/koiosf_util.mjs';
 import {} from './koiosf_literature.mjs'// must be initialised to be able to follow up on setcurrentcourse
 import {} from './koiosf_lessons.mjs'// must be initialised to be able to follow up on setcurrentcourse
 
@@ -240,30 +240,6 @@ async function ScrViewerMadeVisible() {
 }    
 
 
-function FindDomidWithId(event) {
-    var detail=event;
-    for (var i=0;i<10;i++) {
-        if (!detail.detail) break
-        else {
-            detail=detail.detail; // check a couple of details
-            console.log(detail);
-        }
-    }
-        
-    for (var i=0;i<10;i++) {
-        if (detail.id) {
-              console.log(`Found ${detail.id}`)
-              console.log(detail);
-             return detail;
-        }
-        else {
-            detail=detail.parentNode; // check chain up to find id
-            console.log(detail);
-        }
-    }
-    return undefined;
-}    
-
 
 var originalbutton;
 
@@ -308,6 +284,7 @@ function SelectCourse(event) {
             break;
         case "other":
             GlobalCourseList.UpdateMyList(courseid)
+			GlobalCourseList.SetCurrentCourse(courseid)        // also updates the screen // also update the current course
              var domidclick=getElement("@click",originalbutton)    
             domidclick.dispatchEvent(new CustomEvent("hide"));  
             break;

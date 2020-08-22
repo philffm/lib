@@ -1,15 +1,30 @@
+Version 1.91
+
+Functional updates:
+Technical updates:
+- webflow traces delete further to prevent interference
+- add koios.online/blockchain & koios.online/trading
+
+Layout updates:
+
 Version 1.90
 Functional updates:
 - link to 3box.io via url in name
 - only showing tokens where you have a balance
+- show info about badges (including who are students of a course)
+- comments max upvotes
 
 Technical updates:
 - Generation via figma
-- Updated ipfs link to smartcontract info in NFT smart contract, for opensea
+- Updated ipfs link to smartcontract info in NFT smart contract, for opensea 
+- redeployed NFT smart contract with new deployment address
+- comments new thread management address
+- embed via javascript (no iframe neccesary anymore)
 
 Layout updates:
-- version number on profile page
+- moved version number to profile page
 - updated NFT images & redeployed on rinkeby
+- updated quiz questions for level 1&2 (now fits in 4 answers)
 
 Version 1.02:
 

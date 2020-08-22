@@ -1,4 +1,6 @@
 import {DragItem,subscribe,LinkToggleButton,MonitorVisible,sleep,getElement,ForceButton} from '../lib/koiosf_util.mjs';
+import {SwitchPage,GetToggleState} from '../genhtml/startgen.mjs'
+
 
 console.log("In screenlayout");
 console.log(`In ${window.location.href} starting script: ${import.meta.url}`);
