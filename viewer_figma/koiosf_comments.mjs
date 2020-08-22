@@ -179,7 +179,7 @@ async function PostComment() {
     try {
         if (currentThread)
             await currentThread.post(target.innerHTML); 
-            target.innerHTML = "";
+            //target.innerHTML = "";
       } catch (error) {
         console.log(error);
       }
