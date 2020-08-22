@@ -162,6 +162,7 @@ function NewOrgLocation() {
 
 async function ScrOtherMadeVisible() {
     console.log("In ScrOtherMadeVisible")
+	getElement("btnmycourses","scr_my").dispatchEvent(new CustomEvent("displayactive")); // then hide the join button
     var listofcourses=await GlobalCourseList.GetList();    
     globaldomlistcoursesother.EmptyList()
    var ml=GlobalCourseList.GetMyList();   
@@ -179,6 +180,7 @@ async function ScrOtherMadeVisible() {
 
 async function ScrMyMadeVisible() {
     console.log("In ScrMyMadeVisible")
+	getElement("btnmycourses","scr_my").dispatchEvent(new CustomEvent("displayactive")); // then hide the join button
     var listofcourses=await GlobalCourseList.GetList();    
     var ml=GlobalCourseList.GetMyList();
     var current=GlobalCourseList.GetCurrentCourse()
@@ -223,6 +225,9 @@ function SetCurrentCourseOnScreen(newcourse) {
 
 async function ScrProfileMadeVisible() {
   console.log("In ScrProfileMadeVisible")  
+  
+  getElement("btnprofile","scr_profile").dispatchEvent(new CustomEvent("displayactive")); // then hide the join button
+  
   var data=(await GlobalCourseList.GetCurrentCourseData());
   var mask=[["courselevel","currentcoursename"],["image","courseicon"]]; 
   if (data)

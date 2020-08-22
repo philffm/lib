@@ -1,5 +1,5 @@
 import {sleep,subscribe,publish,getElement} from '../lib/koiosf_util.mjs'; 
-
+import {SwitchPage} from '../genhtml/startgen.mjs';
 
 export async function DisplayMessage(text) {    
 
@@ -15,7 +15,7 @@ export async function DisplayMessage(text) {
     await sleep(3000);
    // msg.style.display="none";    
    getElement("ov_message").dispatchEvent(new CustomEvent("hide"));  
-   SwitchPage("close") // close message overlay
+   //SwitchPage("close") // close message overlay
 }
 
 export async function SwitchDisplayMessageContinous(fOn) {

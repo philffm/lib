@@ -433,17 +433,22 @@ function ScrCommunityMadeVisible () {
     
     console.log(`ScrCommunityMadeVisible Opening ${globalcommunity}`)
     
+	getElement("btncommunity","scr_community").dispatchEvent(new CustomEvent("displayactive")); // then hide the join button
+	
+	
     getElement("communitylink").href=globalcommunity
     getElement("communitylink").target="_blank"  
     getElement("communitylink").textContent=globalcommunity;
     
-    getElement("globalcommunityinvite").href=globalcommunityinvite
-    getElement("globalcommunityinvite").target="_blank"  
+    //getElement("globalcommunityinvite").href=globalcommunityinvite
+    //getElement("globalcommunityinvite").target="_blank"  
     //getElement("globalcommunityinvite").textContent="Join "+globalcommunity;
     
     
 }
-
+function SlackJoin() {
+	window.open(globalcommunityinvite, '_blank');
+}	
  
 async function asyncloaded() {    
     //console.log(`In asyncloaded of script: ${import.meta.url}`);   
@@ -451,7 +456,7 @@ async function asyncloaded() {
    
     
     LinkVisible("scr_community" ,ScrCommunityMadeVisible)    
-
+    LinkClickButton("slackjoin",SlackJoin);
     
     
     //LinkButton("start",startVideo);
@@ -543,6 +548,7 @@ window.addEventListener('DOMContentLoaded', asyncloaded);  // load
    //console.log(Webflow);
 //}); */
 
+/* too annoying
 window.onerror = async function(message, source, lineno, colno, error) {   // especially for ios
 console.log("In onerror");
     var str=`Error: ${message} ${source}, ${lineno}, ${colno}  `;
@@ -553,4 +559,4 @@ console.log("In onerror");
     DisplayMessage(str)
     
 } 
-
+*/
