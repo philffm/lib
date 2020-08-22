@@ -45,6 +45,7 @@ SetupField("figmakey")
 SetupField("pageid")
 SetupField("components")
 SetupField("objname")
+SetupField("mjspath")
 SetupField("embed")
 SetupField("pin")
 
@@ -358,7 +359,7 @@ var orglocation
 async function Reload() {    
    location.href=orglocation;
 }   
-
+var globalmjspath;
 
 async function start() {
     
@@ -369,7 +370,7 @@ async function start() {
     globalcomponentsid=document.getElementById("components").innerHTML.trim();    
     globalobjname=document.getElementById("objname").innerHTML.trim();
     globalembed=document.getElementById("embed").innerHTML.trim();
-    
+    globalmjspath=document.getElementById("mjspath").innerHTML.trim();
     
     if (token.replace(/\./g,'')=="") { log("Figma token missing");return;}
     if (documentid.replace(/\./g,'')=="") { log("Document id missing");return;}
@@ -646,8 +647,8 @@ function MakeHeader(embed,globalfonts,globalmediastyles) {
 }
     
 // this script is embedded in the destination page==========================================================================// dont use reverse quotes    
-//var loadimagescript= "./startgen.mjs"
-var loadimagescript= "https://gpersoon.com/koios/lib/genhtml/startgen.mjs"   // carefull with 2 different versions (could be executed twice)
+	var loadimagescript= globalmjspath+"/genhtml/startgen.mjs"
+//var loadimagescript= "https://gpersoon.com/koios/lib/genhtml/startgen.mjs"   // carefull with 2 different versions (could be executed twice)
 // end ==========================================================================        
 
 
@@ -694,8 +695,10 @@ async function MakePage2(strinput,embed,globalfonts,globalmediastyles,firstpage,
     injectscript +=`   document.getElementsByTagName("body")[0].innerHTML = newbody;\n`    // this is a synchronous actions
 	injectscript +=`   await import("${loadimagescript}");\n`  // note async
 	injectscript +='   console.log("Right after loadimage");\n';
-if (embed) 
-    injectscript +=`   await import("${embed}");\n` // note async
+if (embed) {
+	 var embedstr=globalmjspath+"/"+embed
+    injectscript +=`   await import("${embedstr}");\n` // note async
+}
 
 	injectscript +='   console.log("Right after embed");\n';
 	injectscript +='   var event = new Event("DOMContentLoaded",{  bubbles: true,  cancelable: true});'
