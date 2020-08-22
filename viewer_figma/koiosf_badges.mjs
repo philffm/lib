@@ -67,7 +67,7 @@ async function CheckCourses() {
     
      for (var i=0;i<nrTemplates;i++) {
          var info=await nft_contract.methods.GetTemplateInfo(i).call()
-         console.log(info);
+        // console.log(info);
          /*
          var cid=info[1]
          console.log(cid)
@@ -76,7 +76,7 @@ async function CheckCourses() {
         var name=badgecontent.name
         */
         var name=info[0]
-        console.log(name);
+       // console.log(name);
         if (name=="Student-"+currentcourse) {
             console.log(`Found ${name}`)
             return i;			
@@ -93,7 +93,7 @@ var globalbadgeinfo=[]
 
 async function GetBadgeDetails(urltarget,i,wantedCourseStudentId) { // put in function to be able to run in parallel
         var tokenid = await nft_contract.methods.tokenOfOwnerByIndex(accounts[0],i).call(); // ownedTokens
-        console.log(`tokenid=${tokenid}`)		
+      //  console.log(`tokenid=${tokenid}`)		
 		urltarget.id=tokenid;
 		
 		
@@ -104,19 +104,19 @@ async function GetBadgeDetails(urltarget,i,wantedCourseStudentId) { // put in fu
 			getElement("joincourse","scr_profile").dispatchEvent(new CustomEvent("hide")); // then hide the join button
 			
 		var templateinfo = await nft_contract.methods.GetTemplateInfo(template).call();
-		console.log(template)
-		console.log(templateinfo);
+		//console.log(template)
+		//console.log(templateinfo);
 		globalbadgeinfo[tokenid]={}
 		globalbadgeinfo[tokenid].template=template
 		globalbadgeinfo[tokenid].templateinfo=templateinfo
 		
         var uri = await nft_contract.methods.tokenURI(tokenid).call();
-        console.log(uri)        
+       // console.log(uri)        
 		
 		globalbadgeinfo[tokenid].uri=uri;
 		
         var badgecontent=await GetJsonIPFS(uri)
-        console.log(badgecontent);
+        //console.log(badgecontent);
 		
 		globalbadgeinfo[tokenid].badgecontent=badgecontent;
         if (badgecontent) {
@@ -190,13 +190,13 @@ function SetLinkMetamask(urltarget,address,symbol,decimals,tokenImage) { // sepe
 async function GetTokenDetails(urltarget,contracttoken,balance) { 
 
         var uri = await contracttoken.methods.tokenURI().call();
-        console.log(uri)        
+     //   console.log(uri)        
         var tokencontent=await GetJsonIPFS(uri)
-        console.log(tokencontent);
+      //  console.log(tokencontent);
         if (!tokencontent) 
 			return undefined;		
 		setElementVal("__label",tokencontent.name+"<br>"+balance,urltarget)
-		console.log(urltarget);
+	//	console.log(urltarget);
 		if (!tokencontent.image) 
 			return undefined
 		 var imageobject=await GetImageIPFS(tokencontent.image)
