@@ -211,6 +211,7 @@ if (newpage && newpage.includes("http")) {// must be webpage
 				destdomid.style.position="fixed";
 				destdomid.style.top="0";
 				destdomid.style.left="0";
+				destdomid.style.overflowY="auto";
 				
             }
             globalprevpage=destdomid
