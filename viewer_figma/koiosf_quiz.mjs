@@ -1,7 +1,7 @@
 //console.log(`In ${window.location.href} starting script: ${import.meta.url}`);
 
 
-import {loadScriptAsync,DomList,LinkToggleButton,subscribe,getElement,MonitorVisible,ForAllElements,setElementVal,publish,GetJson,LinkClickButton,LinkVisible,GetCSVIPFS} from '../lib/koiosf_util.mjs';
+import {loadScriptAsync,DomList,LinkToggleButton,subscribe,getElement,MonitorVisible,ForAllElements,setElementVal,publish,GetJson,LinkClickButton,LinkVisible,GetCSVIPFS,sleep} from '../lib/koiosf_util.mjs';
 import {GetCourseInfo,GlobalCourseList} from './koiosf_course.mjs';
 import {GlobalLessonList} from './koiosf_lessons.mjs';
 import {GetToggleState} from '../genhtml/startgen.mjs'
@@ -32,17 +32,21 @@ class QuizList {
                this.subset.push(line)
         } 
         this.start=-1
+		console.log(this.subset)
         return this.subset.length;
     }    
     
     GetCurrent() {
        if (this.start >= this.subset.length) 
            return undefined;       
+	   console.log(`In GetCurrent ${ this.start} ${this.subset[this.start]}`)
        return this.subset[this.start]
     }
     
     GetNext() {
+		
        this.start++
+	   console.log(`In GetNext ${ this.start}`)
        return this.GetCurrent()
     }
     
@@ -175,7 +179,7 @@ async function ScrQuizMadeVisible() {
     setElementVal("quizresult","");
     
     console.log(`In ScrQuizMadeVisible`);
-    console.log(question);
+    
     
     getElement("answera","scr_quiz").dispatchEvent(new CustomEvent("displaydefault"));
     getElement("answerb","scr_quiz").dispatchEvent(new CustomEvent("displaydefault"));
@@ -195,7 +199,7 @@ async function ScrQuizMadeVisible() {
     if (!GlobalQuizList) return;
     
     var question=GlobalQuizList.GetNext();
-    
+    console.log(question);
     if (!question) return;
     setElementVal("question",question[1],"scr_quiz")
     setElementVal("__label",question[3],"answera","scr_quiz")

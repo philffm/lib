@@ -1,11 +1,17 @@
+
 Version 1.91
 
 Functional updates:
+
+
 Technical updates:
+
+Most recent 3box: https://unpkg.com/3box@1.21.0/dist/3box.js (includes most recent ipfs 0.46)
 - webflow traces delete further to prevent interference
 - add koios.online/blockchain & koios.online/trading
 
 Layout updates:
+- update button layout
 
 Version 1.90
 Functional updates:

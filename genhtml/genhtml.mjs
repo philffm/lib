@@ -1,6 +1,6 @@
 
 
-function sleep(ms) {
+function genhtmlsleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
@@ -106,7 +106,7 @@ function MakeBlob(html,fjavascript) {
 }    
 
 
-var sleeptimer=0;
+var genhtmlsleeptimer=0;
 
 var retry=0;
 var imagesloaded=0;
@@ -115,14 +115,14 @@ async function FigmaApiGetImageSrc(url,token) {
     for (var i=0;i<8;i++) {
         if (i > 0) {
             console.log(`Retry ${i} for ${url}`); 
-            sleeptimer +=200; 
+            genhtmlsleeptimer +=200; 
             retry++;
             document.getElementById("retry").innerHTML=retry;
         }
 
 //console.log(`FigmaApiGetImageSrc check url ${url}`);
         
-        await sleep(Math.random() * sleeptimer); // some extra time to prevent rate limits
+        await genhtmlsleep(Math.random() * genhtmlsleeptimer); // some extra time to prevent rate limits
         var obj=await FigmaApiGet(url,token); 
                             
         if (!obj || obj.err || !obj.images) continue; // try again
@@ -427,7 +427,7 @@ console.log(ipfs);
     
      globalcompletepage=await RenderAllPages(globalconnectto,false);
     //console.log(completepage);
-    var html=await MakePage(globalcompletepage,globalembed,globalfonts,globalmediastyles,globalobjname,false)        
+    var html=await MakePage2(globalcompletepage,globalembed,globalfonts,globalmediastyles,globalobjname,false)        
     var url=MakeBlob(html);    
     
 	
@@ -646,10 +646,12 @@ function MakeHeader(embed,globalfonts,globalmediastyles) {
 }
     
 // this script is embedded in the destination page==========================================================================// dont use reverse quotes    
-var loadimagescript= "./startgen.mjs"
-var loadimagescript2= "https://gpersoon.com/koios/lib/genhtml/startgen.mjs"
+//var loadimagescript= "./startgen.mjs"
+var loadimagescript= "https://gpersoon.com/koios/lib/genhtml/startgen.mjs"   // carefull with 2 different versions (could be executed twice)
 // end ==========================================================================        
-    
+
+
+/*    
 async function MakePage(strinput,embed,globalfonts,globalmediastyles,firstpage,fIPFS) {
     var str="" 
     str +='<html>'   
@@ -669,7 +671,7 @@ async function MakePage(strinput,embed,globalfonts,globalmediastyles,firstpage,f
     str +='</html>'    
     return str;
 }   
-
+*/
 
 async function MakePage2(strinput,embed,globalfonts,globalmediastyles,firstpage,fIPFS) {
 	var injectscript=""
@@ -690,7 +692,7 @@ async function MakePage2(strinput,embed,globalfonts,globalmediastyles,firstpage,
 	
 	injectscript +='\nasync function init() { \n'
     injectscript +=`   document.getElementsByTagName("body")[0].innerHTML = newbody;\n`    // this is a synchronous actions
-	injectscript +=`   await import("${loadimagescript2}");\n`  // note async
+	injectscript +=`   await import("${loadimagescript}");\n`  // note async
 	injectscript +='   console.log("Right after loadimage");\n';
 if (embed) 
     injectscript +=`   await import("${embed}");\n` // note async
@@ -726,7 +728,7 @@ if (embed)
 
 
         
-
+/*
 async function InjectPage(strinput,embed,globalfonts,globalmediastyles,firstpage,fIPFS) {
     var head=MakeHeader(embed,globalfonts,globalmediastyles)       
     
@@ -754,7 +756,7 @@ async function InjectPage(strinput,embed,globalfonts,globalmediastyles,firstpage
     main();
 }   
         
-
+*/
  
 
     
@@ -1084,7 +1086,7 @@ async function recurse(figdata,figmadocument,documentid,token,fpartofgrid,fparto
                 
                 if (GetAtParam(figdata,"@max-width")) dimensions+=`max-width:${GetAtParam(figdata,"@max-width")};`;
             
-                if (width)         dimensions +=`width:${width};`;
+                if (width && width.length>0 && width!="true")         dimensions +=`width:${width};`;
                 if (height)        dimensions +=`height:${height};`;    
                 if (left)          dimensions +=`left:${left};`;    
                 if (right)         dimensions +=`right:${right};`;  
@@ -1356,12 +1358,12 @@ function ConvertColor(color) {
                 }
                 classname+=" lazy " // for lazy evaluatation/retrieval of images, see startgen.mjs
                 htmlobjects.push(imagelist[image])
-                htmlobjects.push(`"  class="${classname}" ${insrtstyle} ${insdata} title="${figdata.name}">${strtxt}\n`) //  ${figdata.type}
+                htmlobjects.push(`"  class="${classname}" ${insrtstyle} ${insdata} ">${strtxt}\n`) //  ${figdata.type} // title="${figdata.name}
                 htmlobjects.push('</image>');
                 break;
             
                 case "a":  strhref=`href="{urllocation}" `;
-                case "div": htmlobjects.push(`<${objecttype} class="${classname}" ${insrtstyle} ${insdata} ${strhref} title="${figdata.name}">${strtxt}\n`) //  ${figdata.type}
+                case "div": htmlobjects.push(`<${objecttype} class="${classname}" ${insrtstyle} ${insdata} ${strhref} ">${strtxt}\n`) //  ${figdata.type} // title="${figdata.name}
                             break;
         }
 

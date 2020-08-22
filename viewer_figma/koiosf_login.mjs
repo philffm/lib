@@ -37,6 +37,10 @@ async function init() {
         await loadScriptAsync("https://cdn.jsdelivr.net/npm/fortmatic@latest/dist/fortmatic.js"),        // https://unpkg.com/fortmatic@2.0.6/dist/fortmatic.js
         ])
     console.log("After promise all");
+	
+	
+	
+	
 }    
 
 if (window.ethereum)
@@ -65,6 +69,9 @@ console.log("asyncloaded login")
     getElement("login","scr_profile").addEventListener('animatedclick',Login)    
     getElement("login","scr_comment").addEventListener('animatedclick',Login)    
     getElement("clearcachedprovider").addEventListener('animatedclick',ClearCachedProvider)        
+
+
+
 
 console.log("Setting name link to 3box");
 getElement("name").href="http://3box.io/hub"
