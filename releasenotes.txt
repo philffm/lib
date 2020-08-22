@@ -13,6 +13,7 @@ Most recent 3box: https://unpkg.com/3box@1.21.0/dist/3box.js (includes most rece
 
 Layout updates:
 - update button layout
+- auto vertical scroll (for small screens)
 
 Version 1.90
 Functional updates:
