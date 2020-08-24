@@ -1,4 +1,4 @@
-import {GetJson,subscribe,DomList,setElementVal,GetJsonIPFS,GetImageIPFS,GetURLParam,GetResolvableIPFS,getElement,LinkClickButton,LinkVisible,FindDomidWithId,appendElementVal} from '../lib/koiosf_util.mjs';
+import {GetJson,subscribe,DomList,setElementVal,GetJsonIPFS,GetImageIPFS,GetURLParam,GetResolvableIPFS,getElement,LinkClickButton,LinkVisible,FindDomidWithId,appendElementVal,sleep} from '../lib/koiosf_util.mjs';
 import {SwitchDisplayMessageContinous,DisplayMessageContinous,DisplayMessage} from './koiosf_messages.mjs'
 import {getWeb3,getWeb3Provider} from './koiosf_login.mjs'
 import {GlobalCourseList} from './koiosf_course.mjs'

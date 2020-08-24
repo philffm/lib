@@ -351,7 +351,7 @@ async function GetComponents(componentsid,token) {
 
  //var globalbuttons;
  var globalcomponentsdocument=undefined;
-var globalcompletepage;
+
 var globalcomponentsid;
 var orglocation
 
@@ -426,57 +426,44 @@ console.log(ipfs);
     log("Pass 2");
     //console.log(globalconnectto);
     
-     globalcompletepage=await RenderAllPages(globalconnectto,false);
-    //console.log(completepage);
-    var html=await MakePage2(globalcompletepage,globalembed,globalfonts,globalmediastyles,globalobjname,false)        
-    var url=MakeBlob(html);    
-    
-	
-    document.getElementById("output").innerHTML += `Complete page=${MakeUrl(url)}`   
-
-/*
-    keys = Object.keys(imagelist);
-    if (keys.length > 0) {
-        for (var i = 0; i < keys.length; i++) {                
-            key=keys[i];
-            log(`Wait for ${i} ${key}`);
-            console.log(imagelist[key]);
-            val = await imagelist[key];
-            document.getElementById("output").innerHTML += `Image ${key} in seperate tab: ${MakeUrl(val)}`                                   
-        }
-    }
-*/
+    await ShowInBrowser()
     document.getElementById("SaveOnIpfs").innerHTML="Save on IPFS"  
     document.getElementById("AlsoInject").innerHTML="Inject in current page"  
 }    
     
+async function ShowInBrowser() {	
+	var completepage=await RenderAllPages(globalconnectto,false);
+    //console.log(completepage);
+    var html=await MakePage2(completepage,globalembed,globalfonts,globalmediastyles,globalobjname,false,globalmjspath)        
+    var url=MakeBlob(html);    
+    document.getElementById("output").innerHTML += `Complete page=${MakeUrl(url)}`   
+}	
+	
+	
     
 export async function SaveAlsoOnIpfs() {
     console.log(`SaveAlsoOnIpfs firstpage=${globalobjname}`);
     var completepage=await RenderAllPages(globalconnectto,true);
-    //var html=await MakePage(completepage,globalembed,globalfonts,globalmediastyles,globalobjname,true)    
-	//var result=await SaveOnIpfs(html)
-	
-	
-	var javascript=await MakePage2(completepage,globalembed,globalfonts,globalmediastyles,globalobjname,true)    
-	var resultjavascript=await SaveOnIpfs(javascript)
- 
-
-
+	var javascript1=await MakePage2(completepage,globalembed,globalfonts,globalmediastyles,globalobjname,true,globalmjspath)    
+	var javascript2=await MakePage2(completepage,globalembed,globalfonts,globalmediastyles,globalobjname,true,"https://koiosonline.github.io/lib")    
+	var resultjavascript1=await SaveOnIpfs(javascript1)
+	var resultjavascript2=await SaveOnIpfs(javascript2)
     var str2=""
-    //result=result.replace("https://ipfs.io/ipfs/","")
-	resultjavascript=resultjavascript.replace("https://ipfs.io/ipfs/","")
+	resultjavascript1=resultjavascript1.replace("https://ipfs.io/ipfs/","")
+	resultjavascript2=resultjavascript2.replace("https://ipfs.io/ipfs/","")
+    str2 +="IPFS test link: "+MakeUrl(`https://ipfs.io/ipfs/${resultjavascript1}`); // 
+	str2 +="Koios embedtest link:"+MakeUrl(`https://www.koios.online/test/newviewer?ipfs=${resultjavascript1}`);	
 	
-    str2 +="IPFS link 1: "+MakeUrl(`https://ipfs.io/ipfs/${resultjavascript}`); // 
-    //str2 +="IPFS link 2: "+MakeUrl(`http://www.gpersoon.com:8080/ipfs/${result}`);
-	//str2 +="IPFS link 3 (no images): "+MakeUrl(`https://ipfs.infura.io/ipfs/${result}`); // doesn't show the images (type is correct)
-	str2 +="Koios embedprod link:"+MakeUrl(`https://www.koios.online/newviewer?ipfs=${resultjavascript}`);	
-	str2 +="Koios embedtest link:"+MakeUrl(`https://www.koios.online/test/newviewer?ipfs=${resultjavascript}`);	
+	
+	str2 +="IPFS prod  link: "+MakeUrl(`https://ipfs.io/ipfs/${resultjavascript2}`); // 
+	str2 +="Koios embedprod link:"+MakeUrl(`https://www.koios.online/newviewer?ipfs=${resultjavascript2}`);	
+	
     document.getElementById("output").innerHTML += str2;
 }
  
 export async function AlsoInject() {
-	var modulesource=await MakePage2(globalcompletepage,globalembed,globalfonts,globalmediastyles,globalobjname,false)     
+	var completepage=await RenderAllPages(globalconnectto,false);
+	var modulesource=await MakePage2(completepage,globalembed,globalfonts,globalmediastyles,globalobjname,false,globalmjspath)     
     var tag="//--script--"
     var n = modulesource.indexOf(tag);
     if (n <0 ) { console.error("Can't find tag");return;} 
@@ -485,7 +472,7 @@ export async function AlsoInject() {
     document.getElementsByTagName("html")[0].innerHTML=""
     var html=document.getElementsByTagName("html")[0]
     await import(url2);		   
-} //   InjectPage(globalcompletepage,globalembed,globalfonts,globalmediastyles,globalobjname,false)
+} 
 
  
     
@@ -646,35 +633,16 @@ function MakeHeader(embed,globalfonts,globalmediastyles) {
     return strprefix;
 }
     
-// this script is embedded in the destination page==========================================================================// dont use reverse quotes    
-	var loadimagescript= globalmjspath+"/genhtml/startgen.mjs"
-//var loadimagescript= "https://gpersoon.com/koios/lib/genhtml/startgen.mjs"   // carefull with 2 different versions (could be executed twice)
-// end ==========================================================================        
 
 
-/*    
-async function MakePage(strinput,embed,globalfonts,globalmediastyles,firstpage,fIPFS) {
-    var str="" 
-    str +='<html>'   
-    var head=MakeHeader(embed,globalfonts,globalmediastyles)   
-    str += head;    
-    str +='<body>'    
-    var body=""
-    body += `<div class="firstpage" data-firstpage="${firstpage}">`
-    body += "</div>"    
-    body += strinput    
-    var x=await fetch(loadimagescript);
-    var y=await x.text()    
-    var scriptwithtag=MakeScriptTag(true,undefined,y); // not as a module: function's have to be exported & imported then    
-    body +=scriptwithtag;    
-    str += body;
-    str +='</body>'
-    str +='</html>'    
-    return str;
-}   
-*/
 
-async function MakePage2(strinput,embed,globalfonts,globalmediastyles,firstpage,fIPFS) {
+ 
+
+async function MakePage2(strinput,embed,globalfonts,globalmediastyles,firstpage,fIPFS,mjspath) {
+	
+	var loadimagescript= mjspath+"/genhtml/startgen.mjs"
+	var embedstr=mjspath+"/"+embed
+	
 	var injectscript=""
 	injectscript+='   var head=document.getElementsByTagName("head")[0];\n'
     injectscript+='   var meta=document.createElement("meta");\n'
@@ -696,10 +664,8 @@ async function MakePage2(strinput,embed,globalfonts,globalmediastyles,firstpage,
 	injectscript +=`   await import("${loadimagescript}");\n`  // note async
 	injectscript +='   console.log("Right after loadimage");\n';
 if (embed) {
-	 var embedstr=globalmjspath+"/"+embed
     injectscript +=`   await import("${embedstr}");\n` // note async
 }
-
 	injectscript +='   console.log("Right after embed");\n';
 	injectscript +='   var event = new Event("DOMContentLoaded",{  bubbles: true,  cancelable: true});'
 	injectscript +='   window.document.dispatchEvent(event);\n'	
@@ -730,36 +696,7 @@ if (embed) {
 }
 
 
-        
-/*
-async function InjectPage(strinput,embed,globalfonts,globalmediastyles,firstpage,fIPFS) {
-    var head=MakeHeader(embed,globalfonts,globalmediastyles)       
-    
-    document.getElementsByTagName("head")[0].innerHTML += head; // append the head info
-    
-    var body=""
-    body += `<div class="firstpage" data-firstpage="${firstpage}">`
-    body += "</div>"    
-    body += strinput
-    
-    document.getElementById('inject').innerHTML +=body;
-    var x=await fetch(loadimagescript);
-    var y=await x.text()
-    var myscript = document.createElement('script');
-    myscript.innerHTML=y;
-    document.body.appendChild(myscript);
-
-    if (embed) {
-        console.log(`Loading ${embed}`);
-        var mod=await import(embed);
-        console.log(mod)
-    }
-    var event = new Event('DOMContentLoaded',{  bubbles: true,  cancelable: true});
-    window.document.dispatchEvent(event);    
-    main();
-}   
-        
-*/
+ 
  
 
     
