@@ -1,3 +1,16 @@
+Version 1.93
+
+Functional updates:
+- check if it's possible to join course
+
+Technical updates:
+- fixed variable wanted
+- redeployed the tokens contract with other eth account
+
+Layout updates:
+- updated logo of contract badge to lateste logo
+
+
 Version 1.92
 
 Functional updates:

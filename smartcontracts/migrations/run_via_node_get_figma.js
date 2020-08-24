@@ -9,15 +9,16 @@ list=[];
 // module.exports
 var init = async function(deployer) {
     const IpfsHttpClient = require('ipfs-http-client')
-    var ipfs = await IpfsHttpClient("http://diskstation:5002"); // 'https://ipfs.infura.io:5001'); //for infura node
+    var ipfs = await IpfsHttpClient( /*"http://diskstation:5002"); */ 'https://ipfs.infura.io:5001'); //for infura node
 	var url=`https://api.figma.com/v1/files/${documentid}`  // to export the vectors: ?geometry=paths    
     var documentpart=(await FigmaApiGet(url,token)).document;
+console.log(documentpart)
     var coursesdata=await fetch("https://gpersoon.com/koios/lib/viewer_figma/courseinfo.json");
     var courses=await coursesdata.json()
     
 
 
-
+console.log(courses);
 	cidKoios=await MakeImage(ipfs, "Koioslogo",documentpart); 	// used for the contract itself, no longer a tokentitself		
 	cidAdmin=await MakeImage(ipfs, "Admin",documentpart); 		
 	cidKeyGiver=await MakeImage(ipfs, "Key-giver",documentpart); 	
