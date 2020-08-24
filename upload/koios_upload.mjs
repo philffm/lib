@@ -11,7 +11,7 @@ import {SetupLogWindow,log} from '../lib/koios_log.mjs';
 console.log("Hello koios_upload");
     
   SetupLogWindow(false)
-    LinkClickButton("startprocess");subscribe("startprocessclick",startprocess);
+    //LinkClickButton("startprocess");subscribe("startprocessclick",startprocess);
     log("checklist")
     log("-video's are uploaded to koios channel")
     log("-playlist is made in koios channel");
@@ -19,6 +19,13 @@ console.log("Hello koios_upload");
     log("-add translated subtitles")
     log("-for automatically created subtitles (word based): export and import")
     
+
+
+function MakeUrl(url) {
+    return `<a href="${url}" target="_blank"> ${url}` + " in new page</a><br>"
+}
+
+
     
 async function startprocess() {
     log("startprocess");   
@@ -29,6 +36,8 @@ async function startprocess() {
     var x=await uploadYtDataToIpfs();
     for (var i=0;i<x.res.length;i++) {
         log(x.res[i]);
+		//log(MakeUrl(`https://koios.online/test/newviewer?videoinfo=${x.res[i].hash}`))
+		log(MakeUrl(`https://koios.online/newviewer?videoinfo=${x.res[i].hash}`))
         
     }    
    var str = DisplayInfo(x.list)
@@ -95,3 +104,4 @@ function DisplayInfo(list) {
    return str;
 }
 
+startprocess();

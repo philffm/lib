@@ -6,9 +6,10 @@ Functional updates:
 Technical updates:
 - fixed variable wanted
 - redeployed the tokens contract with other eth account
+- generator automatically makes production ipfs version
 
 Layout updates:
-- updated logo of contract badge to lateste logo
+- updated logo of contract badge to latest logo
 
 
 Version 1.92
