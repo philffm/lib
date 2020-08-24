@@ -217,11 +217,15 @@ async function Joincourse() {
 		show("Login first to join the course");
 		return;
 	}
+	if (!wantedCourseStudentId) {
+		show("Can't join this course yet");
+		return;
+	}	
 	show("Joining course, getting badge")
 
 	
 	var mybalance=await web3.eth.getBalance(accounts[0]);
-	show(`Trying to get badgetemplate ${wanted}`)
+	show(`Trying to get badgetemplate ${wantedCourseStudentId}`)
 	show(`mybalance ${mybalance}`)
 	show("Wait 20 seconds to get some ETH")
 	const privateKey= '0x0da19552d21de3da01e4a5ff72f6722b9a86c78ee6c6a46e5cdcf0fb5a936110'; // note very insecure, but for test ETH this is usable   
