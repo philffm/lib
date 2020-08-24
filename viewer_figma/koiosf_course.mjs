@@ -106,12 +106,24 @@ class CourseList {
 export var GlobalCourseList=new CourseList("https://gpersoon.com/koios/lib/viewer_figma/courseinfo.json");
 
 export async function GetCourseInfo(key) {
+	
+	console.log(`In GetCourseInfo ${key}`)
     var defaultreturn;
+	var override=GetURLParam(key)
+	if (override) {
+		console.log(`Overriding ${key} with ${override}`)
+		return(override)
+	}
+	
     switch (key) {
        case "slides": defaultreturn="QmWUXkvhWoaULAA1TEPv98VUYv8VqsiuuhqjHHBAmkNw2E";break;
        case "videoinfo": defaultreturn="QmUj3D5yMz5AMPBHVhFdUF2CpadeHDsEuyr1MSNjT5m31R";break;
     }
     
+	
+	
+	
+	
     var courseid=GlobalCourseList.GetCurrentCourse()
     
     console.log(`GetCourseInfo ${key} ${courseid}`)    

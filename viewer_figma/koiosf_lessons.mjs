@@ -127,6 +127,8 @@ async function NewCourseSelected() {
     GlobalLessonList=new LessonList(videocid)    
     var lessons=await GlobalLessonList.GetLessonsList()
     if (lessons) {
+		console.log("Have lesson info:")
+		console.log(lessons);
         for (var i=0;i<lessons.length;i++)
                AddLessonsItem(lessons[i],i)    
         var chapters=await GlobalLessonList.GetChaptersList()   
