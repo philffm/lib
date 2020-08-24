@@ -213,6 +213,10 @@ async function Joincourse() {
 	function show(str) { appendElementVal("jointext",str+"<br>","ov_join")	}
 
 	setElementVal("jointext","","ov_join")
+	if (!web3) {
+		show("Login first to join the course");
+		return;
+	}
 	show("Joining course, getting badge")
 
 	

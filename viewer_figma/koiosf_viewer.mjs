@@ -433,7 +433,7 @@ function ScrCommunityMadeVisible () {
     
     console.log(`ScrCommunityMadeVisible Opening ${globalcommunity}`)
     
-	getElement("btncommunity","scr_community").dispatchEvent(new CustomEvent("displayactive")); // then hide the join button
+	//getElement("btncommunity","scr_community").dispatchEvent(new CustomEvent("displayactive")); // then hide the join button
 	
 	
     getElement("communitylink").href=globalcommunity
