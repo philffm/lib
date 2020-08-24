@@ -195,7 +195,7 @@ async function fetchAccountData() {
 const profile = await Box.getProfile(selectedAccount)
 console.log(profile)
 if (profile) {
-    getElement("name").textContent = profile.name + " " + profile.emoji
+    getElement("name").textContent = `${profile.name?profile.name:"No name defined yet on 3box"} ${profile.emoji?profile.emoji:""}`
     if (profile.image) {
         var imagecid=profile.image[0].contentUrl
         imagecid=imagecid[`\/`]
