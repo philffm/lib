@@ -22,6 +22,7 @@ Layout updates:
 - updated html generator
 - buttons less divs
 - textbuttons autoresize
+- moved join button to left to prevent accidental use
 
 Version 1.91
 
