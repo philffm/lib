@@ -1,3 +1,14 @@
+Version 1.92
+
+Functional updates:
+
+
+Technical updates:
+
+Layout updates:
+- updated html generator
+- buttons less divs
+- textbuttons autoresize
 
 Version 1.91
 

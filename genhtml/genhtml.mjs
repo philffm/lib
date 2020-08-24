@@ -541,7 +541,7 @@ async function ConvertToHTML(foid,figmadocument,documentid,token) {
     globalpagesfirstpass++ // only increase if a page is really present
     
     //console.log(currentobject)
-    var htmlobj=await recurse(currentobject,figmadocument,documentid,token,false,false,false,undefined); // retrieve the found object
+    var htmlobj=await recurse(currentobject,figmadocument,documentid,token,false,0,false,undefined); // retrieve the found object
     
     var returnset={ name:currentobject.name, id: foid, htmlobj: htmlobj }    
     //log(`Exit ConvertToHTML ${foid} name: ${currentobject.name}`);    
@@ -821,26 +821,26 @@ function GetAtParam(figdata,name) {
 
 
 
-async function recurse(figdata,figmadocument,documentid,token,fpartofgrid,fpartofbutton,fpartofflex,pb) { // pb is (optional) parent boundingbox
+async function recurse(figdata,figmadocument,documentid,token,fpartofgrid,buttonlevel,fpartofflex,pb) { // pb is (optional) parent boundingbox
         var htmlobjects=[]                        
         console.log(`Processing ${figdata.name} with ${figdata.children ? figdata.children.length : 0} children`);    //Type:${figdata.type}
         console.log(figdata);
         
         if (figdata.visible==false) return "";        
         
-        var zindex=GetAtParam(figdata,"@zindex");        
+        var zindex=GetAtParam(figdata,"@zindex")       
         
         
-        var fsvg=    GetAtParam(figdata,"@svg")            // console.log(`fsvg=${fsvg}`)
-		var fpng=    GetAtParam(figdata,"@png")            // console.log(`fsvg=${fsvg}`)
-        var faspect= GetAtParam(figdata,"@aspect")      //  console.log(`faspect=${faspect}`)
-        var fhidden= GetAtParam(figdata,"@hidden")      //  console.log(`faspect=${faspect}`)
+        var fsvg=    GetAtParam(figdata,"@svg")!=undefined            // console.log(`fsvg=${fsvg}`)
+		var fpng=    GetAtParam(figdata,"@png")!=undefined            // console.log(`fsvg=${fsvg}`)
+        var faspect= GetAtParam(figdata,"@aspect")!=undefined      //  console.log(`faspect=${faspect}`)
+        var fhidden= GetAtParam(figdata,"@hidden")!=undefined      //  console.log(`faspect=${faspect}`)
         
-        var click=GetAtParam(figdata,"@click");
-        var dest=GetAtParam(figdata,"@dest");
-        var toggle=GetAtParam(figdata,"@toggle")
+        var click=GetAtParam(figdata,"@click")!=undefined
+        var dest=GetAtParam(figdata,"@dest")
+        var toggle=GetAtParam(figdata,"@toggle")!=undefined
         
-        
+        var fstaticwidth=GetAtParam(figdata,"@staticwidth")!=undefined
         
         
         var fthisisabutton= click || toggle
@@ -859,7 +859,8 @@ async function recurse(figdata,figmadocument,documentid,token,fpartofgrid,fparto
         
         var fgrid = gridcols || gridrows
         
-        var frelative=   GetAtParam(figdata,"@relative")
+        var frelative=   GetAtParam(figdata,"@relative")!=undefined
+		var fabsolute=   GetAtParam(figdata,"@absolute")!=undefined
         
         var b=figdata.absoluteBoundingBox;
         var strtxt=""
@@ -914,11 +915,30 @@ async function recurse(figdata,figmadocument,documentid,token,fpartofgrid,fparto
 
 
 
-       
+       console.log(`${figdata.name} buttonlevel:${buttonlevel} fabsolute:${fabsolute} fthisisabutton:${fthisisabutton}`)
+	   
+	   display="inline-block"
+	   
+	   
         if (b) { //|| figdata.layoutMode
-            dimensions +=`position: ${figdata.isFixed?"fixed":(frelative || fpartofflex )?"relative":"absolute"};`;      // for grid with auto layout, relative position is neccesary          
+		
+		var makerelative;
+		if (buttonlevel) makerelative=true;
+		if (fpartofflex) makerelative=true;
+	//	if (buttonlevel==1) makerelative=false; // only on firstlevel absolute to overlap
+		if (buttonlevel>1) makerelative=true;
+		
+		
+		if (frelative) makerelative=true;
+		if (fabsolute) makerelative=false;
+		
+		console.log(`makerelative=${makerelative}`);
+       dimensions +=`position: ${figdata.isFixed?"fixed":makerelative?"relative":"absolute"};`;      // for grid with auto layout, relative position is neccesary          
+console.log(dimensions)			     
+
             if (!pb) {
-                strstyle +=`width:100%;height:100%;`; // no parent => so give it all the space, left & top default values // 
+				if (!buttonlevel)
+					strstyle +=`width:100%;height:100%;`; // no parent => so give it all the space, left & top default values // 
                 // dimensions=""; // prevent minor scroll actions ==> messes up zindez
                 if (figdata.name != globalobjname)
                     display="none"; // initially hidden (relevant when there are more pages), except for the first one
@@ -1004,6 +1024,11 @@ async function recurse(figdata,figmadocument,documentid,token,fpartofgrid,fparto
                                 height =`${b.height}px`;
                     }
                 }
+				
+				if (fthisisabutton && !fstaticwidth) {
+					width=undefined; // let the button create its width automatically
+				}
+				
                  if (fpartofflex) {
                     // console.log(width,height,left,right,bottom,top,paddingbottom)
                     if (figdata.type=="TEXT") {
@@ -1058,11 +1083,18 @@ async function recurse(figdata,figmadocument,documentid,token,fpartofgrid,fparto
                     
                     
                     display="flex"
-                    dimensions +=`padding: ${figdata.verticalPadding?figdata.verticalPadding:0}px ${figdata.horizontalPadding?figdata.horizontalPadding:0}px;`
+                    
                     switch (figdata.layoutMode) {
                         case "VERTICAL": {
                                     dimensions+="flex-direction: column;";
                                     fflex=`margin-bottom: ${figdata.itemSpacing?figdata.itemSpacing:0}px;`;
+									dimensions +=`padding-top:    ${figdata.verticalPadding?figdata.verticalPadding:0}px; `
+									dimensions +=`padding-bottom: ${(figdata.verticalPadding?figdata.verticalPadding:0)-(figdata.itemSpacing?figdata.itemSpacing:0)}px; `
+									dimensions +=`padding-left:   ${figdata.horizontalPadding?figdata.horizontalPadding:0}px; `
+									dimensions +=`padding-right:  ${figdata.horizontalPadding?figdata.horizontalPadding:0}px; `
+									
+																	
+									
                                     height=undefined; // determined by underlying divs
                                     if (figdata.counterAxisSizingMode && figdata.counterAxisSizingMode=="FIXED") {
                                         // keep width
@@ -1073,11 +1105,18 @@ async function recurse(figdata,figmadocument,documentid,token,fpartofgrid,fparto
                         case "HORIZONTAL": {
                                     dimensions +="flex-direction: row;";
                                     fflex=`margin-right: ${figdata.itemSpacing?figdata.itemSpacing:0}px;`; 
+																		
+									dimensions +=`padding-top:    ${figdata.verticalPadding?figdata.verticalPadding:0}px; `
+									dimensions +=`padding-bottom: ${figdata.verticalPadding?figdata.verticalPadding:0}px; `
+									dimensions +=`padding-left:   ${figdata.horizontalPadding?figdata.horizontalPadding:0}px; `
+									dimensions +=`padding-right:  ${(figdata.horizontalPadding?figdata.horizontalPadding:0)-(figdata.itemSpacing?figdata.itemSpacing:0)}px; `
+									
+									width=undefined; // determined by underlying divsf
                                     if (figdata.counterAxisSizingMode && figdata.counterAxisSizingMode=="FIXED") {
                                         // keep height 
                                     } else 
                                         height=undefined; // determined by underlying divs                                    
-                                    width=undefined; // determined by underlying divs
+                                    
                         }
                         break;
                     }
@@ -1292,7 +1331,7 @@ function ConvertColor(color) {
         
         var eventhandlers=""
         
-        if (fthisisabutton  && !fpartofbutton) { // don't do event on nested parts of the button
+        if (fthisisabutton  && !buttonlevel) { // don't do event on nested parts of the button
         
         surroundingdiv=";"
         
@@ -1336,8 +1375,10 @@ function ConvertColor(color) {
             htmlobjects.push( `<div class="${classname}" ${insrtstyle2} class="surround" ${insdata} style="${surroundingdiv};border-style:solid;border-width:1px;border-color:red;" ${eventhandlers}>` ); // width:100%;height:100%;
             dimensions=""; // dimensions are part of surroundingdiv
             
-            dimensions ='position: absolute;width:100%;height:100%;' // set dimension to max in order to use of surroundingdiv
-            
+            dimensions ='position: relative;' // width:95%;height:96%;set dimension to max in order to use of surroundingdiv // only used for buttons ==> let the underlying text define the buttons
+            buttonlevel++; // so the rest is relative
+			if (fstaticwidth)         dimensions +=`width:${width};`;
+			
             insdata="" // don't put it on buttons itself anymore
             
             classname=classname.split(" ")[0]; // only keep the first part  to prevent confusion (when attaching eventlisteners)
@@ -1382,7 +1423,7 @@ function ConvertColor(color) {
                     var fflextopass=fflex; // goed afjust margin here, depending on child#, but with dynamicly duplicted items not useful
                     
                 } else fflextopass=fflex;
-                htmlobjects.push( recurse(children[i],figmadocument,documentid,token,fgrid,fthisisabutton,fflextopass,figdata.absoluteBoundingBox) )
+                htmlobjects.push( recurse(children[i],figmadocument,documentid,token,fgrid,(fthisisabutton || buttonlevel)?buttonlevel+1:0,fflextopass,figdata.absoluteBoundingBox) )
             }    
        
             //if (!image) // close the div
@@ -1391,10 +1432,12 @@ function ConvertColor(color) {
 
  
         if (fthisisabutton) { // this is a button so also get all other instance of a button 
+		console.log(`Retrieving other buttons of  ${figdata.name}-----------------------------------------------------------`)
            htmlobjects.push(GetOtherButton(figdata.name,"--hover"))
            htmlobjects.push(GetOtherButton(figdata.name,"--active"))
            htmlobjects.push(GetOtherButton(figdata.name,"--focus"))
            htmlobjects.push(GetOtherButton(figdata.name,"--disabled"))
+		   console.log(`End retrieving other buttons of  ${figdata.name}-----------------------------------------------------------`)
         }
   
 
@@ -1420,7 +1463,7 @@ function ConvertColor(color) {
         if (!globalcomponentsdocument) return ""
         var fo=FindObject(`${firstpart}${subselect}`,globalcomponentsdocument)
         if (!fo) return ""
-        var button=await recurse(fo,figmadocument,globalcomponentsid,token,fgrid,fthisisabutton,fflextopass,undefined) // no bounding=> hidden &max width     // get from componentsid!!!       
+        var button=await recurse(fo,figmadocument,globalcomponentsid,token,fgrid,1,fflextopass,undefined) // no bounding=> hidden &max width     // get from componentsid!!!       
       //  console.log("button info is:")
       //  console.log(button);
         return button;

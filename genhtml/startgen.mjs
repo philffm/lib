@@ -61,8 +61,9 @@ async function SwitchTo(domid,divtype) {
     var children = domid.childNodes;
   //  console.log(children);
     for (var i=0;i<children.length;i++) {
-      // console.log(children[i]);
-        //children[i].style.display="none"
+       console.log(children[i]);
+	    if (children[i].style)
+			children[i].style.display="none"
         if (children[i].style) {
             children[i].style.transition="all 200 ease-in-out";
             children[i].style.transitionDelay="0s"        
@@ -79,7 +80,7 @@ async function SwitchTo(domid,divtype) {
     }
     
     var main=domid.firstChild;
-  //  console.log(main)
+    console.log(main)
     
     if (divtype=="") {
         var found=main;
@@ -94,25 +95,25 @@ async function SwitchTo(domid,divtype) {
             found=foundlist[0]    
         
     }
-   // console.log("found")
-   // console.log(found)
+    console.log("found")
+    console.log(found)
     if (found) { 
     
     //console.log("previous")
     //console.log(previous)
         
-        found.style.display="block"
-//        found.style.width=domid.style.width
-//        found.style.height=domid.style.height
-//        found.style.left=domid.style.left
-//        found.style.top=domid.style.top       
-//        found.style.right=domid.style.right       
-//        found.style.bottom=domid.style.bottom      
-//        found.style.position=domid.style.position              
+        found.style.display=main.style.display
+        found.style.width=main.style.width
+        found.style.height=main.style.height
+        found.style.left=main.style.left
+        found.style.top=main.style.top       
+        found.style.right=main.style.right       
+        found.style.bottom=main.style.bottom      
+        found.style.position=main.style.position              
 
-        found.style.position="absolute"
-         found.style.width="100%"
-        found.style.height="100%"
+        //found.style.position="absolute"
+        // found.style.width="100%"
+        //found.style.height="100%"
 
         found.style.transitionDelay="200"        
         found.style.opacity="0";        
@@ -137,7 +138,8 @@ async function SwitchTo(domid,divtype) {
      
         found.style.opacity="1"; // start the transition
         //await sleep(200);
-     //   previous.style.display="none";
+		if (found)
+			found.style.display=domid.style.display
        // console.log("found")
        // console.log(found)
       //  console.log("previous")
