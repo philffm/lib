@@ -10,7 +10,7 @@ Technical updates:
 
 Layout updates:
 - updated logo of contract badge to latest logo
-
+- fixed layout of course buttons (related to doctype tag)
 
 Version 1.92
 
