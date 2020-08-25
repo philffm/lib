@@ -342,7 +342,7 @@ async function GetComponents(componentsid,token) {
                 
             }
         }
-        var res=await RenderAllPages(componentlist,false)
+        var res=await RetrieveLinkedPages(componentlist,false)
         console.log(res);
         return res;               
     }
@@ -360,27 +360,30 @@ async function Reload() {
    location.href=orglocation;
 }   
 var globalmjspath;
+var globalfigmadocument;
+var globaldocumentid;
+var globaltoken;
 
 async function start() {
     
     orglocation=location.href
     
-    var token=document.getElementById("figmakey").innerHTML.trim();
-    var documentid=document.getElementById("pageid").innerHTML.trim();    
+    globaltoken=document.getElementById("figmakey").innerHTML.trim();
+    globaldocumentid=document.getElementById("pageid").innerHTML.trim();    
     globalcomponentsid=document.getElementById("components").innerHTML.trim();    
     globalobjname=document.getElementById("objname").innerHTML.trim();
     globalembed=document.getElementById("embed").innerHTML.trim();
     globalmjspath=document.getElementById("mjspath").innerHTML.trim();
     
-    if (token.replace(/\./g,'')=="") { log("Figma token missing");return;}
-    if (documentid.replace(/\./g,'')=="") { log("Document id missing");return;}
+    if (globaltoken.replace(/\./g,'')=="") { log("Figma token missing");return;}
+    if (globaldocumentid.replace(/\./g,'')=="") { log("Document id missing");return;}
     if (globalembed.replace(/\./g,'')=="") globalembed=undefined; // if only ..., then no embed
     if (globalcomponentsid.replace(/\./g,'')=="") globalcomponentsid=undefined; // if only ..., then no embed
     
     
     log("Pass 1");
     globalpinlocation=document.getElementById("pin").innerHTML.trim();
-    console.log(`Start ${token} ${documentid}`);
+    console.log(`Start ${globaltoken} ${globaldocumentid}`);
 	ipfs = window.IpfsHttpClient(globalpinlocation); // 'https://ipfs.infura.io:5001'
 //ipfs2 = window.IpfsHttpClient('http://diskstation:5002'); 
 console.log(ipfs);
@@ -391,14 +394,14 @@ console.log(ipfs);
     
     //globalbuttons=await GetComponents(componentsid,token)
     if (globalcomponentsid) {
-        var components=(await FigmaApiGet(`https://api.figma.com/v1/files/${globalcomponentsid}`,token));
+        var components=(await FigmaApiGet(`https://api.figma.com/v1/files/${globalcomponentsid}`,globaltoken));
         if (components.err) {log(`Error retrieving figma info: ${components.status} ${components.err} `);return;}
         console.log(components);
         globalcomponentsdocument=components.document
     }
     
-    var url=`https://api.figma.com/v1/files/${documentid}`  // to export the vectors: ?geometry=paths    
-    var documentpart=await FigmaApiGet(url,token)
+    var url=`https://api.figma.com/v1/files/${globaldocumentid}`  // to export the vectors: ?geometry=paths    
+    var documentpart=await FigmaApiGet(url,globaltoken)
     
     if (documentpart.err) {log(`Error retrieving figma info: ${documentpart.status} ${documentpart.err} `);return;}
     console.log(documentpart);
@@ -408,10 +411,10 @@ console.log(ipfs);
     
     
     
-    var figmadocument=documentpart.document;
-    console.log(figmadocument);
-    //log(`Found page: ${figmadocument.name?figmadocument.name:""} ${figmadocument.id}`);    
-    var fo=FindObject(globalobjname,figmadocument)
+    globalfigmadocument=documentpart.document;
+    console.log(globalfigmadocument);
+    //log(`Found page: ${globalfigmadocument.name?globalfigmadocument.name:""} ${globalfigmadocument.id}`);    
+    var fo=FindObject(globalobjname,globalfigmadocument)
     console.log(fo);
     
     if (!fo) {
@@ -422,28 +425,30 @@ console.log(ipfs);
     //log(`Page: ${globalpagesfirstpass++} ${globalobjname} ${fo.id}`); // id: ${fo.id}
     
 
-    globalconnectto[fo.id] = ConvertToHTML(fo.id,figmadocument,documentid,token)
-    log("Pass 2");
-    //console.log(globalconnectto);
+    globalconnectto[fo.id] = ConvertToHTML(fo.id,globalfigmadocument,globaldocumentid,globaltoken)
+	
+	await RetrieveLinkedPages(globalconnectto);
     
+    //log(`globalconnectto: ${JSON.stringify(Object.keys(globalconnectto))}`);
+	console.log(globalconnectto);
+	
     await ShowInBrowser()
     document.getElementById("SaveOnIpfs").innerHTML="Save on IPFS"  
     document.getElementById("AlsoInject").innerHTML="Inject in current page"  
 }    
     
 async function ShowInBrowser() {	
-	var completepage=await RenderAllPages(globalconnectto,false);
+	var completepage=await RenderPages(globalconnectto,false);
     //console.log(completepage);
     var html=await MakePage2(completepage,globalembed,globalfonts,globalmediastyles,globalobjname,false,globalmjspath)        
     var url=MakeBlob(html);    
     document.getElementById("output").innerHTML += `Complete page=${MakeUrl(url)}`   
-}	
-	
+}		
 	
     
 export async function SaveAlsoOnIpfs() {
     console.log(`SaveAlsoOnIpfs firstpage=${globalobjname}`);
-    var completepage=await RenderAllPages(globalconnectto,true);
+    var completepage=await RenderPages(globalconnectto,true);
 	var javascript1=await MakePage2(completepage,globalembed,globalfonts,globalmediastyles,globalobjname,true,globalmjspath)    
 	var javascript2=await MakePage2(completepage,globalembed,globalfonts,globalmediastyles,globalobjname,true,"https://koiosonline.github.io/lib")    
 	var resultjavascript1=await SaveOnIpfs(javascript1)
@@ -462,7 +467,7 @@ export async function SaveAlsoOnIpfs() {
 }
  
 export async function AlsoInject() {
-	var completepage=await RenderAllPages(globalconnectto,false);
+	var completepage=await RenderPages(globalconnectto,false);
 	var modulesource=await MakePage2(completepage,globalembed,globalfonts,globalmediastyles,globalobjname,false,globalmjspath)     
     var tag="//--script--"
     var n = modulesource.indexOf(tag);
@@ -476,36 +481,57 @@ export async function AlsoInject() {
 
  
     
-async function RenderAllPages(globalconnectto,fIPFS) {
-    //log("RenderAllPages");
-    var completepage=""
+async function RetrieveLinkedPages(globalconnectto) {
+    log("Pass 2: RetrieveLinkedPages");
+	//log(`globalconnectto: ${JSON.stringify(Object.keys(globalconnectto))}`);
+	
+	do {	
+		var keys = Object.keys(globalconnectto);
+		if (keys.length > 0) {
+			for (var i = 0; i < keys.length; i++) {                
+				var key=keys[i];
+				//log(`Wait for ${i} ${key}`);
+				//console.log(globalconnectto[key]);
+				if (globalconnectto[key]==true) {
+				   log(`Retrieving ${key}`)
+				   globalconnectto[key]=ConvertToHTML(key,globalfigmadocument,globaldocumentid,globaltoken,embed) // = promise, so executed in parallel
+			    } 
+				
+				var val = await globalconnectto[key];			
+				//console.log(val);
+				//log(`Page ${i+1} of ${keys.length}  ${val?val.name:"not found:"} ${key}`);			 
+			}
+		} 		
+		var left=0;
+		var keys = Object.keys(globalconnectto);	
+		for (var i = 0; i < keys.length; i++) {                
+			var key=keys[i];
+			if (globalconnectto[key]==true) 
+				left++				
+		} 		
+		//if (left >0) log(`Remaining ${left}`);
+	} while (left > 0);
     
-    var keys = Object.keys(globalconnectto);
-    if (keys.length > 0) {
-        for (var i = 0; i < keys.length; i++) {                
-            var key=keys[i];
-            //log(`Wait for ${i} ${key}`);
-            //console.log(globalconnectto[key]);
-            var val = await globalconnectto[key];
-            //console.log(val);
-            log(`Page ${i+1} of ${keys.length}  ${val?val.name:"not found:"} ${key}`);
-            if (val) {                
-                var html= await recursehtml(val.htmlobj,fIPFS);    
-            
-            
-                //var blob=MakeBlob(html);
-                //document.getElementById("output").innerHTML += `Open ${val.name.padEnd(60, ' ')} : ${MakeUrl(blob)}`   
-                completepage += html; // already a div
-            }
-        }
-    } 
-    return completepage
 }
 
 
-
-
-    
+async function RenderPages(globalconnectto,fIPFS) {
+	log("Step 3: RenderPages");
+	var completepage=""
+	var keys = Object.keys(globalconnectto);
+		if (keys.length > 0) {
+			for (var i = 0; i < keys.length; i++) {                
+				var key=keys[i];				
+				var val = await globalconnectto[key];			
+				log(`Page ${i+1} of ${keys.length}  ${val?val.name:"not found:"} ${key}`);
+				if (val) {                
+					var html= await recursehtml(val.htmlobj,fIPFS);    
+					completepage += html; // already a div
+				}
+			}
+		} 
+		return completepage
+}    
     
     
     
@@ -522,7 +548,7 @@ let globalfonts = []
 async function ConvertToHTML(foid,figmadocument,documentid,token) {  
     var currentobject=FindObject(foid,figmadocument)
     
-    log(`Page ${globalpagesfirstpass} ${foid} ${currentobject?currentobject.name:"(not found)"} ${currentobject?currentobject.id:""}`);
+    //log(`Page ${globalpagesfirstpass} ${foid} ${currentobject?currentobject.name:"(not found)"} ${currentobject?currentobject.id:""}`);
     
     if (!currentobject) return undefined;
     globalpagesfirstpass++ // only increase if a page is really present
@@ -757,6 +783,9 @@ function GetAtParam(figdata,name) {
 }
 
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 
 async function recurse(figdata,figmadocument,documentid,token,fpartofgrid,buttonlevel,fpartofflex,pb) { // pb is (optional) parent boundingbox
@@ -764,6 +793,10 @@ async function recurse(figdata,figmadocument,documentid,token,fpartofgrid,button
         console.log(`Processing ${figdata.name} with ${figdata.children ? figdata.children.length : 0} children`);    //Type:${figdata.type}
         console.log(figdata);
         
+		//log(`Recurse ${figdata.name}`);
+		
+		
+		
         if (figdata.visible==false) return "";        
         
         var zindex=GetAtParam(figdata,"@zindex")       
@@ -782,6 +815,11 @@ async function recurse(figdata,figmadocument,documentid,token,fpartofgrid,button
         
         
         var fthisisabutton= click || toggle
+		if (fthisisabutton && (buttonlevel >0)) {
+			console.error(`Button within a button ${figdata.name}, stopping recusing`)
+			return;
+		}
+		
         
         var gridcols=   GetAtParam(figdata,"@gridcols")
         var gridrows=   GetAtParam(figdata,"@gridrows")
@@ -822,14 +860,7 @@ async function recurse(figdata,figmadocument,documentid,token,fpartofgrid,button
         var transform=""
 
 
-      if (dest) {
-        //log(`Connect: ${dest}`);
-        if (!globalconnectto[dest]) {
-            globalconnectto[dest]=true; // prevent recursing too fast
-            globalconnectto[dest]=ConvertToHTML(dest,figmadocument,documentid,token,embed) // = promise, so executed in parallel
-        }                
-     }    
-
+      if (dest && !globalconnectto[dest]) globalconnectto[dest]=true; // remember to search later
 
 
 /*

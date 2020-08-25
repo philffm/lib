@@ -61,7 +61,7 @@ async function SwitchTo(domid,divtype) {
     var children = domid.childNodes;
   //  console.log(children);
     for (var i=0;i<children.length;i++) {
-       console.log(children[i]);
+      // console.log(children[i]);
 	    if (children[i].style)
 			children[i].style.display="none"
         if (children[i].style) {
@@ -80,7 +80,7 @@ async function SwitchTo(domid,divtype) {
     }
     
     var main=domid.firstChild;
-    console.log(main)
+   // console.log(main)
     
     if (divtype=="") {
         var found=main;
@@ -95,8 +95,8 @@ async function SwitchTo(domid,divtype) {
             found=foundlist[0]    
         
     }
-    console.log("found")
-    console.log(found)
+   // console.log("found")
+   // console.log(found)
     if (found) { 
     
     //console.log("previous")
