@@ -180,6 +180,7 @@ function AddLessonsItem(vidinfo,index) { // txt,thumbnail,description,videoid,du
     getElement("lesson-name",cln).innerHTML=vidinfo.txt;    
     FitOneLine(getElement("lesson-name",cln))    
     var date = new Date(null);
+	console.log(data);
     date.setSeconds(vidinfo.duration); // specify value for SECONDS here
     var result = date.toISOString().substr(10, 9);
     result=result.replace("T00:", "T");
