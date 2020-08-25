@@ -7,10 +7,12 @@ Technical updates:
 - fixed variable wanted
 - redeployed the tokens contract with other eth account
 - generator automatically makes production ipfs version
+- generator refactored recursion
 
 Layout updates:
 - updated logo of contract badge to latest logo
 - fixed layout of course buttons (related to doctype tag)
+- fixed middle buttons
 
 Version 1.92
 
