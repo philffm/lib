@@ -51,7 +51,8 @@ class SlideList {
 		console.log(list)
         if (list)        
             for (var i=0;i<list.length;i++) {
-				var slidesinfo = list[i]				
+				var slidesinfo = list[i]	
+console.log(				slidesinfo)
 				if (slidesinfo.png===undefined) continue;               
 			    if (match && (list[i].chapter !== match) && (list[i].chapter!="*")) continue;// * means a match with all chapters                
 				console.log(slidesinfo);               
