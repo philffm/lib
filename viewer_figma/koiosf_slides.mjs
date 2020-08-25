@@ -48,16 +48,18 @@ class SlideList {
         this.currentList=[]        
         this.match=match;
         var list = await this.GetList()    
-		console.log(list)
+	//	console.log(list)
         if (list)        
             for (var i=0;i<list.length;i++) {
-                if ( ! ((list[i].chapter === this.match) && (list[i].png) )) continue; // skip this one
-                var slidesinfo = list[i]
-                if (!slidesinfo.png) continue;        
+				var slidesinfo = list[i]	
+//console.log(				slidesinfo)
+				if (slidesinfo.png===undefined) continue;               
+			    if (match && (list[i].chapter !== match) && (list[i].chapter!="*")) continue;// * means a match with all chapters                
+			//	console.log(slidesinfo);               
                 var url= await GetImageIPFS(slidesinfo.png)
                 this.currentList.push(url)            
             }
-        console.log(this.currentList);
+       // console.log(this.currentList);
         return this.currentList;
     }
     
@@ -97,9 +99,9 @@ async function GetSlidesFromVideo(vidinfo) {
     var cid= await GetCourseInfo("slides")
 	console.log(cid)
     var slideindex = await GlobalSlideList.SwitchList(cid)   
-	console.log(slideindex)
+//	console.log(slideindex)
     var currentlist = await GlobalSlideList.LoadList(match)   
-	console.log(currentlist);
+	//console.log(currentlist);
     publish ("slidesloaded");
     ShowSlide();
 }    

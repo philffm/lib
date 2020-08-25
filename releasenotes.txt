@@ -1,11 +1,50 @@
+Version 1.93
+
+Functional updates:
+- check if it's possible to join course
+- updated sheets, videos, quizes
+
+Technical updates:
+- fixed variable wanted
+- redeployed the tokens contract with other eth account
+- generator automatically makes production ipfs version
+- generator refactored recursion
+- fixed tokens being shown twice
+
+Layout updates:
+- updated logo of contract badge to latest logo
+- fixed layout of course buttons (related to doctype tag)
+- fixed middle buttons
+- fixed layout of comment buttons
+
+Version 1.92
+
+Functional updates:
+
+
+Technical updates:
+
+Layout updates:
+- updated html generator
+- buttons less divs
+- textbuttons autoresize
+- moved join button to left to prevent accidental use
+
 Version 1.91
 
 Functional updates:
+
+
 Technical updates:
+- removed further reliance on gpersoon.com
+
+Most recent 3box: https://unpkg.com/3box@1.21.0/dist/3box.js (includes most recent ipfs 0.46)
 - webflow traces delete further to prevent interference
 - add koios.online/blockchain & koios.online/trading
 
 Layout updates:
+- update button layout
+- auto vertical scroll (for small screens)
 
 Version 1.90
 Functional updates:

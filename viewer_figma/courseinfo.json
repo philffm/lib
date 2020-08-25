@@ -18,8 +18,8 @@
                 "course": "How to use the KOIOS platform",
                 "courselevel": "Introduction to KOIOS",
                 "level": "introduction",
-                "videoinfo": "QmUj3D5yMz5AMPBHVhFdUF2CpadeHDsEuyr1MSNjT5m31R",
-                "slides": "QmWUXkvhWoaULAA1TEPv98VUYv8VqsiuuhqjHHBAmkNw2E",
+                "videoinfo": "QmZz3cLdDUwY2Y2gUHVbscbYxbNMHhQMyX9qBUHv5LVzo6",
+                "slides": "QmUmFccDF5h4kouHpD5gRJA1jdux6Rm8LDTe92i59NHjzQ",
                 "image":"https://cdn.pixabay.com/photo/2014/03/24/17/15/school-295210_1280.png",
                 "community":"https://koiosonline.slack.com",
                 "communityinvite":"https://join.slack.com/t/koiosonline/shared_invite/enQtNjE0MjAyNzMyODY4LTFlYWIzODRkNTI2ZWExOWM0NGNmMjFjNTU1YzFmZGExOWUzY2EzYTg4NDMwNDVhOTBkMGU0MTFkNzJkN2I5MWM"
@@ -29,7 +29,7 @@
                 "courselevel": "Trading Digital &amp; Financial Assets: Beginners",
                 "level": "introduction",
                 "contributer": "ricardo",
-                "videoinfo": "QmbtqaQvfbd1pQUf5Se3zJk7FncZ1rgELRP6raqE4szMic",
+                "videoinfo": "QmdcYBPckDVuPVFC4PcrmHEV747Gia1abF7fGLBRDQtKJm",
                 "slides": "QmPuWNdCS3ce5vrymkqhBrPyYKgGWM4H6ZurPGXxMBjmjS",
                 "image": "https://uploads-ssl.webflow.com/5d25da7a03e410dc1f3b7f36/5e942c8236c30b7dc3e8d270_TRADING%20ICON%20GREEN%20SVG.svg",
                 "community":"https://tdfaslack.slack.com",
@@ -38,11 +38,9 @@
 "bcintro01": {
                 "course": "Blockchain Technology",
                 "courselevel": "Blockchain Technology 1: Introduction",
-                "level": "introduction",
-                "oldvideoinfo": "QmP6GWUp4w61iukRfWWPRGVepDQgrJShjELUBiRcRDJTdu",
-                "videoinfo": "QmYDMbhsyyTzg1UKaZph5Jx2fnKKcH4F9DHdfMMHkGCX4d",
-                "oldslides": "Qmbz4yxCCceCdxgEdVzDk2wzZJvRethLWjmcUmifsi3MiT",
-                "slides":"QmPVAVLd18Pj7ait71NuxiVv6s4GMp99Ykm9cqzdijijCo",
+                "level": "introduction",                
+                "videoinfo": "QmPud7wFG4BK3ZQQFCGiEvLfuJ9sGCXuAqu7cHnL2bokDK",                
+                "slides":"QmU7k6AutkwJiyPKZCpZRYq238VY7TK6QwcpXHTp3LRRGN",
                 "quizinfo": "QmaypA3Mim1kkQckKecXyqS5Hqeca8FaXPZxWffDiFZQV3",
                 "contributer": "jordi",
                 "subtitle": "An extensive introduction to Blockchain Technology.",
@@ -57,9 +55,9 @@
                 "course": "Blockchain Technology",
                 "courselevel": "Blockchain Technology 2: Beginners",
                 "level": "beginners",
-                "videoinfo": "QmdJSfKsrobVwkEZFtuG33hDoB7HDg6jkgDwAckrSWWXm5",
-                "slides": "QmYrdQe8kvdDSF6jBYBJNsvwPq7vZ1jt345NySH58YeSrJ",
-                "quizinfo": "QmanMbHFV96UhxEWaEMhx1xo2u6gaTmPPJ1bJwARvv1gX5",
+                "videoinfo": "QmSJQaV21XmBEc7fx96jJNDC7deU91BSJZio2YDscD3YBN",
+                "slides": "QmXa6GF9MLBtpeE1dGpwm3GWvMbFYNh5whaaZuYjvyzErP",
+                "quizinfo": "Qmb1Vfh429KeYfFdxsiKsTXJsTk97z8U4PZJ7PENM9hrU4",
                 "contributer": "jordi",
                 "subtitle": "The second level. Let's dive in deeper.",
                 "description": "After completing the introduction course, you are ready todive a bit deeper into the technology. You'll learn about different blockchainsand what makes them different from one another. You'll also get a deeperunderstanding of the bitcoin protocol.",
@@ -73,7 +71,7 @@
                 "course": "Blockchain Technology",
                 "courselevel": "Blockchain Technology 3: Intermediate",
                 "level": "intermediate",
-                "videoinfo": "QmQqwAbr1NNCk4PYb1gJqih1DkEyEiK5WpfwtXu6Q9bYso",
+                "videoinfo": "QmaY2FHMX7Vh5PR9yDr6C177cvGbNSpZFfh3RRDe4kHXAP",
                 "slides": "QmNcvkvjyq4cDRB4CidU6EExfX5bYCsM9B9mMygwWVwXhi",
                 "contributer": "jordi",
                 "subtitle": "The intermediate level. This is where things get serious.",
@@ -108,8 +106,27 @@
                 "goal": "TBA",
                 "start": "Soon",
                 "image": "https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg",
-                "videoinfo": "QmTgarMuLFvLdyUJcKa2UDRLWD6tZWR7nHSEFVUotBCHUy",
+                "videoinfo": "QmRGHLnHcc7BWpHPXsURgACPpqmpAYkDJYHW892kVERuZo",
+				"slides":	"QmYnwkcPDog79Qr8pqW1jRpg62DTDebAJhqmEkJTDiE8aH",
                 "community":"https://koiosonline.slack.com",
                 "communityinvite":"https://join.slack.com/t/koiosonline/shared_invite/enQtNjE0MjAyNzMyODY4LTFlYWIzODRkNTI2ZWExOWM0NGNmMjFjNTU1YzFmZGExOWUzY2EzYTg4NDMwNDVhOTBkMGU0MTFkNzJkN2I5MWM"                
-            }           
+            },
+"security01": {
+                "course": "Security Essentials",
+                "courselevel": "Security Essentials 1",
+                "level": "intermediate",
+                "contributer": "Wicky",
+                "subtitle": "",
+                "description": "",
+                "goal": "TBA",
+                "start": "Soon",
+                "image": "https://upload.wikimedia.org/wikipedia/commons/9/9a/CIAJMK1209.png",
+                "videoinfo": "QmYsRNn1yBR8A7BzodWfB5oocVcdPVYRSkXPDXNAR7EJiS",
+				 
+                "community":"https://koiosonline.slack.com",
+                "communityinvite":"https://join.slack.com/t/koiosonline/shared_invite/enQtNjE0MjAyNzMyODY4LTFlYWIzODRkNTI2ZWExOWM0NGNmMjFjNTU1YzFmZGExOWUzY2EzYTg4NDMwNDVhOTBkMGU0MTFkNzJkN2I5MWM"                
+            }    
+
+
+			
 }

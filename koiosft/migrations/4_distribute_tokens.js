@@ -22,7 +22,7 @@ module.exports = async function(deployer) {
 		//console.log(`Address token ${tokenaddress} name:${name} decimals:${decimals}`)
 	
 		const ten = new BN("10")
-		const amount = ten.pow(new BN(decimals)).mul(new BN(7))
+		const amount = ten.pow(new BN(decimals)).mul(new BN(8))
 		for (var j=0;j<toarray.length;j++) 
 			await Process(tokenaddress,amount,ERC20TokenContract[i],toarray[j])
 		var left=await ERC20TokenContract[i].balanceOf(acts[0])
@@ -39,15 +39,23 @@ var toarray=[
             "0xEA9a7c7cD8d4Dc3acc6f0AaEc1506C8D6041a1c5", // gerard canary
             "0x336101f6685906fFe861ac519A98A6736d2D5b37", // phil
             "0xe88cAc4e10C4D316E0d52B82dd54f26ade3f0Bb2", // corwin
-            "0x4Ad2eaE4137e11EB3834840f1DC38F5f0fa181c3" // mathieu        
+            "0x4Ad2eaE4137e11EB3834840f1DC38F5f0fa181c3", // mathieu  
+	        "0xC3036b696Ea52F6846F3F22E2EB709C595F0e09A"  // jordi			
             ]
     
   
   
 async function Process(tokenaddress,amount,contract,dest)  {
-	     await contract.transfer(dest, amount)
-		 newbalance=await contract.balanceOf(dest)
-		 console.log(`Transferred ${amount.toString()} to  ${dest}, which has now: ${newbalance.toString()}`)		
+	var currentbalance=await contract.balanceOf(dest)
+	console.log(` ${dest} has now: ${currentbalance.toString()}`)
+	if ( parseInt(currentbalance.toString()) >0) {
+		console.log("Skipping, because already has balance")
+		return
+	}
+	 await contract.transfer(dest, amount)
+	 var newbalance=await contract.balanceOf(dest)
+	 console.log(`Transferred ${amount.toString()} to  ${dest}, which has now: ${newbalance.toString()}`)		
+			 
 }
 
  

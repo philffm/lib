@@ -11,7 +11,7 @@ import {SetupLogWindow,log} from '../lib/koios_log.mjs';
 console.log("Hello koios_upload");
     
   SetupLogWindow(false)
-    LinkClickButton("startprocess");subscribe("startprocessclick",startprocess);
+    //LinkClickButton("startprocess");subscribe("startprocessclick",startprocess);
     log("checklist")
     log("-video's are uploaded to koios channel")
     log("-playlist is made in koios channel");
@@ -19,6 +19,13 @@ console.log("Hello koios_upload");
     log("-add translated subtitles")
     log("-for automatically created subtitles (word based): export and import")
     
+
+
+function MakeUrl(url) {
+    return `<a href="${url}" target="_blank"> ${url}` + " in new page</a><br>"
+}
+
+
     
 async function startprocess() {
     log("startprocess");   
@@ -29,10 +36,12 @@ async function startprocess() {
     var x=await uploadYtDataToIpfs();
     for (var i=0;i<x.res.length;i++) {
         log(x.res[i]);
+		//log(MakeUrl(`https://koios.online/test/newviewer?videoinfo=${x.res[i].hash}`))
+		log(MakeUrl(`https://koios.online/newviewer?videoinfo=${x.res[i].hash}`))
         
     }    
    var str = DisplayInfo(x.list)
-   
+   /*
    var pre=document.createElement("pre"); // already create to be able to log
     pre.style.width = "100%";
     pre.style.height = "100%";   
@@ -41,7 +50,10 @@ async function startprocess() {
    var position=document.getElementById("log"); 
     position.appendChild(pre);   
     pre.innerHTML=str;
-    //log(includeSubtitlesforIpfsExport() )
+	*/
+    log(includeSubtitlesforIpfsExport() )
+	
+	
 }
 
 function DisplayInfo(list) {
@@ -90,8 +102,9 @@ function DisplayInfo(list) {
             }            
             str +=`\n`        
        }   
-       //console.log(str);
+       log(str);
     }
    return str;
 }
 
+startprocess();

@@ -1,6 +1,6 @@
 
 
-function sleep(ms) {
+function genhtmlsleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
@@ -45,6 +45,7 @@ SetupField("figmakey")
 SetupField("pageid")
 SetupField("components")
 SetupField("objname")
+SetupField("mjspath")
 SetupField("embed")
 SetupField("pin")
 
@@ -106,7 +107,7 @@ function MakeBlob(html,fjavascript) {
 }    
 
 
-var sleeptimer=0;
+var genhtmlsleeptimer=0;
 
 var retry=0;
 var imagesloaded=0;
@@ -115,14 +116,14 @@ async function FigmaApiGetImageSrc(url,token) {
     for (var i=0;i<8;i++) {
         if (i > 0) {
             console.log(`Retry ${i} for ${url}`); 
-            sleeptimer +=200; 
+            genhtmlsleeptimer +=200; 
             retry++;
             document.getElementById("retry").innerHTML=retry;
         }
 
 //console.log(`FigmaApiGetImageSrc check url ${url}`);
         
-        await sleep(Math.random() * sleeptimer); // some extra time to prevent rate limits
+        await genhtmlsleep(Math.random() * genhtmlsleeptimer); // some extra time to prevent rate limits
         var obj=await FigmaApiGet(url,token); 
                             
         if (!obj || obj.err || !obj.images) continue; // try again
@@ -341,7 +342,7 @@ async function GetComponents(componentsid,token) {
                 
             }
         }
-        var res=await RenderAllPages(componentlist,false)
+        var res=await RetrieveLinkedPages(componentlist,false)
         console.log(res);
         return res;               
     }
@@ -350,7 +351,7 @@ async function GetComponents(componentsid,token) {
 
  //var globalbuttons;
  var globalcomponentsdocument=undefined;
-var globalcompletepage;
+
 var globalcomponentsid;
 var orglocation
 
@@ -358,28 +359,31 @@ var orglocation
 async function Reload() {    
    location.href=orglocation;
 }   
-
+var globalmjspath;
+var globalfigmadocument;
+var globaldocumentid;
+var globaltoken;
 
 async function start() {
     
     orglocation=location.href
     
-    var token=document.getElementById("figmakey").innerHTML.trim();
-    var documentid=document.getElementById("pageid").innerHTML.trim();    
+    globaltoken=document.getElementById("figmakey").innerHTML.trim();
+    globaldocumentid=document.getElementById("pageid").innerHTML.trim();    
     globalcomponentsid=document.getElementById("components").innerHTML.trim();    
     globalobjname=document.getElementById("objname").innerHTML.trim();
     globalembed=document.getElementById("embed").innerHTML.trim();
+    globalmjspath=document.getElementById("mjspath").innerHTML.trim();
     
-    
-    if (token.replace(/\./g,'')=="") { log("Figma token missing");return;}
-    if (documentid.replace(/\./g,'')=="") { log("Document id missing");return;}
+    if (globaltoken.replace(/\./g,'')=="") { log("Figma token missing");return;}
+    if (globaldocumentid.replace(/\./g,'')=="") { log("Document id missing");return;}
     if (globalembed.replace(/\./g,'')=="") globalembed=undefined; // if only ..., then no embed
     if (globalcomponentsid.replace(/\./g,'')=="") globalcomponentsid=undefined; // if only ..., then no embed
     
     
     log("Pass 1");
     globalpinlocation=document.getElementById("pin").innerHTML.trim();
-    console.log(`Start ${token} ${documentid}`);
+    console.log(`Start ${globaltoken} ${globaldocumentid}`);
 	ipfs = window.IpfsHttpClient(globalpinlocation); // 'https://ipfs.infura.io:5001'
 //ipfs2 = window.IpfsHttpClient('http://diskstation:5002'); 
 console.log(ipfs);
@@ -390,14 +394,14 @@ console.log(ipfs);
     
     //globalbuttons=await GetComponents(componentsid,token)
     if (globalcomponentsid) {
-        var components=(await FigmaApiGet(`https://api.figma.com/v1/files/${globalcomponentsid}`,token));
+        var components=(await FigmaApiGet(`https://api.figma.com/v1/files/${globalcomponentsid}`,globaltoken));
         if (components.err) {log(`Error retrieving figma info: ${components.status} ${components.err} `);return;}
         console.log(components);
         globalcomponentsdocument=components.document
     }
     
-    var url=`https://api.figma.com/v1/files/${documentid}`  // to export the vectors: ?geometry=paths    
-    var documentpart=await FigmaApiGet(url,token)
+    var url=`https://api.figma.com/v1/files/${globaldocumentid}`  // to export the vectors: ?geometry=paths    
+    var documentpart=await FigmaApiGet(url,globaltoken)
     
     if (documentpart.err) {log(`Error retrieving figma info: ${documentpart.status} ${documentpart.err} `);return;}
     console.log(documentpart);
@@ -407,10 +411,10 @@ console.log(ipfs);
     
     
     
-    var figmadocument=documentpart.document;
-    console.log(figmadocument);
-    //log(`Found page: ${figmadocument.name?figmadocument.name:""} ${figmadocument.id}`);    
-    var fo=FindObject(globalobjname,figmadocument)
+    globalfigmadocument=documentpart.document;
+    console.log(globalfigmadocument);
+    //log(`Found page: ${globalfigmadocument.name?globalfigmadocument.name:""} ${globalfigmadocument.id}`);    
+    var fo=FindObject(globalobjname,globalfigmadocument)
     console.log(fo);
     
     if (!fo) {
@@ -421,61 +425,50 @@ console.log(ipfs);
     //log(`Page: ${globalpagesfirstpass++} ${globalobjname} ${fo.id}`); // id: ${fo.id}
     
 
-    globalconnectto[fo.id] = ConvertToHTML(fo.id,figmadocument,documentid,token)
-    log("Pass 2");
-    //console.log(globalconnectto);
-    
-     globalcompletepage=await RenderAllPages(globalconnectto,false);
-    //console.log(completepage);
-    var html=await MakePage(globalcompletepage,globalembed,globalfonts,globalmediastyles,globalobjname,false)        
-    var url=MakeBlob(html);    
-    
+    globalconnectto[fo.id] = ConvertToHTML(fo.id,globalfigmadocument,globaldocumentid,globaltoken)
 	
-    document.getElementById("output").innerHTML += `Complete page=${MakeUrl(url)}`   
-
-/*
-    keys = Object.keys(imagelist);
-    if (keys.length > 0) {
-        for (var i = 0; i < keys.length; i++) {                
-            key=keys[i];
-            log(`Wait for ${i} ${key}`);
-            console.log(imagelist[key]);
-            val = await imagelist[key];
-            document.getElementById("output").innerHTML += `Image ${key} in seperate tab: ${MakeUrl(val)}`                                   
-        }
-    }
-*/
+	await RetrieveLinkedPages(globalconnectto);
+    
+    //log(`globalconnectto: ${JSON.stringify(Object.keys(globalconnectto))}`);
+	console.log(globalconnectto);
+	
+    await ShowInBrowser()
     document.getElementById("SaveOnIpfs").innerHTML="Save on IPFS"  
     document.getElementById("AlsoInject").innerHTML="Inject in current page"  
 }    
     
+async function ShowInBrowser() {	
+	var completepage=await RenderPages(globalconnectto,false);
+    //console.log(completepage);
+    var html=await MakePage2(completepage,globalembed,globalfonts,globalmediastyles,globalobjname,false,globalmjspath)        
+    var url=MakeBlob(html);    
+    document.getElementById("output").innerHTML += `Complete page=${MakeUrl(url)}`   
+}		
+	
     
 export async function SaveAlsoOnIpfs() {
     console.log(`SaveAlsoOnIpfs firstpage=${globalobjname}`);
-    var completepage=await RenderAllPages(globalconnectto,true);
-    //var html=await MakePage(completepage,globalembed,globalfonts,globalmediastyles,globalobjname,true)    
-	//var result=await SaveOnIpfs(html)
-	
-	
-	var javascript=await MakePage2(completepage,globalembed,globalfonts,globalmediastyles,globalobjname,true)    
-	var resultjavascript=await SaveOnIpfs(javascript)
- 
-
-
+    var completepage=await RenderPages(globalconnectto,true);
+	var javascript1=await MakePage2(completepage,globalembed,globalfonts,globalmediastyles,globalobjname,true,globalmjspath)    
+	var javascript2=await MakePage2(completepage,globalembed,globalfonts,globalmediastyles,globalobjname,true,"https://koiosonline.github.io/lib")    
+	var resultjavascript1=await SaveOnIpfs(javascript1)
+	var resultjavascript2=await SaveOnIpfs(javascript2)
     var str2=""
-    //result=result.replace("https://ipfs.io/ipfs/","")
-	resultjavascript=resultjavascript.replace("https://ipfs.io/ipfs/","")
+	resultjavascript1=resultjavascript1.replace("https://ipfs.io/ipfs/","")
+	resultjavascript2=resultjavascript2.replace("https://ipfs.io/ipfs/","")
+    str2 +="IPFS test link: "+MakeUrl(`https://ipfs.io/ipfs/${resultjavascript1}`); // 
+	str2 +="Koios embedtest link:"+MakeUrl(`https://www.koios.online/test/newviewer?ipfs=${resultjavascript1}`);	
 	
-    str2 +="IPFS link 1: "+MakeUrl(`https://ipfs.io/ipfs/${resultjavascript}`); // 
-    //str2 +="IPFS link 2: "+MakeUrl(`http://www.gpersoon.com:8080/ipfs/${result}`);
-	//str2 +="IPFS link 3 (no images): "+MakeUrl(`https://ipfs.infura.io/ipfs/${result}`); // doesn't show the images (type is correct)
-	str2 +="Koios embedprod link:"+MakeUrl(`https://www.koios.online/newviewer?ipfs=${resultjavascript}`);	
-	str2 +="Koios embedtest link:"+MakeUrl(`https://www.koios.online/test/newviewer?ipfs=${resultjavascript}`);	
+	
+	str2 +="IPFS prod  link: "+MakeUrl(`https://ipfs.io/ipfs/${resultjavascript2}`); // 
+	str2 +="Koios embedprod link:"+MakeUrl(`https://www.koios.online/newviewer?ipfs=${resultjavascript2}`);	
+	
     document.getElementById("output").innerHTML += str2;
 }
  
 export async function AlsoInject() {
-	var modulesource=await MakePage2(globalcompletepage,globalembed,globalfonts,globalmediastyles,globalobjname,false)     
+	var completepage=await RenderPages(globalconnectto,false);
+	var modulesource=await MakePage2(completepage,globalembed,globalfonts,globalmediastyles,globalobjname,false,globalmjspath)     
     var tag="//--script--"
     var n = modulesource.indexOf(tag);
     if (n <0 ) { console.error("Can't find tag");return;} 
@@ -484,40 +477,61 @@ export async function AlsoInject() {
     document.getElementsByTagName("html")[0].innerHTML=""
     var html=document.getElementsByTagName("html")[0]
     await import(url2);		   
-} //   InjectPage(globalcompletepage,globalembed,globalfonts,globalmediastyles,globalobjname,false)
+} 
 
  
     
-async function RenderAllPages(globalconnectto,fIPFS) {
-    //log("RenderAllPages");
-    var completepage=""
+async function RetrieveLinkedPages(globalconnectto) {
+    log("Pass 2: RetrieveLinkedPages");
+	//log(`globalconnectto: ${JSON.stringify(Object.keys(globalconnectto))}`);
+	
+	do {	
+		var keys = Object.keys(globalconnectto);
+		if (keys.length > 0) {
+			for (var i = 0; i < keys.length; i++) {                
+				var key=keys[i];
+				//log(`Wait for ${i} ${key}`);
+				//console.log(globalconnectto[key]);
+				if (globalconnectto[key]==true) {
+				   log(`Retrieving ${key}`)
+				   globalconnectto[key]=ConvertToHTML(key,globalfigmadocument,globaldocumentid,globaltoken,embed) // = promise, so executed in parallel
+			    } 
+				
+				var val = await globalconnectto[key];			
+				//console.log(val);
+				//log(`Page ${i+1} of ${keys.length}  ${val?val.name:"not found:"} ${key}`);			 
+			}
+		} 		
+		var left=0;
+		var keys = Object.keys(globalconnectto);	
+		for (var i = 0; i < keys.length; i++) {                
+			var key=keys[i];
+			if (globalconnectto[key]==true) 
+				left++				
+		} 		
+		//if (left >0) log(`Remaining ${left}`);
+	} while (left > 0);
     
-    var keys = Object.keys(globalconnectto);
-    if (keys.length > 0) {
-        for (var i = 0; i < keys.length; i++) {                
-            var key=keys[i];
-            //log(`Wait for ${i} ${key}`);
-            //console.log(globalconnectto[key]);
-            var val = await globalconnectto[key];
-            //console.log(val);
-            log(`Page ${i+1} of ${keys.length}  ${val?val.name:"not found:"} ${key}`);
-            if (val) {                
-                var html= await recursehtml(val.htmlobj,fIPFS);    
-            
-            
-                //var blob=MakeBlob(html);
-                //document.getElementById("output").innerHTML += `Open ${val.name.padEnd(60, ' ')} : ${MakeUrl(blob)}`   
-                completepage += html; // already a div
-            }
-        }
-    } 
-    return completepage
 }
 
 
-
-
-    
+async function RenderPages(globalconnectto,fIPFS) {
+	log("Step 3: RenderPages");
+	var completepage=""
+	var keys = Object.keys(globalconnectto);
+		if (keys.length > 0) {
+			for (var i = 0; i < keys.length; i++) {                
+				var key=keys[i];				
+				var val = await globalconnectto[key];			
+				log(`Page ${i+1} of ${keys.length}  ${val?val.name:"not found:"} ${key}`);
+				if (val) {                
+					var html= await recursehtml(val.htmlobj,fIPFS);    
+					completepage += html; // already a div
+				}
+			}
+		} 
+		return completepage
+}    
     
     
     
@@ -534,13 +548,13 @@ let globalfonts = []
 async function ConvertToHTML(foid,figmadocument,documentid,token) {  
     var currentobject=FindObject(foid,figmadocument)
     
-    log(`Page ${globalpagesfirstpass} ${foid} ${currentobject?currentobject.name:"(not found)"} ${currentobject?currentobject.id:""}`);
+    //log(`Page ${globalpagesfirstpass} ${foid} ${currentobject?currentobject.name:"(not found)"} ${currentobject?currentobject.id:""}`);
     
     if (!currentobject) return undefined;
     globalpagesfirstpass++ // only increase if a page is really present
     
     //console.log(currentobject)
-    var htmlobj=await recurse(currentobject,figmadocument,documentid,token,false,false,false,undefined); // retrieve the found object
+    var htmlobj=await recurse(currentobject,figmadocument,documentid,token,false,0,false,undefined); // retrieve the found object
     
     var returnset={ name:currentobject.name, id: foid, htmlobj: htmlobj }    
     //log(`Exit ConvertToHTML ${foid} name: ${currentobject.name}`);    
@@ -627,13 +641,13 @@ window.onerror = function(message, source, lineno, colno, error) {   // especial
 </script>
 `
 
-            
+/*            
 function MakeHeader(embed,globalfonts,globalmediastyles) {   
     var strprefix=""    
     
-    strprefix +='<head>'
-    strprefix +='<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">'
-    strprefix +='<meta charset="utf-8" />'
+    strprefix +='<head>'	
+	strprefix +='<meta charset="utf-8" />'
+    strprefix +='<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">'    
     strprefix +=errorscript;
     strprefix += GetFonts(globalfonts);
     if (embed) {
@@ -645,33 +659,16 @@ function MakeHeader(embed,globalfonts,globalmediastyles) {
     return strprefix;
 }
     
-// this script is embedded in the destination page==========================================================================// dont use reverse quotes    
-var loadimagescript= "./startgen.mjs"
-var loadimagescript2= "https://gpersoon.com/koios/lib/genhtml/startgen.mjs"
-// end ==========================================================================        
-    
-async function MakePage(strinput,embed,globalfonts,globalmediastyles,firstpage,fIPFS) {
-    var str="" 
-    str +='<html>'   
-    var head=MakeHeader(embed,globalfonts,globalmediastyles)   
-    str += head;    
-    str +='<body>'    
-    var body=""
-    body += `<div class="firstpage" data-firstpage="${firstpage}">`
-    body += "</div>"    
-    body += strinput    
-    var x=await fetch(loadimagescript);
-    var y=await x.text()    
-    var scriptwithtag=MakeScriptTag(true,undefined,y); // not as a module: function's have to be exported & imported then    
-    body +=scriptwithtag;    
-    str += body;
-    str +='</body>'
-    str +='</html>'    
-    return str;
-}   
+*/
 
 
-async function MakePage2(strinput,embed,globalfonts,globalmediastyles,firstpage,fIPFS) {
+ 
+
+async function MakePage2(strinput,embed,globalfonts,globalmediastyles,firstpage,fIPFS,mjspath) {
+	
+	var loadimagescript= mjspath+"/genhtml/startgen.mjs"
+	var embedstr=mjspath+"/"+embed
+	
 	var injectscript=""
 	injectscript+='   var head=document.getElementsByTagName("head")[0];\n'
     injectscript+='   var meta=document.createElement("meta");\n'
@@ -690,11 +687,11 @@ async function MakePage2(strinput,embed,globalfonts,globalmediastyles,firstpage,
 	
 	injectscript +='\nasync function init() { \n'
     injectscript +=`   document.getElementsByTagName("body")[0].innerHTML = newbody;\n`    // this is a synchronous actions
-	injectscript +=`   await import("${loadimagescript2}");\n`  // note async
+	injectscript +=`   await import("${loadimagescript}");\n`  // note async
 	injectscript +='   console.log("Right after loadimage");\n';
-if (embed) 
-    injectscript +=`   await import("${embed}");\n` // note async
-
+if (embed) {
+    injectscript +=`   await import("${embedstr}");\n` // note async
+}
 	injectscript +='   console.log("Right after embed");\n';
 	injectscript +='   var event = new Event("DOMContentLoaded",{  bubbles: true,  cancelable: true});'
 	injectscript +='   window.document.dispatchEvent(event);\n'	
@@ -707,9 +704,10 @@ if (embed)
 	
 
     var str="" 	
+	str +='<!DOCTYPE html>' // same as in webflow, makes a difference for the rendering
     str +='<html>' 
-	str +='<head>'	
-	str +='<meta charset="utf-8" />'   	// charset has to be set here
+	str +='<head>'		
+	str +='<meta charset="utf-8" />'   	// charset has to be set here	
 	str +='<script type="module">\n'	
 	str +='//--script--\n'   // magic string to indicate the start of the javascript
 	str +=injectscript
@@ -725,36 +723,7 @@ if (embed)
 }
 
 
-        
-
-async function InjectPage(strinput,embed,globalfonts,globalmediastyles,firstpage,fIPFS) {
-    var head=MakeHeader(embed,globalfonts,globalmediastyles)       
-    
-    document.getElementsByTagName("head")[0].innerHTML += head; // append the head info
-    
-    var body=""
-    body += `<div class="firstpage" data-firstpage="${firstpage}">`
-    body += "</div>"    
-    body += strinput
-    
-    document.getElementById('inject').innerHTML +=body;
-    var x=await fetch(loadimagescript);
-    var y=await x.text()
-    var myscript = document.createElement('script');
-    myscript.innerHTML=y;
-    document.body.appendChild(myscript);
-
-    if (embed) {
-        console.log(`Loading ${embed}`);
-        var mod=await import(embed);
-        console.log(mod)
-    }
-    var event = new Event('DOMContentLoaded',{  bubbles: true,  cancelable: true});
-    window.document.dispatchEvent(event);    
-    main();
-}   
-        
-
+ 
  
 
     
@@ -814,31 +783,43 @@ function GetAtParam(figdata,name) {
 }
 
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 
-async function recurse(figdata,figmadocument,documentid,token,fpartofgrid,fpartofbutton,fpartofflex,pb) { // pb is (optional) parent boundingbox
+async function recurse(figdata,figmadocument,documentid,token,fpartofgrid,buttonlevel,fpartofflex,pb) { // pb is (optional) parent boundingbox
         var htmlobjects=[]                        
         console.log(`Processing ${figdata.name} with ${figdata.children ? figdata.children.length : 0} children`);    //Type:${figdata.type}
         console.log(figdata);
         
+		//log(`Recurse ${figdata.name}`);
+		
+		
+		
         if (figdata.visible==false) return "";        
         
-        var zindex=GetAtParam(figdata,"@zindex");        
+        var zindex=GetAtParam(figdata,"@zindex")       
         
         
-        var fsvg=    GetAtParam(figdata,"@svg")            // console.log(`fsvg=${fsvg}`)
-		var fpng=    GetAtParam(figdata,"@png")            // console.log(`fsvg=${fsvg}`)
-        var faspect= GetAtParam(figdata,"@aspect")      //  console.log(`faspect=${faspect}`)
-        var fhidden= GetAtParam(figdata,"@hidden")      //  console.log(`faspect=${faspect}`)
+        var fsvg=    GetAtParam(figdata,"@svg")!=undefined            // console.log(`fsvg=${fsvg}`)
+		var fpng=    GetAtParam(figdata,"@png")!=undefined            // console.log(`fsvg=${fsvg}`)
+        var faspect= GetAtParam(figdata,"@aspect")!=undefined      //  console.log(`faspect=${faspect}`)
+        var fhidden= GetAtParam(figdata,"@hidden")!=undefined      //  console.log(`faspect=${faspect}`)
         
-        var click=GetAtParam(figdata,"@click");
-        var dest=GetAtParam(figdata,"@dest");
-        var toggle=GetAtParam(figdata,"@toggle")
+        var click=GetAtParam(figdata,"@click")!=undefined
+        var dest=GetAtParam(figdata,"@dest")
+        var toggle=GetAtParam(figdata,"@toggle")!=undefined
         
-        
+        var fstaticwidth=GetAtParam(figdata,"@staticwidth")!=undefined
         
         
         var fthisisabutton= click || toggle
+		if (fthisisabutton && (buttonlevel >0)) {
+			console.error(`Button within a button ${figdata.name}, stopping recusing`)
+			return;
+		}
+		
         
         var gridcols=   GetAtParam(figdata,"@gridcols")
         var gridrows=   GetAtParam(figdata,"@gridrows")
@@ -854,7 +835,8 @@ async function recurse(figdata,figmadocument,documentid,token,fpartofgrid,fparto
         
         var fgrid = gridcols || gridrows
         
-        var frelative=   GetAtParam(figdata,"@relative")
+        var frelative=   GetAtParam(figdata,"@relative")!=undefined
+		var fabsolute=   GetAtParam(figdata,"@absolute")!=undefined
         
         var b=figdata.absoluteBoundingBox;
         var strtxt=""
@@ -878,14 +860,7 @@ async function recurse(figdata,figmadocument,documentid,token,fpartofgrid,fparto
         var transform=""
 
 
-      if (dest) {
-        //log(`Connect: ${dest}`);
-        if (!globalconnectto[dest]) {
-            globalconnectto[dest]=true; // prevent recursing too fast
-            globalconnectto[dest]=ConvertToHTML(dest,figmadocument,documentid,token,embed) // = promise, so executed in parallel
-        }                
-     }    
-
+      if (dest && !globalconnectto[dest]) globalconnectto[dest]=true; // remember to search later
 
 
 /*
@@ -909,11 +884,30 @@ async function recurse(figdata,figmadocument,documentid,token,fpartofgrid,fparto
 
 
 
-       
+       console.log(`${figdata.name} buttonlevel:${buttonlevel} fabsolute:${fabsolute} fthisisabutton:${fthisisabutton}`)
+	   
+	   display="inline-block"
+	   
+	   
         if (b) { //|| figdata.layoutMode
-            dimensions +=`position: ${figdata.isFixed?"fixed":(frelative || fpartofflex )?"relative":"absolute"};`;      // for grid with auto layout, relative position is neccesary          
+		
+		var makerelative;
+		if (buttonlevel) makerelative=true;
+		if (fpartofflex) makerelative=true;
+	//	if (buttonlevel==1) makerelative=false; // only on firstlevel absolute to overlap
+		if (buttonlevel>1) makerelative=true;
+		
+		
+		if (frelative) makerelative=true;
+		if (fabsolute) makerelative=false;
+		
+		console.log(`makerelative=${makerelative}`);
+       dimensions +=`position: ${figdata.isFixed?"fixed":makerelative?"relative":"absolute"};`;      // for grid with auto layout, relative position is neccesary          
+console.log(dimensions)			     
+
             if (!pb) {
-                strstyle +=`width:100%;height:100%;`; // no parent => so give it all the space, left & top default values // 
+				if (!buttonlevel)
+					strstyle +=`width:100%;height:100%;`; // no parent => so give it all the space, left & top default values // 
                 // dimensions=""; // prevent minor scroll actions ==> messes up zindez
                 if (figdata.name != globalobjname)
                     display="none"; // initially hidden (relevant when there are more pages), except for the first one
@@ -999,6 +993,11 @@ async function recurse(figdata,figmadocument,documentid,token,fpartofgrid,fparto
                                 height =`${b.height}px`;
                     }
                 }
+				
+				if (fthisisabutton && !fstaticwidth) {
+					width=undefined; // let the button create its width automatically
+				}
+				
                  if (fpartofflex) {
                     // console.log(width,height,left,right,bottom,top,paddingbottom)
                     if (figdata.type=="TEXT") {
@@ -1053,11 +1052,18 @@ async function recurse(figdata,figmadocument,documentid,token,fpartofgrid,fparto
                     
                     
                     display="flex"
-                    dimensions +=`padding: ${figdata.verticalPadding?figdata.verticalPadding:0}px ${figdata.horizontalPadding?figdata.horizontalPadding:0}px;`
+                    
                     switch (figdata.layoutMode) {
                         case "VERTICAL": {
                                     dimensions+="flex-direction: column;";
                                     fflex=`margin-bottom: ${figdata.itemSpacing?figdata.itemSpacing:0}px;`;
+									dimensions +=`padding-top:    ${figdata.verticalPadding?figdata.verticalPadding:0}px; `
+									dimensions +=`padding-bottom: ${(figdata.verticalPadding?figdata.verticalPadding:0)-(figdata.itemSpacing?figdata.itemSpacing:0)}px; `
+									dimensions +=`padding-left:   ${figdata.horizontalPadding?figdata.horizontalPadding:0}px; `
+									dimensions +=`padding-right:  ${figdata.horizontalPadding?figdata.horizontalPadding:0}px; `
+									
+																	
+									
                                     height=undefined; // determined by underlying divs
                                     if (figdata.counterAxisSizingMode && figdata.counterAxisSizingMode=="FIXED") {
                                         // keep width
@@ -1068,11 +1074,18 @@ async function recurse(figdata,figmadocument,documentid,token,fpartofgrid,fparto
                         case "HORIZONTAL": {
                                     dimensions +="flex-direction: row;";
                                     fflex=`margin-right: ${figdata.itemSpacing?figdata.itemSpacing:0}px;`; 
+																		
+									dimensions +=`padding-top:    ${figdata.verticalPadding?figdata.verticalPadding:0}px; `
+									dimensions +=`padding-bottom: ${figdata.verticalPadding?figdata.verticalPadding:0}px; `
+									dimensions +=`padding-left:   ${figdata.horizontalPadding?figdata.horizontalPadding:0}px; `
+									dimensions +=`padding-right:  ${(figdata.horizontalPadding?figdata.horizontalPadding:0)-(figdata.itemSpacing?figdata.itemSpacing:0)}px; `
+									
+									width=undefined; // determined by underlying divsf
                                     if (figdata.counterAxisSizingMode && figdata.counterAxisSizingMode=="FIXED") {
                                         // keep height 
                                     } else 
                                         height=undefined; // determined by underlying divs                                    
-                                    width=undefined; // determined by underlying divs
+                                    
                         }
                         break;
                     }
@@ -1084,7 +1097,7 @@ async function recurse(figdata,figmadocument,documentid,token,fpartofgrid,fparto
                 
                 if (GetAtParam(figdata,"@max-width")) dimensions+=`max-width:${GetAtParam(figdata,"@max-width")};`;
             
-                if (width)         dimensions +=`width:${width};`;
+                if (width && width.length>0 && width!="true")         dimensions +=`width:${width};`;
                 if (height)        dimensions +=`height:${height};`;    
                 if (left)          dimensions +=`left:${left};`;    
                 if (right)         dimensions +=`right:${right};`;  
@@ -1287,7 +1300,7 @@ function ConvertColor(color) {
         
         var eventhandlers=""
         
-        if (fthisisabutton  && !fpartofbutton) { // don't do event on nested parts of the button
+        if (fthisisabutton  && !buttonlevel) { // don't do event on nested parts of the button
         
         surroundingdiv=";"
         
@@ -1331,8 +1344,10 @@ function ConvertColor(color) {
             htmlobjects.push( `<div class="${classname}" ${insrtstyle2} class="surround" ${insdata} style="${surroundingdiv};border-style:solid;border-width:1px;border-color:red;" ${eventhandlers}>` ); // width:100%;height:100%;
             dimensions=""; // dimensions are part of surroundingdiv
             
-            dimensions ='position: absolute;width:100%;height:100%;' // set dimension to max in order to use of surroundingdiv
-            
+            dimensions ='position: relative;' // width:95%;height:96%;set dimension to max in order to use of surroundingdiv // only used for buttons ==> let the underlying text define the buttons
+            buttonlevel++; // so the rest is relative
+			if (fstaticwidth)         dimensions +=`width:${width};height:${height};`;
+			
             insdata="" // don't put it on buttons itself anymore
             
             classname=classname.split(" ")[0]; // only keep the first part  to prevent confusion (when attaching eventlisteners)
@@ -1356,12 +1371,12 @@ function ConvertColor(color) {
                 }
                 classname+=" lazy " // for lazy evaluatation/retrieval of images, see startgen.mjs
                 htmlobjects.push(imagelist[image])
-                htmlobjects.push(`"  class="${classname}" ${insrtstyle} ${insdata} title="${figdata.name}">${strtxt}\n`) //  ${figdata.type}
+                htmlobjects.push(`"  class="${classname}" ${insrtstyle} ${insdata} ">${strtxt}\n`) //  ${figdata.type} // title="${figdata.name}
                 htmlobjects.push('</image>');
                 break;
             
                 case "a":  strhref=`href="{urllocation}" `;
-                case "div": htmlobjects.push(`<${objecttype} class="${classname}" ${insrtstyle} ${insdata} ${strhref} title="${figdata.name}">${strtxt}\n`) //  ${figdata.type}
+                case "div": htmlobjects.push(`<${objecttype} class="${classname}" ${insrtstyle} ${insdata} ${strhref} ">${strtxt}\n`) //  ${figdata.type} // title="${figdata.name}
                             break;
         }
 
@@ -1377,7 +1392,7 @@ function ConvertColor(color) {
                     var fflextopass=fflex; // goed afjust margin here, depending on child#, but with dynamicly duplicted items not useful
                     
                 } else fflextopass=fflex;
-                htmlobjects.push( recurse(children[i],figmadocument,documentid,token,fgrid,fthisisabutton,fflextopass,figdata.absoluteBoundingBox) )
+                htmlobjects.push( recurse(children[i],figmadocument,documentid,token,fgrid,(fthisisabutton || buttonlevel)?buttonlevel+1:0,fflextopass,figdata.absoluteBoundingBox) )
             }    
        
             //if (!image) // close the div
@@ -1386,10 +1401,12 @@ function ConvertColor(color) {
 
  
         if (fthisisabutton) { // this is a button so also get all other instance of a button 
+		console.log(`Retrieving other buttons of  ${figdata.name}-----------------------------------------------------------`)
            htmlobjects.push(GetOtherButton(figdata.name,"--hover"))
            htmlobjects.push(GetOtherButton(figdata.name,"--active"))
            htmlobjects.push(GetOtherButton(figdata.name,"--focus"))
            htmlobjects.push(GetOtherButton(figdata.name,"--disabled"))
+		   console.log(`End retrieving other buttons of  ${figdata.name}-----------------------------------------------------------`)
         }
   
 
@@ -1415,7 +1432,7 @@ function ConvertColor(color) {
         if (!globalcomponentsdocument) return ""
         var fo=FindObject(`${firstpart}${subselect}`,globalcomponentsdocument)
         if (!fo) return ""
-        var button=await recurse(fo,figmadocument,globalcomponentsid,token,fgrid,fthisisabutton,fflextopass,undefined) // no bounding=> hidden &max width     // get from componentsid!!!       
+        var button=await recurse(fo,figmadocument,globalcomponentsid,token,fgrid,1,fflextopass,undefined) // no bounding=> hidden &max width     // get from componentsid!!!       
       //  console.log("button info is:")
       //  console.log(button);
         return button;

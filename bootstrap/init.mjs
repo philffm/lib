@@ -242,3 +242,19 @@ function Receive(event) {
    console.log(`Making fullscreen at end ${fFullScreen}`);
 }    
 
+
+/* code in webflow:
+<script>
+var save=document.firstChild
+while (document.firstChild) 
+   document.removeChild(document.firstChild);
+document.appendChild(save);   // restore the previous first child
+var html=document.createElement("html")   
+document.appendChild(html);
+var head=document.createElement("head")
+html.appendChild(head);
+var body=document.createElement("body")
+html.appendChild(body);
+import("https://koiosonline.github.io/lib/bootstrap/init.mjs")
+</script>
+*/

@@ -23,6 +23,7 @@ const HDWalletProvider = require('@truffle/hdwallet-provider');
 const fs = require('fs');
 const mnemonic = fs.readFileSync(".secret").toString().trim();
 const infuraKey = fs.readFileSync(".infura").toString().trim();
+console.log(infuraKey)
 ;
 
 module.exports = {
@@ -77,7 +78,7 @@ module.exports = {
             confirmations: 1,    // # of confs to wait between deployments. (default: 0)
             timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
             skipDryRun: true,     // Skip dry run before migrations? (default: false for public nets )
-			networkCheckTimeout: 100000 // does this work?? const DEFAULT_NETWORK_CHECK_TIMEOUT = 5000;
+			//networkCheckTimeout: 100000 // does this work?? const DEFAULT_NETWORK_CHECK_TIMEOUT = 5000;
         },
 
         ava: {

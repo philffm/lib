@@ -1,4 +1,4 @@
-import {GetJson,subscribe,DomList,setElementVal,GetJsonIPFS,GetImageIPFS,GetURLParam,GetResolvableIPFS,getElement,LinkClickButton,LinkVisible,FindDomidWithId,appendElementVal} from '../lib/koiosf_util.mjs';
+import {GetJson,subscribe,DomList,setElementVal,GetJsonIPFS,GetImageIPFS,GetURLParam,GetResolvableIPFS,getElement,LinkClickButton,LinkVisible,FindDomidWithId,appendElementVal,sleep} from '../lib/koiosf_util.mjs';
 import {SwitchDisplayMessageContinous,DisplayMessageContinous,DisplayMessage} from './koiosf_messages.mjs'
 import {getWeb3,getWeb3Provider} from './koiosf_login.mjs'
 import {GlobalCourseList} from './koiosf_course.mjs'
@@ -34,7 +34,7 @@ async function reloadBadges() {
         }
     }
 }
-async function getBadges() {
+async function getBadges(wantedCourseStudentId) {
     console.log("In getBadges");
      GlobalBadgeList.EmptyList()    
 
@@ -48,9 +48,13 @@ async function getBadges() {
 
     for (var i = 0; i < totalBadges; i++) {
         var urltarget = GlobalBadgeList.AddListItem() 
-        GetBadgeDetails(urltarget,i)                      // not runs in parallel!
+        GetBadgeDetails(urltarget,i,wantedCourseStudentId)                      // note: runs in parallel!
     }
 }
+
+
+
+
  // images are loaded from https://cloudflare-ipfs.com/ipfs/..  (svg doesn't allways work)
 async function CheckCourses() {
 	var nrTemplates=await nft_contract.methods.nrTemplates().call()
@@ -63,7 +67,7 @@ async function CheckCourses() {
     
      for (var i=0;i<nrTemplates;i++) {
          var info=await nft_contract.methods.GetTemplateInfo(i).call()
-         console.log(info);
+        // console.log(info);
          /*
          var cid=info[1]
          console.log(cid)
@@ -72,40 +76,47 @@ async function CheckCourses() {
         var name=badgecontent.name
         */
         var name=info[0]
-        console.log(name);
+       // console.log(name);
         if (name=="Student-"+currentcourse) {
             console.log(`Found ${name}`)
-            return i;
+            return i;			
         }
 	 }
 	return undefined;
 }	
 
 
+
+
+
 var globalbadgeinfo=[]
 
-async function GetBadgeDetails(urltarget,i) { // put in function to be able to run in parallel
+async function GetBadgeDetails(urltarget,i,wantedCourseStudentId) { // put in function to be able to run in parallel
         var tokenid = await nft_contract.methods.tokenOfOwnerByIndex(accounts[0],i).call(); // ownedTokens
-        console.log(`tokenid=${tokenid}`)		
+      //  console.log(`tokenid=${tokenid}`)		
 		urltarget.id=tokenid;
 		
 		
 		
 		var template = await nft_contract.methods.GetTemplateId(tokenid).call();
+		
+		if (template == wantedCourseStudentId) // i have the badge i want
+			getElement("joincourse","scr_profile").dispatchEvent(new CustomEvent("hide")); // then hide the join button
+			
 		var templateinfo = await nft_contract.methods.GetTemplateInfo(template).call();
-		console.log(template)
-		console.log(templateinfo);
+		//console.log(template)
+		//console.log(templateinfo);
 		globalbadgeinfo[tokenid]={}
 		globalbadgeinfo[tokenid].template=template
 		globalbadgeinfo[tokenid].templateinfo=templateinfo
 		
         var uri = await nft_contract.methods.tokenURI(tokenid).call();
-        console.log(uri)        
+       // console.log(uri)        
 		
 		globalbadgeinfo[tokenid].uri=uri;
 		
         var badgecontent=await GetJsonIPFS(uri)
-        console.log(badgecontent);
+        //console.log(badgecontent);
 		
 		globalbadgeinfo[tokenid].badgecontent=badgecontent;
         if (badgecontent) {
@@ -179,29 +190,42 @@ function SetLinkMetamask(urltarget,address,symbol,decimals,tokenImage) { // sepe
 async function GetTokenDetails(urltarget,contracttoken,balance) { 
 
         var uri = await contracttoken.methods.tokenURI().call();
-        console.log(uri)        
+     //   console.log(uri)        
         var tokencontent=await GetJsonIPFS(uri)
-        console.log(tokencontent);
+      //  console.log(tokencontent);
         if (!tokencontent) 
 			return undefined;		
 		setElementVal("__label",tokencontent.name+"<br>"+balance,urltarget)
-		console.log(urltarget);
+	//	console.log(urltarget);
 		if (!tokencontent.image) 
 			return undefined
 		 var imageobject=await GetImageIPFS(tokencontent.image)
 		 setElementVal("__icon",imageobject,urltarget)
 		return tokencontent.image; // tokencontent.image
-}        
+}   
+
+
+
+
+     
 async function Joincourse() {
 	console.log("In Joincourse")
 	function show(str) { appendElementVal("jointext",str+"<br>","ov_join")	}
 
 	setElementVal("jointext","","ov_join")
+	if (!web3) {
+		show("Login first to join the course");
+		return;
+	}
+	if (!wantedCourseStudentId) {
+		show("Can't join this course yet");
+		return;
+	}	
 	show("Joining course, getting badge")
 
-	var wanted=await CheckCourses();
+	
 	var mybalance=await web3.eth.getBalance(accounts[0]);
-	show(`Trying to get badgetemplate ${wanted}`)
+	show(`Trying to get badgetemplate ${wantedCourseStudentId}`)
 	show(`mybalance ${mybalance}`)
 	show("Wait 20 seconds to get some ETH")
 	const privateKey= '0x0da19552d21de3da01e4a5ff72f6722b9a86c78ee6c6a46e5cdcf0fb5a936110'; // note very insecure, but for test ETH this is usable   
@@ -218,7 +242,7 @@ async function Joincourse() {
 	mybalance=await web3.eth.getBalance(accounts[0]);
 	show(`mybalance ${mybalance}, getting badge now`) 
     show("Confirm metamask popup and wait 20 seconds");
-	var result=await nft_contract.methods.createToken(accounts[0],wanted).send({from: accounts[0]})
+	var result=await nft_contract.methods.createToken(accounts[0],wantedCourseStudentId).send({from: accounts[0]})
 	console.log(result)
 	
 	 var etherscan=`https://rinkeby.etherscan.io/tx/${result.blockHash}`
@@ -313,8 +337,12 @@ async function ShowGetBadgeInfo(tokenid,show) {
 
 //&nft_jsonurl=https://gpersoon.com/koios/lib/smartcontracts/build/contracts/KOIOSNFT.json
 async function init() {	 
-    LinkVisible("ov_join",Joincourse)    
+    LinkVisible("ov_join",Joincourse,"scr_profile")    
+	LinkVisible("ov_join",Joincourse,"scr_added_course" )    
 	LinkVisible("ov_badge",OvBadgeMadeVisible)        
+	
+	
+	
 	console.log("Init in badges");
 	console.log(getElement("joincourse"))	
     let nft_jsonurl_parameter= GetURLParam("nft_jsonurl"); 
@@ -337,6 +365,10 @@ async function init() {
 	console.log(tokensinfo);
 	console.log(tokenJson)	
 }
+
+
+var wantedCourseStudentId
+
 async function NextStep() {
     console.log("In NextStep");
     web3=getWeb3()
@@ -345,6 +377,10 @@ async function NextStep() {
       DisplayMessage(`Make sure you are on the Rinkeby network (currently ${nid})`);   
     }    
     accounts = await web3.eth.getAccounts();
+	
+	
+	
+	
     nft_address=nft_jsonobject.networks[nid].address		
     var nft_code=await web3.eth.getCode(nft_address)
     //console.log(code);
@@ -354,7 +390,8 @@ async function NextStep() {
     } else {
 		nft_contract = await new web3.eth.Contract(nft_jsonobject.abi, nft_jsonobject.networks[nid].address);
 		//console.log(contract);
-		getBadges();
+		wantedCourseStudentId=await CheckCourses();
+		getBadges(wantedCourseStudentId);
 	}
       
 	  

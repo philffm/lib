@@ -1,3 +1,4 @@
+import {GetImageIPFS} from '../lib/koiosf_util.mjs';
 
     console.log("Start script startgen");
     var loadedimages=[]
@@ -14,8 +15,13 @@ window.addEventListener("popstate", function(e) {
 
 
 async function LoadImage(src) {
-	console.log("Loading image "+src)
+	//console.log("Loading image "+src)
+	if (src.includes("blob")) return src // already in blob format
 	
+	return await GetImageIPFS(src);
+	
+	
+	/*
 	// later convert this to native ipfs
 	var data=await fetch(src)
 	var text=await data.text()
@@ -27,6 +33,7 @@ async function LoadImage(src) {
 	var url=URL.createObjectURL(blob2)          
 	console.log(url);
 	return url;
+	*/
 } 
   
 
@@ -55,7 +62,8 @@ async function SwitchTo(domid,divtype) {
   //  console.log(children);
     for (var i=0;i<children.length;i++) {
       // console.log(children[i]);
-        //children[i].style.display="none"
+	    if (children[i].style)
+			children[i].style.display="none"
         if (children[i].style) {
             children[i].style.transition="all 200 ease-in-out";
             children[i].style.transitionDelay="0s"        
@@ -72,7 +80,7 @@ async function SwitchTo(domid,divtype) {
     }
     
     var main=domid.firstChild;
-  //  console.log(main)
+   // console.log(main)
     
     if (divtype=="") {
         var found=main;
@@ -94,18 +102,18 @@ async function SwitchTo(domid,divtype) {
     //console.log("previous")
     //console.log(previous)
         
-        found.style.display="block"
-//        found.style.width=domid.style.width
-//        found.style.height=domid.style.height
-//        found.style.left=domid.style.left
-//        found.style.top=domid.style.top       
-//        found.style.right=domid.style.right       
-//        found.style.bottom=domid.style.bottom      
-//        found.style.position=domid.style.position              
+        found.style.display=main.style.display
+        found.style.width=main.style.width
+        found.style.height=main.style.height
+        found.style.left=main.style.left
+        found.style.top=main.style.top       
+        found.style.right=main.style.right       
+        found.style.bottom=main.style.bottom      
+        found.style.position=main.style.position              
 
-        found.style.position="absolute"
-         found.style.width="100%"
-        found.style.height="100%"
+        //found.style.position="absolute"
+        // found.style.width="100%"
+        //found.style.height="100%"
 
         found.style.transitionDelay="200"        
         found.style.opacity="0";        
@@ -130,7 +138,8 @@ async function SwitchTo(domid,divtype) {
      
         found.style.opacity="1"; // start the transition
         //await sleep(200);
-     //   previous.style.display="none";
+		if (found)
+			found.style.display=domid.style.display
        // console.log("found")
        // console.log(found)
       //  console.log("previous")
@@ -204,6 +213,7 @@ if (newpage && newpage.includes("http")) {// must be webpage
 				destdomid.style.position="fixed";
 				destdomid.style.top="0";
 				destdomid.style.left="0";
+				destdomid.style.overflowY="auto";
 				
             }
             globalprevpage=destdomid
@@ -439,7 +449,7 @@ async function main() {
 	
 	
 	lazyImageObserver = new IntersectionObserver(FixImages); // do this just once
-	PrepLazy();
+	PrepLazy(document,true); // load images directly
     SetAllEventHandlers()
     /* doesn't work
     let url1 = new URL(document.location)
@@ -469,7 +479,7 @@ async function main() {
 var lazyImageObserver
 
 async function Loaddirect(lazyImage) {
-	console.log(JSON.stringify(lazyImage))
+	//console.log(JSON.stringify(lazyImage))
 	let src=lazyImage.dataset.src;  // get the src element of the dataset (e.g. data-src)
 
 	var urlpromise = loadedimages[src]

@@ -36,8 +36,7 @@ export async function LoadGapi() {
 
 
 
-// https://www.koios.online/test/upload?playlistId=PL_tbH3aD86KvzJPzAQp6TomZetpBpApZB
-// http://gpersoon.com/koios/gerard/upload/upload.html?playlistId=PL_tbH3aD86KvzJPzAQp6TomZetpBpApZB
+
 
 
 export async function GetYouTubePlaylists() {
@@ -160,7 +159,7 @@ console.log("In GetYouTubePlayListItems");
             
             //console.log(snippet.thumbnails);
             
-            result.thumbnail    = snippet.thumbnails.maxres? snippet.thumbnails.maxres.url : snippet.thumbnails.high.url; // default.url;
+            result.thumbnail    = snippet.thumbnails.maxres? snippet.thumbnails.maxres.url : (snippet.thumbnails.high? snippet.thumbnails.high.url:""); // default.url;
             result.videoid      = snippet.resourceId.videoId
             result.chapter      = false;
             resultlist.push(result);

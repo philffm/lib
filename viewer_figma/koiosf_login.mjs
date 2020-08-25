@@ -37,6 +37,10 @@ async function init() {
         await loadScriptAsync("https://cdn.jsdelivr.net/npm/fortmatic@latest/dist/fortmatic.js"),        // https://unpkg.com/fortmatic@2.0.6/dist/fortmatic.js
         ])
     console.log("After promise all");
+	
+	
+	
+	
 }    
 
 if (window.ethereum)
@@ -65,6 +69,9 @@ console.log("asyncloaded login")
     getElement("login","scr_profile").addEventListener('animatedclick',Login)    
     getElement("login","scr_comment").addEventListener('animatedclick',Login)    
     getElement("clearcachedprovider").addEventListener('animatedclick',ClearCachedProvider)        
+
+
+
 
 console.log("Setting name link to 3box");
 getElement("name").href="http://3box.io/hub"
@@ -188,7 +195,7 @@ async function fetchAccountData() {
 const profile = await Box.getProfile(selectedAccount)
 console.log(profile)
 if (profile) {
-    getElement("name").textContent = profile.name + " " + profile.emoji
+    getElement("name").textContent = `${profile.name?profile.name:"No name defined yet on 3box"} ${profile.emoji?profile.emoji:""}`
     if (profile.image) {
         var imagecid=profile.image[0].contentUrl
         imagecid=imagecid[`\/`]
@@ -257,9 +264,14 @@ async function refreshAccountData() {
 /**
  * Connect wallet button pressed.
  */
+ 
+var fOnlyOnce=false;
 async function onConnect() {
 
   console.log("Opening a dialog", web3Modal);
+  
+  if (fOnlyOnce) return;
+  fOnlyOnce=true;
   
   //getElement("WEB3_CONNECT_MODAL_ID").style.zIndex="20" // to make sure it's in front of everything
   
