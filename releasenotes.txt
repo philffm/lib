@@ -2,17 +2,20 @@ Version 1.93
 
 Functional updates:
 - check if it's possible to join course
+- updated sheets, videos, quizes
 
 Technical updates:
 - fixed variable wanted
 - redeployed the tokens contract with other eth account
 - generator automatically makes production ipfs version
 - generator refactored recursion
+- fixed tokens being shown twice
 
 Layout updates:
 - updated logo of contract badge to latest logo
 - fixed layout of course buttons (related to doctype tag)
 - fixed middle buttons
+- fixed layout of comment buttons
 
 Version 1.92
 
