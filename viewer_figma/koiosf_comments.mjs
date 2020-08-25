@@ -103,7 +103,7 @@ async function ShowPosts(posts) {
             SetDeleteButton(deletebutton,posts[i].postId)
             var votecounter=target.getElementsByClassName("commentupvotecountertext")[0]    
             votecounter.innerHTML = await space.public.get(posts[i].postId)
-            if (votecounter.innerHTML == "undefined") {
+            if (space.public.get(posts[i].postId) == "undefined") {
                 await space.public.set(posts[i].postId, 0)
                 votecounter.innerHTML = 0
             }  
