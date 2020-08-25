@@ -15,8 +15,8 @@ function StoreIPFS {
 
     Write-Host "StoreIPFS $($FilePath)"
 	
-    $uri="https://ipfs.infura.io:5001/api/v0/add?pin=true"
-    $uri="http://diskstation:5002/api/v0/add?pin=true"
+    $uri1="https://ipfs.infura.io:5001/api/v0/add?pin=true"
+    $uri2="http://diskstation:5002/api/v0/add?pin=true"
     $fileBin = [System.IO.File]::ReadAllBytes($FilePath)
 	$enc = [System.Text.Encoding]::GetEncoding("iso-8859-1")
 	$fileEnc = $enc.GetString($fileBin)
@@ -28,8 +28,14 @@ function StoreIPFS {
         $fileEnc,
         "--$boundary--$LF"
         ) -join $LF
-    try {  $result = Invoke-RestMethod -Uri $uri -Method Post -ContentType "multipart/form-data; boundary=`"$boundary`"" -Headers @{ "Origin"="fake://"} -Body $bodyLines }
+
+
+    try {  $result = Invoke-RestMethod -Uri $uri1 -Method Post -ContentType "multipart/form-data; boundary=`"$boundary`"" -Headers @{ "Origin"="fake://"} -Body $bodyLines }
     catch [System.Net.WebException] {  Write-Error( "REST-API-Call failed for '$URL': $_" ); throw $_ ; }
+
+    try {  $result = Invoke-RestMethod -Uri $uri2 -Method Post -ContentType "multipart/form-data; boundary=`"$boundary`"" -Headers @{ "Origin"="fake://"} -Body $bodyLines }
+    catch [System.Net.WebException] {  Write-Error( "REST-API-Call failed for '$URL': $_" ); throw $_ ; }
+
     # Write-Host $result
     return $result
 }

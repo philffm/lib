@@ -41,7 +41,7 @@ async function startprocess() {
         
     }    
    var str = DisplayInfo(x.list)
-   
+   /*
    var pre=document.createElement("pre"); // already create to be able to log
     pre.style.width = "100%";
     pre.style.height = "100%";   
@@ -50,7 +50,10 @@ async function startprocess() {
    var position=document.getElementById("log"); 
     position.appendChild(pre);   
     pre.innerHTML=str;
-    //log(includeSubtitlesforIpfsExport() )
+	*/
+    log(includeSubtitlesforIpfsExport() )
+	
+	
 }
 
 function DisplayInfo(list) {
@@ -99,7 +102,7 @@ function DisplayInfo(list) {
             }            
             str +=`\n`        
        }   
-       //console.log(str);
+       log(str);
     }
    return str;
 }
