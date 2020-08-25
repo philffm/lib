@@ -103,7 +103,7 @@ async function ShowPosts(posts) {
             SetDeleteButton(deletebutton,posts[i].postId)
             var votecounter=target.getElementsByClassName("commentupvotecountertext")[0]    
             votecounter.innerHTML = await space.public.get(posts[i].postId)
-            if (votecounter.innerHTML === 'undefined') {
+            if (votecounter.innerHTML == "undefined") {
                 await space.public.set(posts[i].postId, 0)
                 votecounter.innerHTML = 0
             }  
@@ -163,7 +163,7 @@ async function PostComment() {
     try {
         if (currentThread)
             await currentThread.post(target.innerHTML); 
-            //target.innerHTML = "";
+            target.innerHTML = "";
       } catch (error) {
         console.log(error);
       }
@@ -174,21 +174,21 @@ async function SetUpVoteButton(domid,post,votecounter) {
     async function UpVoteMessage() {
         try {
             if (await space.public.get(`${getUserAddress()}+${post.postId}`) == "upvoted") {
-                votecounter = parseInt(votecounter) - 1
-                await space.public.set(post.postId, votecounter)
+                //votecounter = parseInt(votecounter) - 1
+                await space.public.set(post.postId, parseInt(votecounter)-1)
                 await space.public.set(`${getUserAddress()}+${post.postId}`, "notVoted")
                 ShowPosts(post)
             }
             else if (await space.public.get(`${getUserAddress()}+${post.postId}`) == "downvoted") {
                 votecounter = await space.public.get(post.postId)
-                votecounter = parseInt(votecounter) + 2
-                await space.public.set(post.postId, votecounter)
+                //votecounter = parseInt(votecounter) + 2
+                await space.public.set(post.postId, parseInt(votecounter) + 2)
                 await space.public.set(`${getUserAddress()}+${post.postId}`, "upvoted")
                 ShowPosts(post)
             }
             else {
-                votecounter = parseInt(votecounter) + 1
-                await space.public.set(post.postId, votecounter)
+                //votecounter = parseInt(votecounter) + 1
+                await space.public.set(post.postId, parseInt(votecounter) + 1)
                 await space.public.set(`${getUserAddress()}+${post.postId}`, "upvoted")
                 ShowPosts(post)
             }
