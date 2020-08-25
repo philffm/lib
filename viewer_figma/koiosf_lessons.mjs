@@ -173,19 +173,22 @@ function SetClickFilter(domid,mask) {
 
 function AddLessonsItem(vidinfo,index) { // txt,thumbnail,description,videoid,duration) {
     console.log(`AddLessonsItem ${vidinfo.title} ${vidinfo.chapter}`);
-    
+    console.log(vidinfo);
     
     vidinfo.txt=vidinfo.title; /// refactor
     var cln = PrepareLessonsList.AddListItem() //Template.cloneNode(true);
     getElement("lesson-name",cln).innerHTML=vidinfo.txt;    
     FitOneLine(getElement("lesson-name",cln))    
-    var date = new Date(null);
-	console.log(data);
-    date.setSeconds(vidinfo.duration); // specify value for SECONDS here
-    var result = date.toISOString().substr(10, 9);
-    result=result.replace("T00:", "T");
-    result=result.replace("T", "");
-    getElement("videolength",cln).innerHTML=result        
+	if (!vidinfo.duration) vidinfo.duration=1
+	{
+		var date = new Date(null);
+		console.log(date);
+		date.setSeconds(vidinfo.duration); // specify value for SECONDS here
+		var result = date.toISOString().substr(10, 9);
+		result=result.replace("T00:", "T");
+		result=result.replace("T", "");
+		getElement("videolength",cln).innerHTML=result        
+	}
     cln.id=`lesson-${index}`;    
     
     cln.dataset.chapter=vidinfo.chapter;
