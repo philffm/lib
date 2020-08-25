@@ -86,7 +86,7 @@ async function GetLiteratureForVideo() {
     
     if (!globalslideindex) return; // not loaded yet
     var slideindex=globalslideindex
-
+prevurl=undefined; // reset again
 	await SearchArray(slideindex,match)
 	await SearchArray(lit,match)
  
@@ -96,9 +96,10 @@ async function SearchArray(slideindex,match) {
 	if (!slideindex) return;
     var str="";
        for (var i=0;i<slideindex.length;i++) {
+		   console.log(slideindex[i]);
         if (match && slideindex[i].chapter !== match && slideindex[i].chapter!="*") // * means a match with all chapters
             continue; // ignore
-        
+       console.log(slideindex[i]);
         var type="";
         
         var url = slideindex[i].url
@@ -122,7 +123,8 @@ async function SearchArray(slideindex,match) {
             url = slideindex[i].pdf
             url = `https://docs.google.com/viewerng/viewer?url=${url}&embedded=true`;
         }    
-        if (url) {            
+        if (url) {     
+console.log(		slideindex[i])
             str +=SetInfo(url,slideindex[i].title,"browse-window-frame",slideindex[i].url?false:true,type)+"<br>"
         }
 		
@@ -141,8 +143,8 @@ var prevurl=undefined
             url = url.replace("http:","https:"); // to prevent error messages from browser  
         var urltarget = GlobalUrlList.AddListItem()  
         
-//console.log(`In SetInfo ${url} ${txt}`)
-//console.log(urltarget);
+console.log(`In SetInfo ${url} ${txt}`)
+console.log(urltarget);
         var link_ext=urltarget.getElementsByClassName("link_ext")[0]
         var link_int=urltarget.getElementsByClassName("link_int")[0]
         

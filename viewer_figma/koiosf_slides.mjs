@@ -51,9 +51,10 @@ class SlideList {
 		console.log(list)
         if (list)        
             for (var i=0;i<list.length;i++) {
-                if ( ! ((list[i].chapter === this.match) && (list[i].png) )) continue; // skip this one
-                var slidesinfo = list[i]
-                if (!slidesinfo.png) continue;        
+				var slidesinfo = list[i]				
+				if (slidesinfo.png===undefined) continue;               
+			    if (match && (list[i].chapter !== match) && (list[i].chapter!="*")) continue;// * means a match with all chapters                
+				console.log(slidesinfo);               
                 var url= await GetImageIPFS(slidesinfo.png)
                 this.currentList.push(url)            
             }
