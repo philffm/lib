@@ -1,0 +1,12 @@
+[	{
+		"chapter": "*",
+		"title": "Jupyter notebook",
+		"url": "http://localhost:8888/tree"
+	},
+    {
+		"chapter": "*",
+		"title": "NBViewer",
+		"url": " https://nbviewer.jupyter.org/"
+	}
+]
+	
