@@ -615,13 +615,13 @@ window.onerror = function(message, source, lineno, colno, error) {   // especial
 </script>
 `
 
-            
+/*            
 function MakeHeader(embed,globalfonts,globalmediastyles) {   
     var strprefix=""    
     
-    strprefix +='<head>'
-    strprefix +='<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">'
-    strprefix +='<meta charset="utf-8" />'
+    strprefix +='<head>'	
+	strprefix +='<meta charset="utf-8" />'
+    strprefix +='<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">'    
     strprefix +=errorscript;
     strprefix += GetFonts(globalfonts);
     if (embed) {
@@ -633,7 +633,7 @@ function MakeHeader(embed,globalfonts,globalmediastyles) {
     return strprefix;
 }
     
-
+*/
 
 
  
@@ -678,9 +678,10 @@ if (embed) {
 	
 
     var str="" 	
+	str +='<!DOCTYPE html>' // same as in webflow, makes a difference for the rendering
     str +='<html>' 
-	str +='<head>'	
-	str +='<meta charset="utf-8" />'   	// charset has to be set here
+	str +='<head>'		
+	str +='<meta charset="utf-8" />'   	// charset has to be set here	
 	str +='<script type="module">\n'	
 	str +='//--script--\n'   // magic string to indicate the start of the javascript
 	str +=injectscript
@@ -1314,7 +1315,7 @@ function ConvertColor(color) {
             
             dimensions ='position: relative;' // width:95%;height:96%;set dimension to max in order to use of surroundingdiv // only used for buttons ==> let the underlying text define the buttons
             buttonlevel++; // so the rest is relative
-			if (fstaticwidth)         dimensions +=`width:${width};`;
+			if (fstaticwidth)         dimensions +=`width:${width};height:${height};`;
 			
             insdata="" // don't put it on buttons itself anymore
             
