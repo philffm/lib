@@ -359,15 +359,16 @@ function ToggleCueVisibility() {
 
 var signs=0;
 async function PlayerLoaded() {
-    console.log("In PlayerLoaded");
+   // console.log("In PlayerLoaded");
     signs++;
-    if (signs ==2) // only at exactly 2
+    if (signs ==1) // only at exactly 1
         publish("playerloaded");
 }    
 
+subscribe("youtubepluginloaded",PlayerLoaded);
 
 subscribe('videostart',  startVideo);
-subscribe('videocued',   PlayerLoaded ); // do nothing, wait for user to start
+//subscribe('videocued',   PlayerLoaded ); // do nothing, wait for user to start
 subscribe('videopause',  stopVideo);
 subscribe('videostop',   stopVideo);
 subscribe('videoend',    NextVideo);
@@ -395,8 +396,10 @@ async function LoadVideo(vidinfo) { // call when first video is loaded or a diff
 
     
     
-    if (globalplayer)
+    if (globalplayer) {
         globalplayer.cueVideoById(vidinfo.videoid,0); // start at beginning   
+		console.log(`Cue video ${vidinfo.videoid}`);
+	}	
     
     
     currentvidinfo = vidinfo;

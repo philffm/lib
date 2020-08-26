@@ -1,3 +1,14 @@
+Version 1.94
+
+Functional updates:
+- updated left screen of viewer : start video directly
+
+Technical updates:
+
+Layout updates:
+- renamed blockchain course to level 1/2/3
+- fullscreen button in left screen
+
 Version 1.93
 
 Functional updates:

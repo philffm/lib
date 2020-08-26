@@ -133,6 +133,7 @@ export async function GetCourseInfo(key) {
     console.log(listofcourses)
     if (!courseid) return defaultreturn;
     if (!listofcourses) return defaultreturn;
+	if (!listofcourses[courseid])  return defaultreturn;
     
     return listofcourses[courseid][key];
 }
@@ -240,6 +241,13 @@ async function ScrProfileMadeVisible() {
   
   getElement("btnprofile","scr_profile").dispatchEvent(new CustomEvent("displayactive")); // then hide the join button
   
+  var coursedetails=await GlobalCourseList.GetCurrentCourseData()
+	
+	var strcurrentcourse=coursedetails?coursedetails.courselevel:"No course selected yet";
+	setElementVal("currentcoursename",strcurrentcourse,getElement("scr_profile"))
+	if (!coursedetails) return 
+  
+  
   var data=(await GlobalCourseList.GetCurrentCourseData());
   var mask=[["courselevel","currentcoursename"],["image","courseicon"]]; 
   if (data)
@@ -247,9 +255,11 @@ async function ScrProfileMadeVisible() {
 }  
 
 async function ScrViewerMadeVisible() {
-    var strcurrentcourse=(await GlobalCourseList.GetCurrentCourseData()).courselevel;
+	var coursedetails=await GlobalCourseList.GetCurrentCourseData()
+	
+    var strcurrentcourse=coursedetails?coursedetails.courselevel:"No course selected yet";
      setElementVal("currentcoursename",strcurrentcourse,getElement("scr_viewer"))
-     
+    if (!coursedetails) return 
      
    var data=(await GlobalCourseList.GetCurrentCourseData());
   var mask=[["courselevel","currentcoursename"],["image","courseicon"]]; 

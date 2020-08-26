@@ -119,6 +119,7 @@ export var GlobalLessonList;
 
 async function NewCourseSelected() {   
     console.log("In NewCourseSelected");
+	prefindex=undefined;
     PrepareLessonsList.EmptyList()
     PrepareChapterList.EmptyList()    
     var videocid=await GetCourseInfo("videoinfo") 
@@ -145,29 +146,54 @@ function AddChapter(vidinfo) {
     var cln=PrepareChapterList.AddListItem()
     //cln.getElementsByClassName("chapter-name")[0].innerHTML=txt;
     
+	
+	
     var sp=txt.split(" ")
     var chapter=sp[0]
     
+	cln.id=`chapter-${chapter}`;   
+	
     setElementVal("__label",chapter,cln)
     
     
     txt=txt.replace(sp[0],"").trim()
     setElementVal("chapter-name",txt,cln)
     
-    SetClickFilter(getElement("chapter",cln),chapter)    
+	FitOneLine(getElement("chapter-name",cln))    
+	
+    SetClickFilter(cln,chapter)    //getElement("chapter",cln)
     
 } 
 
+var oldindexchapter;
+
 function SetClickFilter(domid,mask) {
-    console.log(`SetClickFilter ${mask}`);
+  console.log(`SetClickFilter ${mask}`);
+ 	
      domid.addEventListener('click', e=> {
         console.log("Click event in SetClickFilter");
         console.log(e);    
         console.log(mask);       
+		
+		var prevdomid=getElement(`chapter-${oldindexchapter}`);
+		if (prevdomid) {        
+			prevdomid.style.borderColor=""; // reset to original
+			prevdomid.style.borderStyle="";
+		}
+		console.log(domid)
+		domid.style.borderColor="red";
+		domid.style.borderStyle="solid";
+		oldindexchapter=mask
+
+		
         PrepareLessonsList.ShowDataset("chapter",mask,true)
         }
      );
 }    
+
+
+
+
 
 
 
@@ -193,7 +219,7 @@ function AddLessonsItem(vidinfo,index) { // txt,thumbnail,description,videoid,du
     
     cln.dataset.chapter=vidinfo.chapter;
     cln.videoid=vidinfo.videoid; // to store & retrieve data about the video       
-    SetClickPlay(getElement("playbuttonfromlist",cln),index)    
+    SetClickPlay(cln,index)    
     var seeninfothisvideo=LoadVideoSeen(vidinfo)        
     //console.log("AddLessonsItem");
     //console.log(vidinfo.txt);
@@ -204,11 +230,16 @@ function AddLessonsItem(vidinfo,index) { // txt,thumbnail,description,videoid,du
     //console.log(getElement("seenvideo",cln))
 } 
 
-function SetClickPlay(domid,index) { // seperate function to remember state
+async function SetClickPlay(cln,index) { // seperate function to remember state
+
+	
+
+//var txt=getElement("lesson-name",cln) 
+
     //console.log(`SetClickPlay ${index}`);
     //console.log(domid);
     
-    domid.addEventListener('click', e=> {
+    cln.addEventListener('click', e=> {
         //console.log("Click event in SetClickPlay");
        // console.log(e);    
        // console.log(index);       
@@ -216,17 +247,49 @@ function SetClickPlay(domid,index) { // seperate function to remember state
         SelectLesson(index)
         }
      );
+	var playbutton=getElement("playbuttonfromlist",cln) 
+    playbutton.addEventListener('click', async e=> {
+        //console.log("Click event in SetClickPlay");
+       // console.log(e);    
+       // console.log(index);       
+          
+        await SelectLesson(index)
+		if (videocued) { // already cued by previousaction
+			publish("videostart")
+			videocued=false;
+		} else
+			autoplay=true;
+	}
+     );
+	 
+	 
 }   
+var videocued=false;
+var autoplay=false;
+function VideoCued() {
+  if (autoplay) 
+	  publish("videostart") // start the video
+  else
+	  videocued=true;
   
+  autoplay=false;  
+}
 
+subscribe('videocued',   VideoCued ); 
+
+  
+var prefindex=undefined;
 
 export async function SelectLesson(index) {   
     console.log(`In SelectLesson !! index=${index}`);
     
-    var oldindex=await GlobalLessonList.GetCurrentLesson(index)
+	if (prefindex == index) return; // already set
+	prefindex=index;
+	
+    var oldindex=await GlobalLessonList.GetCurrentLesson()
+	
     var newindex=await GlobalLessonList.SetCurrentLesson(index)
-    
-    
+       
     
     var prevdomid=getElement(`lesson-${oldindex}`);
     if (prevdomid) {        
@@ -237,9 +300,6 @@ export async function SelectLesson(index) {
     if (domid)
        domid.style.borderColor="red";
        domid.style.borderStyle="solid";
-    
-    
-    
     
 }
 
