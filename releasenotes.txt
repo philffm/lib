@@ -9,6 +9,10 @@ Layout updates:
 - renamed blockchain course to level 1/2/3
 - fullscreen button in left screen
 
+Course content:
+- added chapter for bc level 2
+- remove wrong disclaimer from bc level 2
+
 Version 1.93
 
 Functional updates:

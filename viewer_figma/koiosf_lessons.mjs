@@ -252,13 +252,13 @@ async function SetClickPlay(cln,index) { // seperate function to remember state
         //console.log("Click event in SetClickPlay");
        // console.log(e);    
        // console.log(index);       
-          
+	    autoplay=true;
         await SelectLesson(index)
 		if (videocued) { // already cued by previousaction
 			publish("videostart")
 			videocued=false;
-		} else
-			autoplay=true;
+		} 
+			
 	}
      );
 	 
@@ -267,6 +267,7 @@ async function SetClickPlay(cln,index) { // seperate function to remember state
 var videocued=false;
 var autoplay=false;
 function VideoCued() {
+	console.log(`In VideoCued autoplay${autoplay} videocued${videocued}`)
   if (autoplay) 
 	  publish("videostart") // start the video
   else
