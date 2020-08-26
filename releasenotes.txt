@@ -1,3 +1,27 @@
+Version 1.9x
+
+Functional updates:
+
+Technical updates:
+
+Layout updates:
+
+Course content:
+
+
+Version 1.95
+
+Functional updates:
+- filter & uptimeze literature links
+
+Technical updates:
+
+Layout updates:
+- updated right pane
+
+Course content:
+
+
 Version 1.94
 
 Functional updates:

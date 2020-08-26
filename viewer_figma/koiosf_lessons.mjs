@@ -298,9 +298,10 @@ export async function SelectLesson(index) {
        prevdomid.style.borderStyle="";
     }
     var domid=getElement(`lesson-${newindex}`);
-    if (domid)
+    if (domid) {
        domid.style.borderColor="red";
        domid.style.borderStyle="solid";
+	}
     
 }
 
