@@ -203,6 +203,8 @@ async function SetUpVoteButton(domid,post,votecounter) {
                 ShowPosts(post)
             }
             console.log("votestatus after: ", space.public.get(`${getUserAddress()}+${post.postId}`))
+            console.log("postid after: ", post.postId);
+            console.log("counter after: ", await space.public.get(post.postId))
         } catch (error) {
             console.log(error);
         }
