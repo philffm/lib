@@ -182,6 +182,7 @@ async function SetUpVoteButton(domid,post,votecounter) {
         try {
             console.log("postid: ", post.postId);
             console.log("counter: ", await space.public.get(post.postId))
+            console.log("space: ", space)
             console.log("useraddress thing: ", `${getUserAddress()}+${post.postId}`)
             console.log("votestatus before: ", space.public.get(`${getUserAddress()}+${post.postId}`))
             if (await space.public.get(`${getUserAddress()}+${post.postId}`) === 'upvoted') {
