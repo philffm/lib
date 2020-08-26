@@ -103,7 +103,7 @@ async function ShowPosts(posts) {
             SetDeleteButton(deletebutton,posts[i].postId)
             var votecounter=target.getElementsByClassName("commentupvotecountertext")[0]    
             votecounter.innerHTML = await space.public.get(posts[i].postId)
-            if (space.public.get(posts[i].postId) === 'undefined') {
+            if (await space.public.get(posts[i].postId) === 'undefined') {
                 await space.public.set(posts[i].postId, 0)
                 votecounter.innerHTML = 0
             }  
@@ -170,9 +170,15 @@ async function PostComment() {
 }  
 
 async function SetUpVoteButton(domid,post,votecounter) { 
+    console.log("postid: ", post.postId);
+    console.log("counter: ", await space.public.get(post.postId))
     domid.addEventListener('animatedclick',UpVoteMessage)
     async function UpVoteMessage() {
         try {
+            console.log("postid: ", post.postId);
+            console.log("counter: ", await space.public.get(post.postId))
+            console.log("useraddress thing: ", `${getUserAddress()}+${post.postId}`)
+            console.log("votestatus before: ", space.public.get(`${getUserAddress()}+${post.postId}`))
             if (await space.public.get(`${getUserAddress()}+${post.postId}`) === "upvoted") {
                 votecounter = await space.public.get(post.postId)
                 votecounter = parseInt(votecounter) - 1
@@ -194,6 +200,7 @@ async function SetUpVoteButton(domid,post,votecounter) {
                 await space.public.set(`${getUserAddress()}+${post.postId}`, "upvoted")
                 ShowPosts(post)
             }
+            console.log("votestatus after: ", space.public.get(`${getUserAddress()}+${post.postId}`))
         } catch (error) {
             console.log(error);
         }
