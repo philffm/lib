@@ -35,10 +35,10 @@
                 "community":"https://tdfaslack.slack.com",
                 "communityinvite":"https://join.slack.com/t/tdfaslack/shared_invite/zt-f8ghb2gg-e8bUiNK~T1zU6vNvfseIdA"
             },
-"bcintro01": {
-                "course": "Blockchain Technology",
-                "courselevel": "Blockchain Technology 1: Introduction",
-                "level": "introduction",                
+"bclevel01": {
+                "course": "Mastering Blockchain",
+                "courselevel": "Blockchain Level 1",
+                "level": "1",                
                 "videoinfo": "QmPud7wFG4BK3ZQQFCGiEvLfuJ9sGCXuAqu7cHnL2bokDK",                
                 "slides":"QmU7k6AutkwJiyPKZCpZRYq238VY7TK6QwcpXHTp3LRRGN",
                 "quizinfo": "QmaypA3Mim1kkQckKecXyqS5Hqeca8FaXPZxWffDiFZQV3",
@@ -46,15 +46,15 @@
                 "subtitle": "An extensive introduction to Blockchain Technology.",
                 "description": "This introduction course will take you through the absolute basics of blockchain technology. After completion you will understand theimportance of blockchain technology and have a small grasp of how a blockchainworks. A course for everyone.",
                 "goal": "Ledger technology / Bitcoin / Smart contracts",
-                "start": "10-2-2020",
+                "start": "31-8-2020",
                 "image": "https://uploads-ssl.webflow.com/5d25da7a03e410dc1f3b7f36/5e907618bc1f1241137f8345_Blockchain%20lvl1%20SVG.svg",
                 "community":"https://koiosblockcha-ma69869.slack.com",
                 "communityinvite":"https://join.slack.com/t/koiosblockcha-ma69869/shared_invite/zt-glxugcib-ZJCMueimSPN3svG45gG0Xw"                
             },	
-"bcbeginner01": {
-                "course": "Blockchain Technology",
-                "courselevel": "Blockchain Technology 2: Beginners",
-                "level": "beginners",
+"bclevel02": {
+                "course": "Mastering Blockchain",
+                "courselevel": "Blockchain Level 2",
+                "level": "2",
                 "videoinfo": "QmUWrK67oAjP1PSMzEgAZH42nZcLLxWTXqfTPvjqrgDR7E",
                 "slides": "QmXa6GF9MLBtpeE1dGpwm3GWvMbFYNh5whaaZuYjvyzErP",
                 "quizinfo": "Qmb1Vfh429KeYfFdxsiKsTXJsTk97z8U4PZJ7PENM9hrU4",
@@ -62,15 +62,15 @@
                 "subtitle": "The second level. Let's dive in deeper.",
                 "description": "After completing the introduction course, you are ready todive a bit deeper into the technology. You'll learn about different blockchainsand what makes them different from one another. You'll also get a deeperunderstanding of the bitcoin protocol.",
                 "goal": "Bitcoin deep dive / Ethereum  Smart contracts",
-                "start": "10-2-2020",
+                "start": "31-8-2020",
                 "image": "https://uploads-ssl.webflow.com/5d25da7a03e410dc1f3b7f36/5e907624c9af5c89fff02255_Blockchain%20lvl2%20SVG.svg",
                 "community":"https://koiosblockcha-ma69869.slack.com",
                 "communityinvite":"https://join.slack.com/t/koiosblockcha-ma69869/shared_invite/zt-glxugcib-ZJCMueimSPN3svG45gG0Xw"                
             },    
-"bcintermediate01": {
-                "course": "Blockchain Technology",
-                "courselevel": "Blockchain Technology 3: Intermediate",
-                "level": "intermediate",
+"bclevel03": {
+                "course": "Mastering Blockchain",
+                "courselevel": "Blockchain Level 3",
+                "level": "3",
                 "videoinfo": "QmaY2FHMX7Vh5PR9yDr6C177cvGbNSpZFfh3RRDe4kHXAP",
                 "slides": "QmNcvkvjyq4cDRB4CidU6EExfX5bYCsM9B9mMygwWVwXhi",
                 "contributer": "jordi",
@@ -80,21 +80,6 @@
                 "image": "https://uploads-ssl.webflow.com/5d25da7a03e410dc1f3b7f36/5e90762efc30d3b72957f562_Blockchain%20lvl3%20SVG.svg",
                 "community":"https://koiosblockcha-ma69869.slack.com",
                 "communityinvite":"https://join.slack.com/t/koiosblockcha-ma69869/shared_invite/zt-glxugcib-ZJCMueimSPN3svG45gG0Xw"                
-            },    
-"bcadvanced01": {
-                "course": "Blockchain Technology",
-                "courselevel": "Blockchain Technology 4: Advanced",
-                "level": "advanced",
-                "videoinfo": "QmPDrKty83inbaxXJzhYqTsCvkhEYg7hWHV2VdkQtpFe8E",
-                "slides": "QmPwjkZSXAt9AEuKxeYcnjmuDreWsUoFfo8TebrATtyLNX",				
-                "contributer": "jordi",
-                "subtitle": "You are about to become a Blockchain specialist. Congrats.",
-                "description": "After completing the beginners course, your knowledge will be enlarged even further.",
-                "goal": "TBA",
-                "start": "Soon",
-                "image": "https://uploads-ssl.webflow.com/5d25da7a03e410dc1f3b7f36/5e907638c9af5c3d6cf02309_Blockchain%20lvl%204%20SVG.svg",
-                "community":"https://koiosonline.slack.com",
-                "communityinvite":"https://join.slack.com/t/koiosonline/shared_invite/enQtNjE0MjAyNzMyODY4LTFlYWIzODRkNTI2ZWExOWM0NGNmMjFjNTU1YzFmZGExOWUzY2EzYTg4NDMwNDVhOTBkMGU0MTFkNzJkN2I5MWM"                
             },
 "python01": {
                 "course": "Python",
