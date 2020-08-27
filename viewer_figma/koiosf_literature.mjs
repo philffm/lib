@@ -140,9 +140,9 @@ function CleanUrl(url) {
 	if (url.includes("localhost"))    // sometimes localhost http for jupyter
 		return url
 
-	var check = new URL(url)
+	try { var check = new URL(url) } catch(error) { console.log(`Error ${error} ${url}`); return undefined; }
 	//console.log(`${url} ${check.protocol}`);
-	console.log(check);
+	//console.log(check);
 	
 	if (check.protocol != "https:") return undefined; // strip about:, file: etc.
 	

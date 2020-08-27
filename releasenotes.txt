@@ -1,10 +1,18 @@
 Version 1.9x
+Functional updates:
+Technical updates:
+Layout updates:
+Course content:
+
+Version 1.96
 
 Functional updates:
 
 Technical updates:
+- reverted to old 3box.js
 
 Layout updates:
+- quiz button layout fixed
 
 Course content:
 
