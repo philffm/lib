@@ -31,7 +31,7 @@ class QuizList {
             if (line[0]===match) 
                this.subset.push(line)
         } 
-        this.start=-1
+        this.start=0
 		console.log(this.subset)
         return this.subset.length;
     }    
@@ -43,7 +43,7 @@ class QuizList {
        return this.subset[this.start]
     }
     
-    GetNext() {
+    MoveNext() {
 		
        this.start++
 	   console.log(`In GetNext ${ this.start}`)
@@ -198,7 +198,7 @@ async function ScrQuizMadeVisible() {
     
     if (!GlobalQuizList) return;
     
-    var question=GlobalQuizList.GetNext();
+    var question=GlobalQuizList.GetCurrent() // GetNext();
     console.log(question);
     if (!question) return;
     setElementVal("question",question[1],"scr_quiz")
