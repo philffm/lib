@@ -10,6 +10,7 @@ Functional updates:
 
 Technical updates:
 - reverted to old 3box.js
+- added chapterduration and totalduration in videoinfo
 
 Layout updates:
 - quiz button layout fixed
