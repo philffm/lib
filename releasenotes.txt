@@ -13,13 +13,16 @@ Technical updates:
 - reverted to old 3box.js
 - added chapterduration and totalduration in videoinfo
 - get 0.01 eth from faucet
+- reload badges after "join"
+- reload badges & tokens after account change
 
 Layout updates:
 - quiz button layout fixed
 - changed name & description of badges (on blockchain/ipfs)
+- fixed layout of badges
 
 Course content:
-
+- update videoinfo to latest version
 
 Version 1.95
 
