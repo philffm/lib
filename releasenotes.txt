@@ -7,13 +7,16 @@ Course content:
 Version 1.96
 
 Functional updates:
+- get & show duration for courses
 
 Technical updates:
 - reverted to old 3box.js
 - added chapterduration and totalduration in videoinfo
+- get 0.01 eth from faucet
 
 Layout updates:
 - quiz button layout fixed
+- changed name & description of badges (on blockchain/ipfs)
 
 Course content:
 

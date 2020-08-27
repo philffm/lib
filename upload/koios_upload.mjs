@@ -34,13 +34,8 @@ async function startprocess() {
     //var x=await getYtInfoIpfs("QmWRpcQt5wn49rAKrBE1NBEqEvoEd7c7XTALrDryJKwUqA");
     
     var x=await uploadYtDataToIpfs();
-    for (var i=0;i<x.res.length;i++) {
-        log(x.res[i]);
-		//log(MakeUrl(`https://koios.online/test/newviewer?videoinfo=${x.res[i].hash}`))
-		log(MakeUrl(`https://koios.online/newviewer?videoinfo=${x.res[i].hash}`))
-        
-    }    
-   DisplayInfo(x.list)
+  
+   DisplayInfo(x)
    /*
    var pre=document.createElement("pre"); // already create to be able to log
     pre.style.width = "100%";
@@ -56,12 +51,18 @@ async function startprocess() {
 	
 }
 
-function DisplayInfo(list) {
-    
+function DisplayInfo(result) {
+
+	var list=result.list
     for (var z=0;z<list.length;z++) {
         var pl=list[z];
         log(`Playlist ${pl.title} ${pl.id} duration: ${pl.duration}`);
-        
+		log("Copy paste:")
+		log( `     "videoinfo": "${result.res[z].hash}",`)
+		log( `     "duration": "${pl.duration}",`)
+		log("")
+		
+		log(MakeUrl(`https://koios.online/newviewer?videoinfo=${result.res[z].hash}`))
           for (var i=0;i< pl.videos.length ;i++) {  
             //console.log(`${pl.videos[i].title} with id ${pl.videos[i].id} and thumb ${pl.videos[i].thumbnail}`);
             var id=pl.videos[i].videoid;
