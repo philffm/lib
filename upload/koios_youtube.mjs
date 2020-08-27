@@ -100,6 +100,9 @@ console.log("In GetYouTubePlayListItems");
     var resultlist=[]
 	var literaturelist=[]
     await LoadGapi();
+	var playlistduration=0
+	var chapterduration=0
+	var prevchapter=-1
     do {
         var list=await gapi.client.youtube.playlistItems.list({ 
           "part": "snippet", // contentDetails
@@ -113,6 +116,9 @@ console.log("In GetYouTubePlayListItems");
         //console.log(nextPageToken);
         var idlist="";
         
+		
+
+		
         var resultlistindex=resultlist.length;
         for (var i=0;i<list.result.items.length;i++) {
             var snippet=list.result.items[i].snippet;
@@ -170,17 +176,38 @@ console.log("In GetYouTubePlayListItems");
             "id": idlist
         });
         
+		
         //console.log(resultlistindex);
         for (var i=0;i<list2.result.items.length;i++) {
-            while (resultlist[resultlistindex].chapter) // skip the chapters
-                resultlistindex++;
+            while (resultlist[resultlistindex].chapter) {// skip the chapters
+				if (chapterduration > 0) {
+					console.log(`Storing chapterduration ${chapterduration} ${prevchapter}`);
+					if (prevchapter >=0) resultlist[prevchapter].duration=chapterduration
+					chapterduration=0
+					
+				}                
+				prevchapter=resultlistindex
+				resultlistindex++;
+			}
             var contentDetails=list2.result.items[i].contentDetails;
-            resultlist[resultlistindex].duration = moment.duration(contentDetails.duration).asSeconds();
+			var vidduration = moment.duration(contentDetails.duration).asSeconds();
+            resultlist[resultlistindex].duration = vidduration
+			playlistduration +=vidduration
+			chapterduration +=vidduration
+			console.log(`vidduration ${vidduration} playlistduration ${playlistduration} chapterduration ${chapterduration}`);
             resultlistindex++
         }        
+		
+		document.getElementById("loaded").innerHTML=resultlistindex
     } while (nextPageToken);
+	
+	if (chapterduration > 0) {
+			console.log(`Storing chapterduration ${chapterduration} ${prevchapter}`);
+			if (prevchapter >=0) resultlist[prevchapter].duration=chapterduration
+			chapterduration=0
+		}
     //console.log(resultlist);
-    return {resultlist:resultlist,literaturelist:literaturelist};    
+    return {resultlist:resultlist,literaturelist:literaturelist,duration:playlistduration};    
 }
 
 
@@ -189,8 +216,12 @@ export async function forIPFSexport()     //creates an array of objects in the r
   var totalYoutubeInfo = await GetYouTubePlaylists();
   for(var i=0;i<totalYoutubeInfo.length;i++)
   { var result=await GetYouTubePlayListItems(totalYoutubeInfo[i].id);
+console.log(result);
+	totalYoutubeInfo[i].duration = result.duration
     totalYoutubeInfo[i].videos = result.resultlist
 	totalYoutubeInfo[i].literature = result.literaturelist
+	
+	
   }
   console.log(totalYoutubeInfo);
   return totalYoutubeInfo;

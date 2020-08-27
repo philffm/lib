@@ -35,8 +35,8 @@ export async function setupBuffer()
 }
 */
 
-export async function uploadYtDataToIpfs()        //Puts the object on ipfs
-{
+export async function uploadYtDataToIpfs()   {     //Puts the object on ipfs
+console.log('uploadYtDataToIpfs')
     var ipfs = await setupIPFS();
     var list=await includeSubtitlesforIpfsExport()
     var res=[]
