@@ -36,41 +36,26 @@ class QuizList {
         return this.subset.length;
     }    
     
-    GetCurrent() {
+	GetNrQuestions() {
+		return this.subset.length;
+	}
+	
+    GetCurrentQuestion() {
        if (this.start >= this.subset.length) 
            return undefined;       
 	   console.log(`In GetCurrent ${ this.start} ${this.subset[this.start]}`)
        return this.subset[this.start]
     }
     
-    MoveNext() {
-		
-       this.start++
-	   console.log(`In GetNext ${ this.start}`)
-       return this.GetCurrent()
-    }
-    
-    async GetCurrentCourseData() {
-    
-    }
-    
-    
-    UpdateMyList(courseid,fremove) {
-    
+    Move(delta) {		
+       this.start += delta
+	   if (this.start < 0) this.start=0
+	   if (this.start >= this.subset.length) this.start=this.subset.length-1
+	   console.log(`In Move ${ this.start}`)
         
     }
-    
-    SetCurrentCourse(courseid) {
-    
-    }
-
-    GetCurrentCourse() {
-    
-    }
-    LoadCurrentCourse() {
-    
-    }
-
+    IsFirst() { return this.start<=0)
+	isLast()  { return this.start>=this.subset.length-1)
 }    
 
 subscribe("setcurrentcourse",NewCourseSelected)
@@ -88,13 +73,33 @@ async function NewCourseSelected() {
  
         var List=await GlobalQuizList.GetList();
         console.log(List);
-    }
-    
-    
-    
-    
+    }    
 }    
 
+function QuizLeft() {
+	console.log("QuizLeft")
+	GlobalQuizList.Move(-1)
+	UpdateButtons() 
+	ScrQuizMadeVisible()
+}
+
+function QuizRight() {
+	console.log("QuizRight")
+	GlobalQuizList.Move(+1)
+	UpdateButtons() 
+	ScrQuizMadeVisible()
+}
+
+function UpdateButtons() {
+	console.log("UpdateButtons")
+	getElement("quizleft").dispatchEvent(new CustomEvent(GlobalQuizList.isFirst()?"displaydisabled":"displaydefault"));
+	getElement("quizleft").dispatchEvent(new CustomEvent(GlobalQuizList.isLast()?"displaydisabled":"displaydefault"));
+}	
+
+
+    LinkClickButton("quizleft",QuizLeft);
+    LinkClickButton("quizright",QuizRight);
+	
 LinkClickButton("checkanswer",CheckAnwer)
 async function CheckAnwer() {
     console.log("In CheckAnwer");
@@ -124,7 +129,7 @@ async function CheckAnwer() {
         await sleep(50);
     }
     
-    var question=GlobalQuizList.GetCurrent();
+    var question=GlobalQuizList.GetCurrentQuestion();
     console.log(`In CheckAnwer`);
     console.log(question[2]); // that's the column with the answers
     
@@ -174,10 +179,12 @@ LinkVisible("scr_quiz" ,ScrQuizMadeVisible)
 
 
 
-async function ScrQuizMadeVisible() {
+async function ScrQuizMadeVisible() { // also used with next/prev question
     console.log("In ScrQuizMadeVisible");
     setElementVal("quizresult","");
     
+	
+	
     console.log(`In ScrQuizMadeVisible`);
     
     
@@ -198,7 +205,7 @@ async function ScrQuizMadeVisible() {
     
     if (!GlobalQuizList) return;
     
-    var question=GlobalQuizList.GetCurrent() // GetNext();
+    var question=GlobalQuizList.GetCurrentQuestion() // GetNext();
     console.log(question);
     if (!question) return;
     setElementVal("question",question[1],"scr_quiz")
@@ -208,6 +215,9 @@ async function ScrQuizMadeVisible() {
     setElementVal("__label",question[6],"answerd","scr_quiz")
 
 }
+
+
+
 
 async function NewVideoSelected() {   
     if (GlobalQuizList) {
