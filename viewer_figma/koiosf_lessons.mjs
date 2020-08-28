@@ -271,6 +271,7 @@ async function VideoSeen(currentvidinfo) {
 
 function SimplifyName(name) {
 	var left=name.split(" ")[0];
+	if (!left.includes("-")) return name; // then probably a different name
 	var right=(name.replace(left,"")).trim()
 	var nr=left.split("-")[1]
 	return nr+" "+right
