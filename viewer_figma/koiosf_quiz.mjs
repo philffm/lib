@@ -7,7 +7,16 @@ import {GlobalLessonList} from './koiosf_lessons.mjs';
 import {GetToggleState} from '../genhtml/startgen.mjs'
 
 
+window.addEventListener('DOMContentLoaded', init);  // load  
 
+function init() {
+	subscribe("setcurrentcourse",NewCourseSelected)
+	LinkClickButton("quizleft",QuizLeft);
+	LinkClickButton("quizright",QuizRight);
+	subscribe("loadvideo",NewVideoSelected);
+	LinkVisible("scr_quiz" ,ScrQuizMadeVisible)   
+	LinkClickButton("checkanswer",CheckAnwer)
+}	
 
 class QuizList {    
     constructor (source) {
@@ -54,11 +63,11 @@ class QuizList {
 	   console.log(`In Move ${ this.start}`)
         
     }
-    IsFirst() { return this.start<=0 }
+    isFirst() { return this.start<=0 }
 	isLast()  { return this.start>=this.subset.length-1 }
 }    
 
-subscribe("setcurrentcourse",NewCourseSelected)
+
 
 
 export var GlobalQuizList;
@@ -93,14 +102,13 @@ function QuizRight() {
 function UpdateButtons() {
 	console.log("UpdateButtons")
 	getElement("quizleft").dispatchEvent(new CustomEvent(GlobalQuizList.isFirst()?"displaydisabled":"displaydefault"));
-	getElement("quizleft").dispatchEvent(new CustomEvent(GlobalQuizList.isLast()?"displaydisabled":"displaydefault"));
+	getElement("quizright").dispatchEvent(new CustomEvent(GlobalQuizList.isLast()?"displaydisabled":"displaydefault"));
 }	
 
 
-    LinkClickButton("quizleft",QuizLeft);
-    LinkClickButton("quizright",QuizRight);
+  
 	
-LinkClickButton("checkanswer",CheckAnwer)
+
 async function CheckAnwer() {
     console.log("In CheckAnwer");
 	setElementVal("quizresult","");
@@ -174,8 +182,7 @@ async function CheckAnwer() {
 }    
 
 
-subscribe("loadvideo",NewVideoSelected);
-LinkVisible("scr_quiz" ,ScrQuizMadeVisible)   
+
 
 
 
