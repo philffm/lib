@@ -239,7 +239,7 @@ function Highlight(domid) {
     }
 	prevdomid=domid;
     if (domid) {
-       domid.style.borderColor="red";
+       domid.style.borderColor="#FF206E";//"red";
        domid.style.borderStyle="solid";
 	}
 }

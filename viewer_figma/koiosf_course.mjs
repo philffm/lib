@@ -287,6 +287,13 @@ async function ScrProfileMadeVisible() {
   var mask=[["courselevel","currentcoursename"],["image","courseicon"]]; 
   if (data)
     ForAllElements(data, mask, (id,val) => { setElementVal(id,val,getElement("scr_profile")) }) // find domid object with same name and copy value
+
+		console.log(data)
+		var duration=GetDuration(data)
+		if (duration)
+			setElementVal("timetotal",duration,"scr_profile")	
+
+
 }  
 
 async function ScrViewerMadeVisible() {

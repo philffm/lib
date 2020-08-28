@@ -1,11 +1,12 @@
 //console.log(`In ${window.location.href} starting script: ${import.meta.url}`);
 
-import {LinkButton,HideButton,LinkClickButton,subscribe,LoadVideoSeen,MonitorDomid,DomList,sleep,SelectTabBasedOnNumber,GetJsonIPFS, getElement,FitOneLine,publish,setElementVal } from '../lib/koiosf_util.mjs';
+import {LinkButton,HideButton,LinkClickButton,subscribe,MonitorDomid,DomList,sleep,SelectTabBasedOnNumber,GetJsonIPFS, getElement,FitOneLine,publish,setElementVal,LinkToggleButton } from '../lib/koiosf_util.mjs';
 //import {player} from './koiosf_viewer.mjs';
 import {GetCourseInfo,GlobalCourseList} from './koiosf_course.mjs';
+import {GetToggleState} from '../genhtml/startgen.mjs'
 
-export var CurrentLesson=0;
-export var LastLesson=0;
+// var CurrentLesson=0; // dont export any more
+//var LastLesson=0;
 export var CurrentCourseTitle="";
 export var maxduration=0;
 
@@ -75,6 +76,12 @@ class LessonList {
         var lessons=await this.GetLessonsList()
         return lessons[lesson]
     }
+    async GetLessonData(lesson) {       
+        
+        var lessons=await this.GetLessonsList()
+        return lessons[lesson]
+    }
+
       
 
     UpdateMyList(courseid,fremove) {
@@ -106,6 +113,62 @@ class LessonList {
         
     }
 
+
+
+  async LoadVideoSeen(vidinfo) {
+	/*  var currentcourse=GlobalCourseList.GetCurrentCourse()
+	  console.log(currentcourse);
+	  var lessons=await this.GetLessonsList()
+	  var vidinfo=lessons[currentcourse]
+	  console.log(vidinfo)
+	  */
+	 // console.log(videoid);
+	//var vidinfo= await this.GetLessonData(videoid)
+	
+	//console.log(vidinfo)
+	
+    var storageid=`video-${vidinfo.videoid}`;
+    var get=localStorage.getItem(storageid);
+    var jsonparsed={}
+    
+    if (get) { // previous info about this video        
+        jsonparsed=JSON.parse(get)
+        jsonparsed.seensum=0
+        for (var i=0;i<vidinfo.duration;i++)
+            jsonparsed.seensum += jsonparsed.seensec[i];
+        
+    } else {
+        jsonparsed.seensum=0;
+        jsonparsed.seensec=[]
+        for (var i=0;i<vidinfo.duration;i++)
+            jsonparsed.seensec[i]=0;
+        jsonparsed.seenend=false;
+    }
+	//console.log(jsonparsed);
+	
+	console.log(`LoadVideoSeen id ${vidinfo.videoid} seenend ${jsonparsed.seenend}`);
+    return jsonparsed;
+}    
+
+  async SaveVideoSeen(seeninfo,vidinfo) {
+	  console.log(`SaveVideoSeen id ${vidinfo.videoid} seenend ${seeninfo.seenend}`);
+	   //var currentcourse=GlobalCourseList.GetCurrentCourse()
+	  //var lessons=await this.GetLessonsList()
+	  //var vidinfo=lessons[currentcourse]
+    var storageid=`video-${vidinfo.videoid}`;
+    var seenperc=parseFloat(seeninfo.seensum / vidinfo.duration).toFixed(3)
+    var obj = { seensec: seeninfo.seensec, seenperc: seeninfo.seenperc, seenend: seeninfo.seenend };
+    //console.log(obj)
+    var myJSON = JSON.stringify(obj);    
+    localStorage.setItem(storageid,myJSON)  
+}    
+
+
+// see chrome dev console / tab application / left column: Local storage
+
+
+
+
 }    
 
 
@@ -131,7 +194,7 @@ async function NewCourseSelected() {
 		console.log("Have lesson info:")
 		console.log(lessons);
         for (var i=0;i<lessons.length;i++)
-               AddLessonsItem(lessons[i],i)    
+               await AddLessonsItem(lessons[i],i)    
         var chapters=await GlobalLessonList.GetChaptersList()   
         if (chapters)    
             for (var i=0;i<chapters.length;i++)
@@ -181,7 +244,7 @@ function SetClickFilter(domid,mask) {
 			prevdomid.style.borderStyle="";
 		}
 		console.log(domid)
-		domid.style.borderColor="red";
+		domid.style.borderColor="#FF206E";//"red";
 		domid.style.borderStyle="solid";
 		oldindexchapter=mask
 
@@ -192,14 +255,25 @@ function SetClickFilter(domid,mask) {
 }    
 
 
+	subscribe("videoseen",VideoSeen)
+	
+async function VideoSeen(currentvidinfo) {
+	var index=await GlobalLessonList.GetCurrentLesson()
+	
+	
+	 var  el=getElement(`lesson-${index}`)
+	 
+	 // could also use cln.dataset.videoid
+	 
+	 getElement("seenvideo",el).dispatchEvent(new CustomEvent("displayactive"))    
+}	
 
 
 
 
-
-function AddLessonsItem(vidinfo,index) { // txt,thumbnail,description,videoid,duration) {
+async function AddLessonsItem(vidinfo,index) { // txt,thumbnail,description,videoid,duration) {
     console.log(`AddLessonsItem ${vidinfo.title} ${vidinfo.chapter}`);
-    console.log(vidinfo);
+    //console.log(vidinfo);
     
     vidinfo.txt=vidinfo.title; /// refactor
     var cln = PrepareLessonsList.AddListItem() //Template.cloneNode(true);
@@ -208,7 +282,7 @@ function AddLessonsItem(vidinfo,index) { // txt,thumbnail,description,videoid,du
 	if (!vidinfo.duration) vidinfo.duration=1
 	{
 		var date = new Date(null);
-		console.log(date);
+		//console.log(date);
 		date.setSeconds(vidinfo.duration); // specify value for SECONDS here
 		var result = date.toISOString().substr(10, 9);
 		result=result.replace("T00:", "T");
@@ -218,17 +292,30 @@ function AddLessonsItem(vidinfo,index) { // txt,thumbnail,description,videoid,du
     cln.id=`lesson-${index}`;    
     
     cln.dataset.chapter=vidinfo.chapter;
-    cln.videoid=vidinfo.videoid; // to store & retrieve data about the video       
+    cln.dataset.videoid=vidinfo.videoid; // to store & retrieve data about the video       
     SetClickPlay(cln,index)    
-    var seeninfothisvideo=LoadVideoSeen(vidinfo)        
+    var seeninfothisvideo=await GlobalLessonList.LoadVideoSeen(vidinfo)        
     //console.log("AddLessonsItem");
     //console.log(vidinfo.txt);
-    //console.log(seeninfothisvideo);
+    console.log(seeninfothisvideo);
     var disp=seeninfothisvideo.seenend?"displayactive":"displaydefault"
     //console.log(disp);
     getElement("seenvideo",cln).dispatchEvent(new CustomEvent(disp))    
     //console.log(getElement("seenvideo",cln))
+	
+	//LinkToggleButton("seenvideo",ToggleSeenVideo)
+	
+	
 } 
+
+/*
+function ToggleSeenVideo() {
+	  var fOn=GetToggleState(this,"displayactive")
+	  
+	  console.log(this)
+	  console.log(fOn);
+}	
+*/
 
 async function SetClickPlay(cln,index) { // seperate function to remember state
 
@@ -245,8 +332,29 @@ async function SetClickPlay(cln,index) { // seperate function to remember state
        // console.log(index);       
           
         SelectLesson(index)
-        }
+	}
      );
+	 var seenvideo=getElement("seenvideo",cln) 
+	  cln.addEventListener('click', async e=> {
+        //console.log("Click event in SetClickPlay");
+       // console.log(e);    
+       // console.log(index);       
+          
+        SelectLesson(index)
+		console.log(this)
+		  var fOn=GetToggleState(seenvideo,"displayactive")
+		  console.log(fOn)
+        
+		var vidinfo=await GlobalLessonList.GetCurrentLessonData()
+		console.log(vidinfo)
+		var seeninfo=await GlobalLessonList.LoadVideoSeen(vidinfo)
+		seeninfo.seenend=fOn;
+		console.log(seeninfo);
+		
+		await GlobalLessonList.SaveVideoSeen(seeninfo,vidinfo)
+	  }
+     );
+	 
 	var playbutton=getElement("playbuttonfromlist",cln) 
     playbutton.addEventListener('click', async e=> {
         //console.log("Click event in SetClickPlay");
@@ -299,15 +407,20 @@ export async function SelectLesson(index) {
     }
     var domid=getElement(`lesson-${newindex}`);
     if (domid) {
-       domid.style.borderColor="red";
+       domid.style.borderColor="#FF206E";//"red";
        domid.style.borderStyle="solid";
 	}
     
 }
 
 
-export async function SelectNextLesson(delta) {   
+export async function SelectNextLesson(delta) {  
+console.log( "SelectNextLesson");
+var CurrentLesson=await GlobalLessonList.GetCurrentLesson()
     SelectLesson(parseInt(CurrentLesson) + parseInt(delta))
+	
+	autoplay=true;
+	
 }
 
  
