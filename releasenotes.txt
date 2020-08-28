@@ -6,13 +6,18 @@ Course content:
 
 
 Version 1.97
+
 Functional updates:
 - quiz allow multiple questions
+
 Technical updates:
+- add staticfiles to literature (via script)
+
 Layout updates:
 - left pane: remove redundant text & optimized layout
 - left/right buttons of slide made inactive at ends
 - load slide images
+- wordwrap for long quiz answers
 
 Course content:
 

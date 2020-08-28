@@ -180,7 +180,8 @@ async function CheckAnwer() {
     
     
 }    
-
+function ResetAnswer() {
+}	
 
 
 
@@ -194,21 +195,17 @@ async function ScrQuizMadeVisible() { // also used with next/prev question
 	
     console.log(`In ScrQuizMadeVisible`);
     
-    
-    getElement("answera","scr_quiz").dispatchEvent(new CustomEvent("displaydefault"));
-    getElement("answerb","scr_quiz").dispatchEvent(new CustomEvent("displaydefault"));
-    getElement("answerc","scr_quiz").dispatchEvent(new CustomEvent("displaydefault"));
-    getElement("answerd","scr_quiz").dispatchEvent(new CustomEvent("displaydefault"));
-    
-    getElement("answera","scr_quiz").style.borderColor=""
-    getElement("answerb","scr_quiz").style.borderColor=""
-    getElement("answerc","scr_quiz").style.borderColor=""
-    getElement("answerd","scr_quiz").style.borderColor=""
-    getElement("answera","scr_quiz").style.borderStyle=""
-    getElement("answerb","scr_quiz").style.borderStyle=""
-    getElement("answerc","scr_quiz").style.borderStyle=""
-    getElement("answerd","scr_quiz").style.borderStyle=""
-    
+	const answerlist = ["answera", "answerb", "answerc","answerd"]
+
+	for (const element of answerlist) {
+		console.log(element);	
+		var domid=getElement(element,"scr_quiz")
+		domid.dispatchEvent(new CustomEvent("displaydefault"));			
+		domid.style.borderColor=""
+		domid.style.borderStyle=""
+	    domid.style.outline=""
+        domid.style.outlineOffset=""
+	}
     
     if (!GlobalQuizList) return;
     

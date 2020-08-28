@@ -53,6 +53,9 @@ Get-ChildItem -Path $curr_path -Recurse -Filter *.ppt? | ForEach-Object {
     $targetdir = "outputpowerpoint"
     $destination = "$($curr_path)\$($targetdir)"
 
+     $clean = "$($curr_path)\$($targetdir)\*.*"
+    Remove-Item -Path $clean -Force
+    Write-Host $clean
     
     Write-Host "Powerpoint file:" $_.BaseName
     Write-Host "PNG's will be stored here:" $destination
@@ -67,13 +70,21 @@ Get-ChildItem -Path $curr_path -Recurse -Filter *.ppt? | ForEach-Object {
 
 
     $outputTypeImg = [Microsoft.Office.Interop.PowerPoint.PpSaveAsFileType]::ppSaveAsPDF
-    $destinationsheets = "$($curr_path)\sheets.pdf"
+    $destinationsheets = "$($curr_path)\sheets_$($_.BaseName).pdf"
     $result = $document.SaveAs($destinationsheets, $outputTypeImg, $EmbedFonts)
     Write-Host "Entire PDF saved" $result
     $sheetsresult = StoreIPFS ($destinationsheets)
     Write-Host "Stored sheets on ipfs" $ipfs.Name
    #$mdarray1
-    $mdarray1 += ,@{ chapter="*";title="Sheets";cid=$sheetsresult.Name;size=$sheetsresult.Size;source=$powerpointname}   
+
+    $prefix = $_.BaseName.Split(" ")[0]
+    $prefix = ($prefix+"-").Split("-")[0]
+    Write-Host $prefix
+
+   $chapter=$_.BaseName.Split(" ")[0].Trim()
+   if ($chapter -eq "all") { $chapter="*" }
+
+    $mdarray1 += ,@{ chapter=$chapter;title="Sheets";cid=$sheetsresult.Name;size=$sheetsresult.Size;source=$powerpointname}   
      #$mdarray1
 
     $comma=" "
@@ -127,8 +138,8 @@ Get-ChildItem -Path $curr_path -Recurse -Filter *.ppt? | ForEach-Object {
         $comma=","
 
         $chapterprefixed = $chapter
-        if ($chapterprefixed -NotMatch 'BC') {
-            $chapterprefixed = "BC-$($chapterprefixed)"
+        if ($chapterprefixed -NotMatch $prefix) {
+            $chapterprefixed = "$($prefix)-$($chapterprefixed)"
         }
 
         Write-Host $chapterprefixed,$title
