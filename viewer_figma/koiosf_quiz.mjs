@@ -54,8 +54,8 @@ class QuizList {
 	   console.log(`In Move ${ this.start}`)
         
     }
-    IsFirst() { return this.start<=0)
-	isLast()  { return this.start>=this.subset.length-1)
+    IsFirst() { return this.start<=0) }
+	isLast()  { return this.start>=this.subset.length-1) }
 }    
 
 subscribe("setcurrentcourse",NewCourseSelected)
