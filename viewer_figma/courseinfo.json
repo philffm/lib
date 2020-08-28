@@ -90,7 +90,7 @@
             },
 "datascience01": {
                 "course": "Datascience & Python",
-                "courselevel": "Python",
+                "courselevel": "Introduction to Python",
                 "level": "intermediate",
                 "contributer": "Leon",
                 "subtitle": "You are about to become a Python programmer.",
@@ -98,8 +98,8 @@
                 "goal": "TBA",
                 "start": "Soon",
                 "image": "https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg",
-                "videoinfo": "QmWwiMRWZdr8UtSBm2mcrFh9W8Q1o7H53hDhrkrZ9jm9KD",
-				"duration": "8625",
+				"videoinfo": "QmdMHso49eDnqvZq3obMSBbW8MQkXcmzdi6e69iTSqGJ3z",
+				"duration": "10464",
 				"slides":	"QmYnwkcPDog79Qr8pqW1jRpg62DTDebAJhqmEkJTDiE8aH",
                 "community":"https://koiosonline.slack.com",
                 "communityinvite":"https://join.slack.com/t/koiosonline/shared_invite/enQtNjE0MjAyNzMyODY4LTFlYWIzODRkNTI2ZWExOWM0NGNmMjFjNTU1YzFmZGExOWUzY2EzYTg4NDMwNDVhOTBkMGU0MTFkNzJkN2I5MWM"                
