@@ -269,7 +269,12 @@ async function VideoSeen(currentvidinfo) {
 }	
 
 
-
+function SimplifyName(name) {
+	var left=name.split(" ")[0];
+	var right=(name.replace(left,"")).trim()
+	var nr=left.split("-")[1]
+	return nr+" "+right
+}
 
 async function AddLessonsItem(vidinfo,index) { // txt,thumbnail,description,videoid,duration) {
     console.log(`AddLessonsItem ${vidinfo.title} ${vidinfo.chapter}`);
@@ -277,7 +282,7 @@ async function AddLessonsItem(vidinfo,index) { // txt,thumbnail,description,vide
     
     vidinfo.txt=vidinfo.title; /// refactor
     var cln = PrepareLessonsList.AddListItem() //Template.cloneNode(true);
-    getElement("lesson-name",cln).innerHTML=vidinfo.txt;    
+    getElement("lesson-name",cln).innerHTML=SimplifyName(vidinfo.txt);
     FitOneLine(getElement("lesson-name",cln))    
 	if (!vidinfo.duration) vidinfo.duration=1
 	{

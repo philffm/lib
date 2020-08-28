@@ -4,6 +4,17 @@ Technical updates:
 Layout updates:
 Course content:
 
+
+Version 1.97
+Functional updates:
+Technical updates:
+Layout updates:
+- left pane: remove redundant text & optimized layout
+Course content:
+
+
+
+
 Version 1.96
 
 Functional updates:
@@ -20,6 +31,7 @@ Layout updates:
 - quiz button layout fixed
 - changed name & description of badges (on blockchain/ipfs)
 - fixed layout of badges
+
 
 Course content:
 - update videoinfo to latest version
