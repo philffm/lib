@@ -70,6 +70,6 @@ async function GetAddressInformation() {
     }
 
     for (var j=0;j<useraddresses.length;j++) {
-        sendlist[j] = [useraddresses[j], tokenamount[j]]
+        sendlist[j] = new Array(useraddresses[j], tokenamount[j]);
     }
 }
