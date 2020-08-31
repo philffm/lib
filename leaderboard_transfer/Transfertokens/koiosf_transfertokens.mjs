@@ -20,6 +20,7 @@ async function onLoad() {
         tokenamountlist.addEventListener("click", tokenamountlist.innerHTML(""));
 
     getElement("confirmbutton").addEventListener('animatedclick',AddElementsToList)   
+    getElement("emptylistbutton").addEventListener('animatedclick',EmptyList)   
 }
 
 async function AddElementsToList() {
@@ -35,8 +36,12 @@ async function ShowAddresses(addresses,tokenamount) {
         var target = GlobalAddressList.AddListItem();
         target.getElementsByClassName("transferuseraddresstext")[0].innerHTML = addresses[i];
         target.getElementsByClassName("transfertokencounttext")[0].innerHTML = tokenamount[i];
-        var tokenamountlist=getElement("transfertokencounttext");    
+        var tokenamountlist=getElement("transfertokencounttext",target);    
         tokenamountlist.contentEditable="true"; // make div editable
         tokenamountlist.style.whiteSpace ="pre";
     }
+}
+
+async function EmptyList() {
+    GlobalAddressList.EmptyList();
 }
