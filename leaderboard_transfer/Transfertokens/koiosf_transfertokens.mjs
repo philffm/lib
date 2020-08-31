@@ -22,15 +22,21 @@ async function onLoad() {
     getElement("confirmbutton").addEventListener('animatedclick',AddElementsToList)   
 }
 
-async function AddElementsToList() {
+async function AddAddressesToList() {
     var addresslist=getElement("addresstextboxtext").innerHTML; 
     useraddresses = addresslist.split(',');
-    ShowAddresses(useraddresses);
+    var tokenlist=getElement("tokenamounttextboxtext").innerHTML; 
+    tokenamount = tokenlist.split(',');
+    ShowAddresses(useraddresses,tokenamount);
 }
 
-async function ShowAddresses(addresses) {
+async function ShowAddresses(addresses,tokenamount) {
     for (var i=0;i<addresses.length;i++) {
         var target = GlobalAddressList.AddListItem();
         target.getElementsByClassName("transferuseraddresstext")[0].innerHTML = addresses[i];
+        target.getElementsByClassName("transfertokencounttext")[0].innerHTML = tokenamount[i];
+        var tokenamountlist=getElement("transfertokencounttext");    
+        tokenamountlist.contentEditable="true"; // make div editable
+        tokenamountlist.style.whiteSpace ="pre";
     }
 }
