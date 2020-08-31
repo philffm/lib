@@ -23,13 +23,14 @@ async function onLoad() {
 }
 
 async function AddElementsToList() {
-    useraddresses = getElement("addresstextboxtext").split(' ');
+    var addresslist=getElement("addresstextboxtext"); 
+    useraddresses = addresslist.split(' ');
     ShowAddresses(useraddresses);
 }
 
 async function ShowAddresses(addresses) {
     for (var i=0;i<addresses.length;i++) {
-        var target = GlobalCommentList.AddListItem();
+        var target = GlobalAddressList.AddListItem();
         target.getElementsByClassName("transferuseraddresstext")[0].innerHTML = addresses[i];
     }
 }
