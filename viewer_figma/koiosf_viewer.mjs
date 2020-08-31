@@ -2,10 +2,10 @@
 // https://browserhow.com/how-to-clear-chrome-android-history-cookies-and-cache-data/
  // imports
  
-    import {LinkButton,HideButton,DragItem,publish,subscribe,LinkClickButton,LinkToggleButton,CanvasProgressInfoClass,SaveVideoSeen,LoadVideoSeen,ForceButton,getElement,setElementVal,LinkVisible } from '../lib/koiosf_util.mjs';
+    import {LinkButton,HideButton,DragItem,publish,subscribe,LinkClickButton,LinkToggleButton,CanvasProgressInfoClass,ForceButton,getElement,setElementVal,LinkVisible } from '../lib/koiosf_util.mjs';
     import {SetupLogWindow} from '../lib/koiosf_log.mjs';    
     import {SetupVideoWindowYouTube} from './koiosf_playvideo.mjs';
-    import {SelectLesson,CurrentLesson,LastLesson } from './koiosf_lessons.mjs';    
+    import {SelectLesson,SelectNextLesson,GlobalLessonList } from './koiosf_lessons.mjs';    
     import {GetSubTitlesAndSheets} from './koiosf_subtitles.mjs';
     import {currentlang,UpdateTranscript,FoundTranscript,SelectLanguage,SetVideoTranscriptCallbacks} from './koiosf_showtranscript.mjs';
     import {/*FoundSlides,*/UpdateSlide} from './koiosf_slides.mjs';
@@ -77,17 +77,6 @@ var seeninfo;
 
 var GlobalCanvasProgressInfo;
 
-function InitProgress(vidinfo) {
-    console.log("InitProgress");
-    seeninfo=LoadVideoSeen(vidinfo);
-    
-    
-    
-    
-    
-    GlobalCanvasProgressInfo.Update(seeninfo)
-    
-}    
 
 async function VideoLocation() { 
     var CurrentPos=0;
@@ -115,7 +104,7 @@ async function VideoLocation() {
         seeninfo.seensum++;
         GlobalCanvasProgressInfo.UpdateItem(seeninfo,cursec)
     }    
-    SaveVideoSeen(seeninfo,currentvidinfo)
+    await GlobalLessonList.SaveVideoSeen(seeninfo,currentvidinfo)
     
     //CanvasProgressInfo(getElement("videoprogressbar"),true,seeninfo)
      
@@ -124,10 +113,11 @@ async function VideoLocation() {
  
  
 
-function SeenVideo() { // every few seconds save the progress
+async function SeenVideo() { // every few seconds save the progress
     console.log(`Seen video ${currentvidinfo.txt}`);
     seeninfo.seenend=true;
-    SaveVideoSeen(seeninfo,currentvidinfo)
+    await GlobalLessonList.SaveVideoSeen(seeninfo,currentvidinfo)
+	publish("videoseen",currentvidinfo);
 }    
 
 subscribe('videoend',    SeenVideo);
@@ -136,7 +126,8 @@ subscribe('videoend',    SeenVideo);
 
 async function NextVideo() {
     stopVideo();
-    
+	await sleep(3000);
+    SelectNextLesson(+1);
     //await Relax();
 /*
     var RelaxTime=5000;
@@ -359,15 +350,16 @@ function ToggleCueVisibility() {
 
 var signs=0;
 async function PlayerLoaded() {
-    console.log("In PlayerLoaded");
+   // console.log("In PlayerLoaded");
     signs++;
-    if (signs ==2) // only at exactly 2
+    if (signs ==1) // only at exactly 1
         publish("playerloaded");
 }    
 
+subscribe("youtubepluginloaded",PlayerLoaded);
 
 subscribe('videostart',  startVideo);
-subscribe('videocued',   PlayerLoaded ); // do nothing, wait for user to start
+//subscribe('videocued',   PlayerLoaded ); // do nothing, wait for user to start
 subscribe('videopause',  stopVideo);
 subscribe('videostop',   stopVideo);
 subscribe('videoend',    NextVideo);
@@ -395,8 +387,10 @@ async function LoadVideo(vidinfo) { // call when first video is loaded or a diff
 
     
     
-    if (globalplayer)
+    if (globalplayer) {
         globalplayer.cueVideoById(vidinfo.videoid,0); // start at beginning   
+		console.log(`Cue video ${vidinfo.videoid}`);
+	}	
     
     
     currentvidinfo = vidinfo;
@@ -412,10 +406,13 @@ async function LoadVideo(vidinfo) { // call when first video is loaded or a diff
        //if (vidinfo.subtitles[i].lang == "vor")
             //FoundSlides(vidinfo.subtitles[i].subtitle,vidinfo);
     //GetSetupLitAndAssInfo(vidinfo.txt);
-    InitProgress(vidinfo);
-    
-}
 
+    seeninfo=await GlobalLessonList.LoadVideoSeen(vidinfo);
+	console.log(seeninfo)
+    
+    GlobalCanvasProgressInfo.Update(seeninfo)
+    
+}    
 
 
 
@@ -496,7 +493,7 @@ console.log("Init ready1");
     
     
   CreateVideoSlider();  //ff uitgezet
- GlobalCanvasProgressInfo=new CanvasProgressInfoClass(getElement("videoprogressbar"),true,"green")  
+ GlobalCanvasProgressInfo=new CanvasProgressInfoClass(getElement("videoprogressbar"),true,"#20FFB1")//"green")  
   
   
     // CreateSoundSlider();

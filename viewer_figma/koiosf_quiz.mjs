@@ -7,7 +7,16 @@ import {GlobalLessonList} from './koiosf_lessons.mjs';
 import {GetToggleState} from '../genhtml/startgen.mjs'
 
 
+window.addEventListener('DOMContentLoaded', init);  // load  
 
+function init() {
+	subscribe("setcurrentcourse",NewCourseSelected)
+	LinkClickButton("quizleft",QuizLeft);
+	LinkClickButton("quizright",QuizRight);
+	subscribe("loadvideo",NewVideoSelected);
+	LinkVisible("scr_quiz" ,ScrQuizMadeVisible)   
+	LinkClickButton("checkanswer",CheckAnwer)
+}	
 
 class QuizList {    
     constructor (source) {
@@ -31,49 +40,34 @@ class QuizList {
             if (line[0]===match) 
                this.subset.push(line)
         } 
-        this.start=-1
+        this.start=0
 		console.log(this.subset)
         return this.subset.length;
     }    
     
-    GetCurrent() {
+	GetNrQuestions() {
+		return this.subset.length;
+	}
+	
+    GetCurrentQuestion() {
        if (this.start >= this.subset.length) 
            return undefined;       
 	   console.log(`In GetCurrent ${ this.start} ${this.subset[this.start]}`)
        return this.subset[this.start]
     }
     
-    GetNext() {
-		
-       this.start++
-	   console.log(`In GetNext ${ this.start}`)
-       return this.GetCurrent()
-    }
-    
-    async GetCurrentCourseData() {
-    
-    }
-    
-    
-    UpdateMyList(courseid,fremove) {
-    
+    Move(delta) {		
+       this.start += delta
+	   if (this.start < 0) this.start=0
+	   if (this.start >= this.subset.length) this.start=this.subset.length-1
+	   console.log(`In Move ${ this.start}`)
         
     }
-    
-    SetCurrentCourse(courseid) {
-    
-    }
-
-    GetCurrentCourse() {
-    
-    }
-    LoadCurrentCourse() {
-    
-    }
-
+    isFirst() { return this.start<=0 }
+	isLast()  { return this.start>=this.subset.length-1 }
 }    
 
-subscribe("setcurrentcourse",NewCourseSelected)
+
 
 
 export var GlobalQuizList;
@@ -88,14 +82,33 @@ async function NewCourseSelected() {
  
         var List=await GlobalQuizList.GetList();
         console.log(List);
-    }
-    
-    
-    
-    
+    }    
 }    
 
-LinkClickButton("checkanswer",CheckAnwer)
+function QuizLeft() {
+	console.log("QuizLeft")
+	GlobalQuizList.Move(-1)
+	UpdateButtons() 
+	ScrQuizMadeVisible()
+}
+
+function QuizRight() {
+	console.log("QuizRight")
+	GlobalQuizList.Move(+1)
+	UpdateButtons() 
+	ScrQuizMadeVisible()
+}
+
+function UpdateButtons() {
+	console.log("UpdateButtons")
+	getElement("quizleft").dispatchEvent(new CustomEvent(GlobalQuizList.isFirst()?"displaydisabled":"displaydefault"));
+	getElement("quizright").dispatchEvent(new CustomEvent(GlobalQuizList.isLast()?"displaydisabled":"displaydefault"));
+}	
+
+
+  
+	
+
 async function CheckAnwer() {
     console.log("In CheckAnwer");
 	setElementVal("quizresult","");
@@ -124,7 +137,7 @@ async function CheckAnwer() {
         await sleep(50);
     }
     
-    var question=GlobalQuizList.GetCurrent();
+    var question=GlobalQuizList.GetCurrentQuestion();
     console.log(`In CheckAnwer`);
     console.log(question[2]); // that's the column with the answers
     
@@ -167,38 +180,36 @@ async function CheckAnwer() {
     
     
 }    
+function ResetAnswer() {
+}	
 
 
-subscribe("loadvideo",NewVideoSelected);
-LinkVisible("scr_quiz" ,ScrQuizMadeVisible)   
 
 
 
-async function ScrQuizMadeVisible() {
+async function ScrQuizMadeVisible() { // also used with next/prev question
     console.log("In ScrQuizMadeVisible");
     setElementVal("quizresult","");
     
+	
+	
     console.log(`In ScrQuizMadeVisible`);
     
-    
-    getElement("answera","scr_quiz").dispatchEvent(new CustomEvent("displaydefault"));
-    getElement("answerb","scr_quiz").dispatchEvent(new CustomEvent("displaydefault"));
-    getElement("answerc","scr_quiz").dispatchEvent(new CustomEvent("displaydefault"));
-    getElement("answerd","scr_quiz").dispatchEvent(new CustomEvent("displaydefault"));
-    
-    getElement("answera","scr_quiz").style.borderColor=""
-    getElement("answerb","scr_quiz").style.borderColor=""
-    getElement("answerc","scr_quiz").style.borderColor=""
-    getElement("answerd","scr_quiz").style.borderColor=""
-    getElement("answera","scr_quiz").style.borderStyle=""
-    getElement("answerb","scr_quiz").style.borderStyle=""
-    getElement("answerc","scr_quiz").style.borderStyle=""
-    getElement("answerd","scr_quiz").style.borderStyle=""
-    
+	const answerlist = ["answera", "answerb", "answerc","answerd"]
+
+	for (const element of answerlist) {
+		console.log(element);	
+		var domid=getElement(element,"scr_quiz")
+		domid.dispatchEvent(new CustomEvent("displaydefault"));			
+		domid.style.borderColor=""
+		domid.style.borderStyle=""
+	    domid.style.outline=""
+        domid.style.outlineOffset=""
+	}
     
     if (!GlobalQuizList) return;
     
-    var question=GlobalQuizList.GetNext();
+    var question=GlobalQuizList.GetCurrentQuestion() // GetNext();
     console.log(question);
     if (!question) return;
     setElementVal("question",question[1],"scr_quiz")
@@ -208,6 +219,9 @@ async function ScrQuizMadeVisible() {
     setElementVal("__label",question[6],"answerd","scr_quiz")
 
 }
+
+
+
 
 async function NewVideoSelected() {   
     if (GlobalQuizList) {

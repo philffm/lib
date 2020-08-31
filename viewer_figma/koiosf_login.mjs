@@ -299,16 +299,19 @@ async function onConnect() {
   try {
       provider.on("accountsChanged", (accounts) => {
         fetchAccountData();
+		publish("ethereumchanged")
       });
 
       // Subscribe to chainId change
       provider.on("chainChanged", (chainId) => {
         fetchAccountData();
+		publish("ethereumchanged")
       });
 
       // Subscribe to networkId change
       provider.on("networkChanged", (networkId) => {
         fetchAccountData();
+		publish("ethereumchanged")
       });
   } catch(e) {
     console.log("provider on error", e);

@@ -1,3 +1,87 @@
+Version 2.x
+Functional updates:
+Technical updates:
+Layout updates:
+Course content:
+
+
+Version 2.0
+Functional updates:
+Technical updates:
+Layout updates:
+- scr_added_course shows course name & icon
+
+Course content:
+- welcome videos updated
+
+Version 1.97
+
+Functional updates:
+- quiz allow multiple questions
+
+Technical updates:
+- add staticfiles to literature (via script)
+
+Layout updates:
+- left pane: remove redundant text & optimized layout
+- left/right buttons of slide made inactive at ends
+- load slide images
+- wordwrap for long quiz answers
+
+Course content:
+
+
+
+
+Version 1.96
+
+Functional updates:
+- get & show duration for courses
+
+Technical updates:
+- reverted to old 3box.js
+- added chapterduration and totalduration in videoinfo
+- get 0.01 eth from faucet
+- reload badges after "join"
+- reload badges & tokens after account change
+
+Layout updates:
+- quiz button layout fixed
+- changed name & description of badges (on blockchain/ipfs)
+- fixed layout of badges
+
+
+Course content:
+- update videoinfo to latest version
+
+Version 1.95
+
+Functional updates:
+- filter & uptimeze literature links
+
+Technical updates:
+
+Layout updates:
+- updated right pane
+
+Course content:
+
+
+Version 1.94
+
+Functional updates:
+- updated left screen of viewer : start video directly
+
+Technical updates:
+
+Layout updates:
+- renamed blockchain course to level 1/2/3
+- fullscreen button in left screen
+
+Course content:
+- added chapter for bc level 2
+- remove wrong disclaimer from bc level 2
+
 Version 1.93
 
 Functional updates:
