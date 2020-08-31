@@ -25,6 +25,19 @@ async function onLoad() {
     LinkClickButton("emptylistbutton",EmptyList)  
     LinkClickButton("showdomlist",ConsoleLogDomList)
     LinkClickButton("sendbutton",SendTransaction)
+
+    initContractInformation();
+}
+
+async function initContractInformation() {
+    var tokenfactoryinfo="https://koiosonline.github.io/lib/koiosft/build/contracts/ERC20TokenFactory.json"
+	tokenfactoryJson=await GetJson(tokenfactoryinfo)
+	console.log(tokenfactoryinfo);
+	console.log(tokenfactoryJson)	
+	var tokensinfo="https://koiosonline.github.io/lib/koiosft/build/contracts/ERC20Token.json"
+	tokenJson=await GetJson(tokensinfo)
+	console.log(tokensinfo);
+	console.log(tokenJson)	
 }
 
 async function AddElementsToList() {
