@@ -43,7 +43,7 @@ async function ShowAddresses(nameslist,addresses,tokenamount) {
         setElementVal("transferusernametext",nameslist[i],target)
         setElementVal("transferuseraddresstext",addresses[i],target)
         setElementVal("transfertokencounttext",tokenamount[i],target)
-        var tokenamountlist=getElement("",target);    
+        var tokenamountlist=getElement("transfertokencounttext",target);    
         tokenamountlist.contentEditable="true"; // make div editable
         tokenamountlist.style.whiteSpace ="pre";
     }
