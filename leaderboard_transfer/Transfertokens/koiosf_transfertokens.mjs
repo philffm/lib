@@ -1,9 +1,13 @@
 import {DomList,getElement,FitOneLine, setElementVal, LinkClickButton, getElementVal, GetJson} from '../../lib/koiosf_util.mjs';
+import {DisplayMessage} from '../../viewer_figma/koiosf_messages.mjs';
 
 let useraddresses;
 let tokenamount;
 let usernames;
 let sendlist = new Array;
+var tokenfactoryJson;
+var tokenJson;
+var contracttokenfactory;
 var GlobalAddressList = new DomList("transfertokensentry");
 
 window.addEventListener('DOMContentLoaded', onLoad)
@@ -30,6 +34,7 @@ async function onLoad() {
 }
 
 async function initContractInformation() {
+    subscribe("web3providerfound",NextStep)   
     var tokenfactoryinfo="https://koiosonline.github.io/lib/koiosft/build/contracts/ERC20TokenFactory.json"
 	tokenfactoryJson=await GetJson(tokenfactoryinfo)
 	console.log(tokenfactoryinfo);
@@ -38,6 +43,25 @@ async function initContractInformation() {
 	tokenJson=await GetJson(tokensinfo)
 	console.log(tokensinfo);
 	console.log(tokenJson)	
+}
+
+async function NextStep() {
+    console.log("In NextStep");
+    web3=getWeb3()
+    var nid=(await web3.eth.net.getId());
+    if (nid !=4) {
+        DisplayMessage(`Make sure you are on the Rinkeby network (currently ${nid})`);   
+    }    
+    globalaccounts = await web3.eth.getAccounts();
+	  	  
+    var tokenfactorycode=await web3.eth.getCode(tokenfactoryJson.networks[nid].address)
+    
+    if (tokenfactorycode.length <=2) {       
+        console.error("No contract code");        
+    } else {
+        contracttokenfactory = await new web3.eth.Contract(tokenfactoryJson.abi, tokenfactoryJson.networks[nid].address);
+        console.log(contracttokenfactory);
+    }
 }
 
 async function AddElementsToList() {
@@ -63,7 +87,7 @@ async function ShowAddresses(nameslist,addresses,tokenamount) {
         }
     }
     else {
-        console.log("error, difference in listlength")
+        DisplayMessage("error, difference in listlength");
     }
 }
 
