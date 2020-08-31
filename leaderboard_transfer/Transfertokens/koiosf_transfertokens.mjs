@@ -3,7 +3,7 @@ import {DomList,getElement,FitOneLine, setElementVal, LinkClickButton, getElemen
 let useraddresses;
 let tokenamount;
 let usernames;
-let sendlist;
+let sendlist = new Array;
 var GlobalAddressList = new DomList("transfertokensentry");
 
 window.addEventListener('DOMContentLoaded', onLoad)
@@ -60,7 +60,6 @@ async function ConsoleLogDomList() {
 async function SendTransaction() {
     await GetAddressInformation();
     console.log(tokenamount);
-    console.log(sendlist);
 }
 
 async function GetAddressInformation() {
