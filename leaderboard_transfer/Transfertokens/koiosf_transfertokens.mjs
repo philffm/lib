@@ -31,7 +31,7 @@ async function AddElementsToList() {
     useraddresses = addresslist.split(',');
     var tokenlist=getElement("tokenamounttextboxtext").innerHTML; 
     tokenamount = tokenlist.split(',');
-    ShowAddresses(nameslist,useraddresses,tokenamount);
+    ShowAddresses(usernames,useraddresses,tokenamount);
 }
 
 async function ShowAddresses(nameslist,addresses,tokenamount) {
