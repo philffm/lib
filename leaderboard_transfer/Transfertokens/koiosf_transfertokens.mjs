@@ -1,4 +1,4 @@
-import {DomList,getElement,FitOneLine} from '../lib/koiosf_util.mjs';
+import {DomList,getElement,FitOneLine} from '../../lib/koiosf_util.mjs';
 
 let useraddresses;
 let tokenamount;
