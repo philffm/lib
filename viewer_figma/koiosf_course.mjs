@@ -1,7 +1,7 @@
 //console.log(`In ${window.location.href} starting script: ${import.meta.url}`);
 
 
-import {loadScriptAsync,DomList,LinkToggleButton,subscribe,getElement,MonitorVisible,ForAllElements,setElementVal,publish,GetJson,LinkClickButton,LinkVisible,GetURLParam,FindDomidWithId} from '../lib/koiosf_util.mjs';
+import {loadScriptAsync,DomList,LinkToggleButton,subscribe,getElement,MonitorVisible,ForAllElements,setElementVal,publish,GetJson,LinkClickButton,LinkVisible,GetURLParam,FindDomidWithId,appendElementVal,GetJsonIPFS} from '../lib/koiosf_util.mjs';
 import {} from './koiosf_literature.mjs'// must be initialised to be able to follow up on setcurrentcourse
 import {} from './koiosf_lessons.mjs'// must be initialised to be able to follow up on setcurrentcourse
 
@@ -105,7 +105,7 @@ class CourseList {
 
 export var GlobalCourseList=new CourseList("https://gpersoon.com/koios/lib/viewer_figma/courseinfo.json");
 
-export async function GetCourseInfo(key) {
+export async function GetCourseInfo(key,courseid) {
 	
 	console.log(`In GetCourseInfo ${key}`)
     var defaultreturn;
@@ -121,10 +121,7 @@ export async function GetCourseInfo(key) {
     }
     
 	
-	
-	
-	
-    var courseid=GlobalCourseList.GetCurrentCourse()
+    if (!courseid) courseid=GlobalCourseList.GetCurrentCourse()
     
     console.log(`GetCourseInfo ${key} ${courseid}`)    
     var listofcourses=await GlobalCourseList.GetList();
@@ -133,6 +130,7 @@ export async function GetCourseInfo(key) {
     console.log(listofcourses)
     if (!courseid) return defaultreturn;
     if (!listofcourses) return defaultreturn;
+	if (!listofcourses[courseid])  return defaultreturn;
     
     return listofcourses[courseid][key];
 }
@@ -181,14 +179,44 @@ async function ScrOtherMadeVisible() {
    for (const course in listofcourses) {    
         console.log(listofcourses[course]);
         if (ml.includes(course) ) continue; // skip my course        
+		
+		
+		
+		
         var c1 = globaldomlistcoursesother.AddListItem()        
         var data=listofcourses[course]        
         var mask=[["courselevel","__label"],["image","__icon"]]; 
             ForAllElements(data, mask, (id,val) => { setElementVal(id,val,c1) }) // find domid object with same name and copy value
+			
+		console.log(data)
+		var duration=GetDuration(data)
+		if (duration)
+			appendElementVal("__label",`\nT: ${duration}`,c1)			
+			
         c1.id=course; // to be able to access it later
         c1.dataset.whattoselect="other"
     }
 }    
+
+
+ function GetDuration(course) {	
+ /* too slow
+	var cid=await GetCourseInfo("videoinfo",course);
+	var videoinfo=await GetJsonIPFS(cid)
+	console.log(videoinfo);
+	*/
+	
+	var date = new Date(null);
+	var duration=course.duration;
+	if (!duration) return undefined;
+	date.setSeconds(duration); // specify value for SECONDS here
+	console.log(date)
+	var result = date.toISOString().substr(10, 9);
+	result=result.replace("T00:", "T");
+	result=result.replace("T", "");
+	return result;
+}
+
 
 async function ScrMyMadeVisible() {
     console.log("In ScrMyMadeVisible")
@@ -199,12 +227,20 @@ async function ScrMyMadeVisible() {
     globaldomlistcoursesmy.EmptyList()    
     for (const course in listofcourses) {   
         if (!ml.includes(course) ) continue; // skip othercourses 
+		
+		
         console.log(listofcourses[course]);
         var c1 = globaldomlistcoursesmy.AddListItem()         
         var data=listofcourses[course]        
         var mask=[["courselevel","__label"],["image","__icon"]]; 
         ForAllElements(data, mask, (id,val) => { setElementVal(id,val,c1) }) // find domid object with same name and copy value
         
+		console.log(data)
+		var duration=GetDuration(data)
+		if (duration)
+			appendElementVal("__label",`\nT: ${duration}`,c1)			
+
+		
         c1.id=course; // to be able to access it later
         c1.dataset.whattoselect="my"
         
@@ -240,16 +276,32 @@ async function ScrProfileMadeVisible() {
   
   getElement("btnprofile","scr_profile").dispatchEvent(new CustomEvent("displayactive")); // then hide the join button
   
+  var coursedetails=await GlobalCourseList.GetCurrentCourseData()
+	
+	var strcurrentcourse=coursedetails?coursedetails.courselevel:"No course selected yet";
+	setElementVal("currentcoursename",strcurrentcourse,getElement("scr_profile"))
+	if (!coursedetails) return 
+  
+  
   var data=(await GlobalCourseList.GetCurrentCourseData());
   var mask=[["courselevel","currentcoursename"],["image","courseicon"]]; 
   if (data)
     ForAllElements(data, mask, (id,val) => { setElementVal(id,val,getElement("scr_profile")) }) // find domid object with same name and copy value
+
+		console.log(data)
+		var duration=GetDuration(data)
+		if (duration)
+			setElementVal("timetotal",duration,"scr_profile")	
+
+
 }  
 
 async function ScrViewerMadeVisible() {
-    var strcurrentcourse=(await GlobalCourseList.GetCurrentCourseData()).courselevel;
+	var coursedetails=await GlobalCourseList.GetCurrentCourseData()
+	
+    var strcurrentcourse=coursedetails?coursedetails.courselevel:"No course selected yet";
      setElementVal("currentcoursename",strcurrentcourse,getElement("scr_viewer"))
-     
+    if (!coursedetails) return 
      
    var data=(await GlobalCourseList.GetCurrentCourseData());
   var mask=[["courselevel","currentcoursename"],["image","courseicon"]]; 

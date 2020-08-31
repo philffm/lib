@@ -45,12 +45,15 @@ function ToggleMainLayout() {
      getElement("selectslides").style.display=newval
     */
     
-    
+    var fOn=GetToggleState(getElement("selectnotes"),"display")
+	console.log(fOn);
     var ev = new CustomEvent("toggledisplay");
         console.log(`Sending toggle`);
-    
-     getElement("selectliterature1").dispatchEvent(ev);   
-     getElement("selectliterature2").dispatchEvent(ev);   
+		console.log(getElement("selectliterature1").parentNode)
+    console.log(getElement("selectliterature1").parentNode)
+     getElement("selectliterature1").parentNode.style.display=fOn?"none":"block"
+	 console.log(getElement("selectliterature1").parentNode)
+     getElement("selectliterature2").parentNode.style.display=fOn?"none":"block"
      getElement("selectnotes").dispatchEvent(ev);   
      getElement("selectvideo").dispatchEvent(ev);   
      getElement("selectslides").dispatchEvent(ev);   

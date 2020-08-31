@@ -264,9 +264,14 @@ async function refreshAccountData() {
 /**
  * Connect wallet button pressed.
  */
+ 
+var fOnlyOnce=false;
 async function onConnect() {
 
   console.log("Opening a dialog", web3Modal);
+  
+  if (fOnlyOnce) return;
+  fOnlyOnce=true;
   
   //getElement("WEB3_CONNECT_MODAL_ID").style.zIndex="20" // to make sure it's in front of everything
   
@@ -294,16 +299,19 @@ async function onConnect() {
   try {
       provider.on("accountsChanged", (accounts) => {
         fetchAccountData();
+		publish("ethereumchanged")
       });
 
       // Subscribe to chainId change
       provider.on("chainChanged", (chainId) => {
         fetchAccountData();
+		publish("ethereumchanged")
       });
 
       // Subscribe to networkId change
       provider.on("networkChanged", (networkId) => {
         fetchAccountData();
+		publish("ethereumchanged")
       });
   } catch(e) {
     console.log("provider on error", e);

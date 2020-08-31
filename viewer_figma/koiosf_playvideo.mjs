@@ -114,7 +114,7 @@ domid.id=id; // youtube player want to have in id
             },     
             height: '100%',
             width: '100%',
-            videoId:  "z9nux3Kt7Tk", // "unknown",// 
+            videoId:   "unknown",//  "z9nux3Kt7Tk", 
             events: {
                 'onReady': x=>{ console.log("onReady");resolve(); }, // resolve the promise
                 'onStateChange': onStateChange  // callback                   
@@ -123,7 +123,7 @@ domid.id=id; // youtube player want to have in id
     });
    console.log("In SetupVideoWindowYouTube, video is loaded");  
    
-   
+   publish("youtubepluginloaded");
 
    
    

@@ -48,16 +48,18 @@ class SlideList {
         this.currentList=[]        
         this.match=match;
         var list = await this.GetList()    
-		console.log(list)
+	//	console.log(list)
         if (list)        
             for (var i=0;i<list.length;i++) {
-                if ( ! ((list[i].chapter === this.match) && (list[i].png) )) continue; // skip this one
-                var slidesinfo = list[i]
-                if (!slidesinfo.png) continue;        
+				var slidesinfo = list[i]	
+//console.log(				slidesinfo)
+				if (slidesinfo.png===undefined) continue;               
+			    if (match && (list[i].chapter !== match) && (list[i].chapter!="*")) continue;// * means a match with all chapters                
+			//	console.log(slidesinfo);               
                 var url= await GetImageIPFS(slidesinfo.png)
                 this.currentList.push(url)            
             }
-        console.log(this.currentList);
+       // console.log(this.currentList);
         return this.currentList;
     }
     
@@ -71,9 +73,17 @@ class SlideList {
         
     }
    
+    isFirst() { return this.currentSlide<=0 }
+	isLast()  { return this.currentSlide>=this.currentList.length-1 }
     
 }    
     
+
+function UpdateButtons() {
+	console.log("UpdateButtons")
+	getElement("slideleft").dispatchEvent(new CustomEvent(GlobalSlideList.isFirst()?"displaydisabled":"displaydefault"));
+	getElement("slideright").dispatchEvent(new CustomEvent(GlobalSlideList.isLast()?"displaydisabled":"displaydefault"));
+}	
 
  
 
@@ -89,6 +99,10 @@ async function InitShowSlides() {
 
 async function GetSlidesFromVideo(vidinfo) {    
     ClearSlides();
+	
+	 
+	 ShowSlide("loading");
+	
     console.log("In GetSlidesFromVideo");
     console.log(vidinfo);    
     if (!vidinfo) return
@@ -97,11 +111,12 @@ async function GetSlidesFromVideo(vidinfo) {
     var cid= await GetCourseInfo("slides")
 	console.log(cid)
     var slideindex = await GlobalSlideList.SwitchList(cid)   
-	console.log(slideindex)
+//	console.log(slideindex)
     var currentlist = await GlobalSlideList.LoadList(match)   
-	console.log(currentlist);
+	//console.log(currentlist);
     publish ("slidesloaded");
     ShowSlide();
+	UpdateButtons()
 }    
    
    
@@ -127,9 +142,15 @@ function ClearSlides() {
     slide.style.objectFit="contain"    
 }	
 
-function ShowSlide() {    
-    var url=GlobalSlideList.GetCurrentSlide()
-	if (!url) url=getElement("noslides").src
+function ShowSlide(template) {    
+
+	if (template)
+		url=getElement(template).src
+	else {
+		var url=GlobalSlideList.GetCurrentSlide()
+		if (!url)
+			url=getElement("noslides").src
+	}
     var slide=getElement("slideimage")
     slide.src=url;
     slide.style.width="100%"
@@ -148,12 +169,14 @@ function SlideLeft() {
     console.log(GlobalSlideList);
     GlobalSlideList.MoveSlide(false);
     ShowSlide()
+	UpdateButtons()
 }
 
 function SlideRight() {
     console.log(GlobalSlideList);
     GlobalSlideList.MoveSlide(true);
     ShowSlide()
+	UpdateButtons()
 }    
     
 

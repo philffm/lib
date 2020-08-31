@@ -1,4 +1,4 @@
-import {loadScriptAsync,GetJsonIPFS,subscribe,publish,DomList,GetCidViaIpfsProvider,getElement,sortfunction,LinkToggleButton,FitOneLine,ForceButton,FetchIPFS } from '../lib/koiosf_util.mjs';
+import {loadScriptAsync,GetJsonIPFS,subscribe,publish,DomList,GetCidViaIpfsProvider,sortfunction,LinkToggleButton,FitOneLine,ForceButton,FetchIPFS,setElementVal,getElement } from '../lib/koiosf_util.mjs';
 import {GetCourseInfo,GlobalCourseList} from './koiosf_course.mjs';
 import {GlobalLessonList} from './koiosf_lessons.mjs';
 import {GetToggleState} from '../genhtml/startgen.mjs'
@@ -70,7 +70,9 @@ var GlobalUrlList
 async function GetLiteratureForVideo() {   
     var vidinfo=await GlobalLessonList.GetCurrentLessonData()
     
+	prevdomid=undefined;
 	
+	window.open("about:blank", "browse-window-frame")
 	
 	var lit=await GlobalLessonList.GetLiterature()
 	console.log("Literature from youtube in GetLiteratureForVideo")
@@ -86,7 +88,7 @@ async function GetLiteratureForVideo() {
     
     if (!globalslideindex) return; // not loaded yet
     var slideindex=globalslideindex
-
+prevurl=undefined; // reset again
 	await SearchArray(slideindex,match)
 	await SearchArray(lit,match)
  
@@ -96,9 +98,10 @@ async function SearchArray(slideindex,match) {
 	if (!slideindex) return;
     var str="";
        for (var i=0;i<slideindex.length;i++) {
+		  // console.log(slideindex[i]);
         if (match && slideindex[i].chapter !== match && slideindex[i].chapter!="*") // * means a match with all chapters
             continue; // ignore
-        
+  //     console.log(slideindex[i]);
         var type="";
         
         var url = slideindex[i].url
@@ -106,15 +109,17 @@ async function SearchArray(slideindex,match) {
         
         if (!url && slideindex[i].cid) {
             type="topiclit"            
+			/*
 			console.log(`Trying to find ${slideindex[i].cid}`)
 			var result=await FetchIPFS(slideindex[i].cid)
 			console.log(result);
 			if (result) 
 				url=result.url;   // this one works, because just loaded
 			else {
+			*/	
 				console.log(`Not found ${slideindex[i].cid}`)
                 url = GetCidViaIpfsProvider(slideindex[i].cid,0)
-			}
+			//}
             url = `https://docs.google.com/viewerng/viewer?url=${url}&embedded=true`;
         }
         if (!url && slideindex[i].pdf) {      
@@ -122,11 +127,62 @@ async function SearchArray(slideindex,match) {
             url = slideindex[i].pdf
             url = `https://docs.google.com/viewerng/viewer?url=${url}&embedded=true`;
         }    
-        if (url) {            
+        if (url) {     
+//console.log(		slideindex[i])
             str +=SetInfo(url,slideindex[i].title,"browse-window-frame",slideindex[i].url?false:true,type)+"<br>"
         }
 		
     }          
+}
+
+
+function CleanUrl(url) {
+	if (url.includes("localhost"))    // sometimes localhost http for jupyter
+		return url
+
+	try { var check = new URL(url) } catch(error) { console.log(`Error ${error} ${url}`); return undefined; }
+	//console.log(`${url} ${check.protocol}`);
+	//console.log(check);
+	
+	if (check.protocol != "https:") return undefined; // strip about:, file: etc.
+	
+	//if (url.includes("about:")) return undefined;
+	
+	url = url.replace("http:","https:"); // to prevent error messages from browser  
+
+	url = url.replace("youtube.com/watch?v=","youtube.com/embed/");
+	url = url.replace("youtu.be/","youtube.com/embed/");
+	
+	
+	
+	if (url.includes("youtube.com")) {
+		console.log(url);
+		url=url.split("&")[0]
+		console.log(url);
+	}
+	
+	if (url.includes("wikipedia") && !url.includes("m.wikipedia"))
+		url = url.replace("wikipedia","m.wikipedia");
+		
+    return url
+}
+
+function GetTxt(url,txt) {	    
+	if (!txt)
+		txt=url
+	txt=txt.replace("https://","")
+	
+	txt = txt.replace(/\/+$/, ""); // remove trailing /
+	txt=txt.replace(/_/g, " ")
+	
+	txt=txt.replace("www.","")
+	txt=txt.replace("youtube.com/embed/","YT:")
+	
+	txt=txt.replace("en.m.wikipedia.org/wiki/","Wiki:")
+	
+	
+	
+	return txt;
 }
 
     
@@ -136,47 +192,56 @@ var prevurl=undefined
     function SetInfo(url,txt,target,fDocument,type) { 
         if (url == prevurl) return "";  // filter out duplicates (already sorted)
         prevurl = url;
-    
-        if (!url.includes("localhost"))    // sometimes localhost http for jupyter
-            url = url.replace("http:","https:"); // to prevent error messages from browser  
-        var urltarget = GlobalUrlList.AddListItem()  
-        
-//console.log(`In SetInfo ${url} ${txt}`)
-//console.log(urltarget);
-        var link_ext=urltarget.getElementsByClassName("link_ext")[0]
-        var link_int=urltarget.getElementsByClassName("link_int")[0]
-        
-        if (!txt)
-            txt=url
-        
-        var todisplay=txt // `${fDocument?"Doc":"url"}: ${txt}`
-        link_int.innerHTML=todisplay
-        link_int.href=url
-        link_int.target=target
-        
-        link_int.title = txt; // hoover text to see entire link
-
-        FitOneLine(link_int)        
-         
-  
-        link_ext.href=url
-        link_ext.target="_blank"
-        link_ext.title=`External tab: ${txt}`
-        
-        var str=`<a href="${url}">${txt}</a>`
-        
+    	
+		url = CleanUrl(url)
+		if (!url) return; // ignore this url
+		txt = GetTxt(url,txt)
+		
+		var urltarget = GlobalUrlList.AddListItem()  
+		setElementVal("link_txt",txt,urltarget)
+		FitOneLine(getElement("link_txt",urltarget))
+		SetClickShow(urltarget,url)
         urltarget.dataset.type=type;
-        return str;
-        
-        
-
+		
+        return "";
     }    
 
-
+/*
     function SetExtLink(html) {
         var blob = new Blob([html], {type: 'text/html'});
         var url = URL.createObjectURL(blob);      
         SetInfo(url,"external","_blank",false);    
     }    
+*/
+
+function SetClickShow(cln,url) { // seperate function to remember state
+	var link_ext=getElement("link_ext",cln)    
+    cln.addEventListener('click', e=> {    
+			Highlight(cln)
+			window.open(url, "browse-window-frame")
+        }
+     );	 
+	 link_ext.addEventListener('click', e=> {         
+			window.open(url, "_blank")
+			Highlight(cln)
+        }
+     );
+}   
+
+
+  var prevdomid=undefined;
+
+    
+function Highlight(domid) {
+    if (prevdomid) {        
+       prevdomid.style.borderColor=""; // reset to original
+       prevdomid.style.borderStyle="";
+    }
+	prevdomid=domid;
+    if (domid) {
+       domid.style.borderColor="#FF206E";//"red";
+       domid.style.borderStyle="solid";
+	}
+}
 
 
