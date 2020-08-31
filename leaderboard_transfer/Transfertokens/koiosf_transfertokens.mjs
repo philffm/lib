@@ -38,7 +38,7 @@ async function AddElementsToList() {
 }
 
 async function ShowAddresses(nameslist,addresses,tokenamount) {
-    if(nameslist.length == addresses.length == tokenamount.length) {    
+    if((nameslist.length == addresses.length) && (tokenamount.length == nameslist.length)) {    
         for (var i=0;i<addresses.length;i++) {
             var target = GlobalAddressList.AddListItem();
             setElementVal("transferusernametext",nameslist[i],target)
