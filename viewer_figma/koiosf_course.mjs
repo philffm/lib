@@ -147,6 +147,9 @@ async function asyncloaded() {
     LinkVisible("scr_profile",ScrProfileMadeVisible)    
     LinkVisible("scr_viewer" ,ScrViewerMadeVisible)    
     LinkVisible("scr_detail" ,ScrDetailMadeVisible)    
+	LinkVisible("scr_added_course" ,ScrAddedCourseMadeVisible)    
+	
+	ScrDetailMadeVisible
     
     LinkClickButton("selectcourse",SelectCourse)     
     LinkClickButton("removecourse",RemoveCourse) 
@@ -387,7 +390,16 @@ function RemoveCourse(event) {
     
     
 }   
+async function ScrAddedCourseMadeVisible() {
+	 
+  var data=(await GlobalCourseList.GetCurrentCourseData());
+  var mask=[["courselevel","currentcoursename"],["image","courseicon"]]; 
+  if (data)
+    ForAllElements(data, mask, (id,val) => { setElementVal(id,val,getElement("scr_added_course ")) }) // find domid object with same name and copy value
 
+}
+
+	
 
 
 window.addEventListener('DOMContentLoaded', asyncloaded);  // load  
