@@ -1,11 +1,12 @@
-import {DomList,getElement,FitOneLine} from '../../lib/koiosf_util.mjs';
+import {DomList,getElement,FitOneLine, setElementVal, LinkClickButton, getElementVal} from '../../lib/koiosf_util.mjs';
 
 let useraddresses;
 let tokenamount;
 let usernames;
+let sendlist;
 var GlobalAddressList = new DomList("transfertokensentry");
 
-onLoad();
+window.addEventListener('DOMContentLoaded', onLoad)
 
 async function onLoad() {
     var addresslist=getElement("addresstextboxtext");    
@@ -19,18 +20,19 @@ async function onLoad() {
     var tokenamountlist=getElement("namestextboxtext");    
     tokenamountlist.contentEditable="true"; // make div editable
     tokenamountlist.style.whiteSpace ="pre"; 
-
-    getElement("confirmbutton").addEventListener('animatedclick',AddElementsToList)   
-    getElement("emptylistbutton").addEventListener('animatedclick',EmptyList)   
-    getElement("showdomlist").addEventListener('animatedclick',ConsoleLogDomList)   
+ 
+    LinkClickButton("confirmbutton",AddElementsToList)
+    LinkClickButton("emptylistbutton",EmptyList)  
+    LinkClickButton("showdomlist",ConsoleLogDomList)
+    LinkClickButton("sendbutton",SendTransaction)
 }
 
 async function AddElementsToList() {
-    var nameslist=getElement("namestextboxtext").innerHTML; 
+    var nameslist=getElementVal("namestextboxtext")
     usernames = nameslist.split(',');
-    var addresslist=getElement("addresstextboxtext").innerHTML; 
+    var addresslist=getElementVal("addresstextboxtext")
     useraddresses = addresslist.split(',');
-    var tokenlist=getElement("tokenamounttextboxtext").innerHTML; 
+    var tokenlist=getElementVal("tokenamounttextboxtext")
     tokenamount = tokenlist.split(',');
     ShowAddresses(usernames,useraddresses,tokenamount);
 }
@@ -38,9 +40,9 @@ async function AddElementsToList() {
 async function ShowAddresses(nameslist,addresses,tokenamount) {
     for (var i=0;i<addresses.length;i++) {
         var target = GlobalAddressList.AddListItem();
-        target.getElementsByClassName("transferusernametext")[0].innerHTML = nameslist[i];
-        target.getElementsByClassName("transferuseraddresstext")[0].innerHTML = addresses[i];
-        target.getElementsByClassName("transfertokencounttext")[0].innerHTML = tokenamount[i];
+        setElementVal("transferusernametext",nameslist[i]);
+        setElementVal("transferuseraddresstext",addresses[i]);
+        setElementVal("transfertokencounttext",tokenamount[i]);
         var tokenamountlist=getElement("transfertokencounttext",target);    
         tokenamountlist.contentEditable="true"; // make div editable
         tokenamountlist.style.whiteSpace ="pre";
@@ -53,4 +55,15 @@ async function EmptyList() {
 
 async function ConsoleLogDomList() {
     console.log(GlobalAddressList);
+}
+
+async function SendTransaction() {
+    GetAddressInformation();
+    console.log(tokenamount);
+}
+
+async function GetAddressInformation() {
+    var entries=document.getElementsByClassName("transfertokensentry");
+        for (var i=0;i<entries.length;i++)
+            tokenamount[i] = entries[i].getElementVal("tokenamounttextboxtext");
 }
