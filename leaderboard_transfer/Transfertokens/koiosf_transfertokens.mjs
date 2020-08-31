@@ -22,6 +22,7 @@ async function onLoad() {
 
     getElement("confirmbutton").addEventListener('animatedclick',AddElementsToList)   
     getElement("emptylistbutton").addEventListener('animatedclick',EmptyList)   
+    getElement("showdomlist").addEventListener('animatedclick',ConsoleLogDomList)   
 }
 
 async function AddElementsToList() {
@@ -48,4 +49,8 @@ async function ShowAddresses(nameslist,addresses,tokenamount) {
 
 async function EmptyList() {
     GlobalAddressList.EmptyList();
+}
+
+async function ConsoleLogDomList() {
+    console.log(GlobalAddressList);
 }
