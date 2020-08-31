@@ -58,14 +58,18 @@ async function ConsoleLogDomList() {
 }
 
 async function SendTransaction() {
-    GetAddressInformation();
+    await GetAddressInformation();
     console.log(tokenamount);
+    console.log(sendlist);
 }
 
 async function GetAddressInformation() {
     var entries=document.getElementsByClassName("transfertokensentry");
-        for (var i=0;i<entries.length;i++) {
-            console.log(entries[i]);
-            tokenamount[i] = entries[i].children[2].innerText;
-        }
+    for (var i=0;i<entries.length;i++) {
+        tokenamount[i] = entries[i].children[2].innerText;
+    }
+
+    for (var i=0;i<entries.length;i++) {
+        sendlist[i] = [useraddresses[i], tokenamount[i]]
+    }
 }
