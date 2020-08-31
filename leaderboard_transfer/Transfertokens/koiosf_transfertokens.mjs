@@ -71,10 +71,11 @@ async function SendTransaction() {
 async function GetAddressInformation() {
     var entries=document.getElementsByClassName("transfertokensentry");
     for (var i=0;i<entries.length;i++) {
-        tokenamount[i] = entries[i].children[2].innerText;
+        tokenamount[i] = getElementVal("transfertokencounttext",entries[i])
+        useraddresses[i] = getElementVal("transferuseraddresstext",entries[i])
     }
 
-    for (var j=0;j<useraddresses.length;j++) {
+    for (var j=0;j<tokenamount.length;j++) {
         sendlist[j] = new Array(useraddresses[j], tokenamount[j]);
     }
 }
