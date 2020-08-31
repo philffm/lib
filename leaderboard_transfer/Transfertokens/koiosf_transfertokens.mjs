@@ -22,7 +22,7 @@ async function onLoad() {
     getElement("confirmbutton").addEventListener('animatedclick',AddElementsToList)   
 }
 
-async function AddAddressesToList() {
+async function AddElementsToList() {
     var addresslist=getElement("addresstextboxtext").innerHTML; 
     useraddresses = addresslist.split(',');
     var tokenlist=getElement("tokenamounttextboxtext").innerHTML; 
