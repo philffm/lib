@@ -41,8 +41,8 @@ async function ShowAddresses(nameslist,addresses,tokenamount) {
     for (var i=0;i<addresses.length;i++) {
         var target = GlobalAddressList.AddListItem();
         target.getElementsByClassName("transferusernametext")[0].innerHTML = nameslist[i];
-        target.getElementsByClassName("transferuseraddresstext")[0].innerHTML = nameslist[i];
-        target.getElementsByClassName("transfertokencounttext")[0].innerHTML = nameslist[i];
+        target.getElementsByClassName("transferuseraddresstext")[0].innerHTML = addresses[i];
+        target.getElementsByClassName("transfertokencounttext")[0].innerHTML = tokenamount[i];
         var tokenamountlist=getElement("transfertokencounttext",target);    
         tokenamountlist.contentEditable="true"; // make div editable
         tokenamountlist.style.whiteSpace ="pre";
