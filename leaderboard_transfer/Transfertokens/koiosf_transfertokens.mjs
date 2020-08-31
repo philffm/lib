@@ -38,14 +38,19 @@ async function AddElementsToList() {
 }
 
 async function ShowAddresses(nameslist,addresses,tokenamount) {
-    for (var i=0;i<addresses.length;i++) {
-        var target = GlobalAddressList.AddListItem();
-        setElementVal("transferusernametext",nameslist[i],target)
-        setElementVal("transferuseraddresstext",addresses[i],target)
-        setElementVal("transfertokencounttext",tokenamount[i],target)
-        var tokenamountlist=getElement("transfertokencounttext",target);    
-        tokenamountlist.contentEditable="true"; // make div editable
-        tokenamountlist.style.whiteSpace ="pre";
+    if(nameslist.length == addresses.length == tokenamount.length) {    
+        for (var i=0;i<addresses.length;i++) {
+            var target = GlobalAddressList.AddListItem();
+            setElementVal("transferusernametext",nameslist[i],target)
+            setElementVal("transferuseraddresstext",addresses[i],target)
+            setElementVal("transfertokencounttext",tokenamount[i],target)
+            var tokenamountlist=getElement("transfertokencounttext",target);    
+            tokenamountlist.contentEditable="true"; // make div editable
+            tokenamountlist.style.whiteSpace ="pre";
+        }
+    }
+    else {
+        console.log("error, difference in listlength")
     }
 }
 
