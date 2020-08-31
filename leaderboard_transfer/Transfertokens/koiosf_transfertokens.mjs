@@ -19,4 +19,17 @@ async function onLoad() {
     if(tokenamountlist.innerHTML == "Insert here...")
         tokenamountlist.addEventListener("click", tokenamountlist.innerHTML(""));
 
+    getElement("confirmbutton").addEventListener('animatedclick',AddElementsToList)   
+}
+
+async function AddElementsToList() {
+    useraddresses = getElement("addresstextboxtext").split(' ');
+    ShowAddresses(useraddresses);
+}
+
+async function ShowAddresses(addresses) {
+    for (var i=0;i<addresses.length;i++) {
+        var target = GlobalCommentList.AddListItem();
+        target.getElementsByClassName("transferuseraddresstext")[0].innerHTML = addresses[i];
+    }
 }
