@@ -4,7 +4,7 @@ let useraddresses;
 let tokenamount;
 var AddressList = new DomList("transfertokensentry");
 
-await onLoad();
+onLoad();
 
 async function onLoad() {
     var addresslist=getElement("addresstextboxtext")    
