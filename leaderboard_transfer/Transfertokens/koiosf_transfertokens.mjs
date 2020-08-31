@@ -69,7 +69,7 @@ async function GetAddressInformation() {
         tokenamount[i] = entries[i].children[2].innerText;
     }
 
-    for (var i=0;i<entries.length;i++) {
-        sendlist[i] = [useraddresses[i], tokenamount[i]]
+    for (var j=0;j<useraddresses.length;j++) {
+        sendlist[j] = [useraddresses[j], tokenamount[j]]
     }
 }
