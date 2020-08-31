@@ -24,7 +24,7 @@ async function onLoad() {
 
 async function AddElementsToList() {
     var addresslist=getElement("addresstextboxtext").innerHTML; 
-    useraddresses = addresslist.split(' ');
+    useraddresses = addresslist.split(',');
     ShowAddresses(useraddresses);
 }
 
