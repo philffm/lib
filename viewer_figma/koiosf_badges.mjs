@@ -3,7 +3,7 @@ import {SwitchDisplayMessageContinous,DisplayMessageContinous,DisplayMessage} fr
 import {getWeb3,getWeb3Provider} from './koiosf_login.mjs'
 import {GlobalCourseList} from './koiosf_course.mjs'
  
-var accounts, web3, isCreator;
+var globalaccounts, web3, isCreator;
 var GlobalBadgeList;
 var GlobalTokenList;
 var nft_jsonobject
@@ -16,13 +16,13 @@ var contracttokenfactory;
 
 /////////////////// NFT //////////////////////////////////////////////////////////////////////////////
 async function getBadgeBalance(badgeId) {
-    return await nft_contract.methods.balanceOf(accounts[0], badgeId).call();
+    return await nft_contract.methods.balanceOf(globalaccounts[0], badgeId).call();
 }
 async function reloadBadges() {
     var totalBadges = await nft_contract.methods.nonce().call();
 
     for (var i = 1; i <= totalBadges; i++) {
-        var balance = await nft_contract.methods.balanceOf(accounts[0], i).call();
+        var balance = await nft_contract.methods.balanceOf(globalaccounts[0], i).call();
         var badge = document.getElementById(i.toString())
 
         if (badge !== undefined) {
@@ -34,12 +34,12 @@ async function reloadBadges() {
         }
     }
 }
-async function getBadges(wantedCourseStudentId) {
+async function getBadges() {
     console.log("In getBadges");
      GlobalBadgeList.EmptyList()    
 
 
-    var totalBadges =   await nft_contract.methods.balanceOf(accounts[0]).call();
+    var totalBadges =   await nft_contract.methods.balanceOf(globalaccounts[0]).call();
     console.log(`totalBadges=${totalBadges}`)
     // await nft_contract.methods.nonce().call();
     
@@ -48,11 +48,15 @@ async function getBadges(wantedCourseStudentId) {
 
     for (var i = 0; i < totalBadges; i++) {
         var urltarget = GlobalBadgeList.AddListItem() 
-        GetBadgeDetails(urltarget,i,wantedCourseStudentId)                      // note: runs in parallel!
+        GetBadgeDetails(urltarget,i)                      // note: runs in parallel!
     }
 }
 
-
+function StudentBadgeName() {
+	 var currentcourse=GlobalCourseList.GetCurrentCourse()
+    console.log(currentcourse);
+	return "Student-"+currentcourse
+}
 
 
  // images are loaded from https://cloudflare-ipfs.com/ipfs/..  (svg doesn't allways work)
@@ -77,7 +81,7 @@ async function CheckCourses() {
         */
         var name=info[0]
        // console.log(name);
-        if (name=="Student-"+currentcourse) {
+        if (name==StudentBadgeName()) {
             console.log(`Found ${name}`)
             return i;			
         }
@@ -91,8 +95,8 @@ async function CheckCourses() {
 
 var globalbadgeinfo=[]
 
-async function GetBadgeDetails(urltarget,i,wantedCourseStudentId) { // put in function to be able to run in parallel
-        var tokenid = await nft_contract.methods.tokenOfOwnerByIndex(accounts[0],i).call(); // ownedTokens
+async function GetBadgeDetails(urltarget,i) { // put in function to be able to run in parallel
+        var tokenid = await nft_contract.methods.tokenOfOwnerByIndex(globalaccounts[0],i).call(); // ownedTokens
       //  console.log(`tokenid=${tokenid}`)		
 		urltarget.id=tokenid;
 		
@@ -100,7 +104,7 @@ async function GetBadgeDetails(urltarget,i,wantedCourseStudentId) { // put in fu
 		
 		var template = await nft_contract.methods.GetTemplateId(tokenid).call();
 		
-		if (template == wantedCourseStudentId) // i have the badge i want
+		if (template == globalwantedCourseStudentId) // i have the badge i want
 			getElement("joincourse","scr_profile").dispatchEvent(new CustomEvent("hide")); // then hide the join button
 			
 		var templateinfo = await nft_contract.methods.GetTemplateInfo(template).call();
@@ -137,6 +141,9 @@ async function GetBadgeDetails(urltarget,i,wantedCourseStudentId) { // put in fu
 
 /// FT /////////////////////////////////////////////////////////
 async function getTokens() {
+	
+	GlobalTokenList.EmptyList()    
+	
 	var totalTokens =   await contracttokenfactory.methods.NrTokens().call();
 	console.log(`In getTokens: totalTokens=${totalTokens}`);
 	for (var i=0;i<totalTokens;i++) {
@@ -156,7 +163,7 @@ async function getTokens() {
 		 var symbol=await contracttoken.methods.symbol().call();
 		 var decimals=await contracttoken.methods.decimals().call();
 		 
-		 var balance=await contracttoken.methods.balanceOf(accounts[0]).call();
+		 var balance=await contracttoken.methods.balanceOf(globalaccounts[0]).call();
 		 
 		 balance = (balance / (10 ** decimals)).toFixed(0)
 		 
@@ -210,39 +217,55 @@ async function GetTokenDetails(urltarget,contracttoken,balance) {
      
 async function Joincourse() {
 	console.log("In Joincourse")
-	function show(str) { appendElementVal("jointext",str+"<br>","ov_join")	}
-
-	setElementVal("jointext","","ov_join")
+	function show(str) { appendElementVal("jointext",str+"<br>","ov_join")	}	
+	setElementVal("jointext","","ov_join") // clean the text
+	
+	show(`Looking for badge ${StudentBadgeName()}`)
 	if (!web3) {
 		show("Login first to join the course");
 		return;
 	}
-	if (!wantedCourseStudentId) {
-		show("Can't join this course yet");
-		return;
-	}	
-	show("Joining course, getting badge")
+	
+	
+	
 
 	
-	var mybalance=await web3.eth.getBalance(accounts[0]);
-	show(`Trying to get badgetemplate ${wantedCourseStudentId}`)
-	show(`mybalance ${mybalance}`)
+	var mybalance=await web3.eth.getBalance(globalaccounts[0]);
+	show(`Trying to get badgetemplate ${globalwantedCourseStudentId}`)
+	show(`mybalance ${web3.utils.fromWei(mybalance, 'ether')} ether`)
 	show("Wait 20 seconds to get some ETH")
 	const privateKey= '0x0da19552d21de3da01e4a5ff72f6722b9a86c78ee6c6a46e5cdcf0fb5a936110'; // note very insecure, but for test ETH this is usable   
 	var addressFaucet = web3.eth.accounts.privateKeyToAccount(privateKey).address; 
 	web3.eth.accounts.wallet.add(privateKey);
-	result = await  web3.eth.sendTransaction({from: addressFaucet,to: accounts[0],gas: 200000,value: '1000000000000000'})
-	.catch(x => show(`Error: ${x.code} ${x.message}`));    
+	var value=web3.utils.toWei('10', 'milli');
+	console.log(`Sending value ${value}`)
+	// 1 eth: "1000000000000000000"
+//           '1000000000000000
+
+	
+	result = await  web3.eth.sendTransaction({from: addressFaucet,to: globalaccounts[0],gas: 200000,value: value}).catch(x => show(`Error: ${x.code} ${x.message}`));    
 	console.log(`Transaction hash: ${result.transactionHash}`);
 
  var etherscan=`https://rinkeby.etherscan.io/tx/${result.transactionHash}`
 		   show(`<a href="${etherscan}" target="_blank">etherscan</a>`)
 
 
-	mybalance=await web3.eth.getBalance(accounts[0]);
-	show(`mybalance ${mybalance}, getting badge now`) 
+
+
+
+	mybalance=await web3.eth.getBalance(globalaccounts[0]);
+	show(`mybalance ${web3.utils.fromWei(mybalance, 'ether')} ether`)
+	
+	if (!globalwantedCourseStudentId) {
+		show("Can't join this course yet");
+		return;
+	}	
+	show("Joining course, getting badge")
+	
+	
+	show(`Getting badge now`) 
     show("Confirm metamask popup and wait 20 seconds");
-	var result=await nft_contract.methods.createToken(accounts[0],wantedCourseStudentId).send({from: accounts[0]})
+	var result=await nft_contract.methods.createToken(globalaccounts[0],globalwantedCourseStudentId).send({from: globalaccounts[0]})
 	console.log(result)
 	
 	 var etherscan=`https://rinkeby.etherscan.io/tx/${result.blockHash}`
@@ -251,6 +274,7 @@ async function Joincourse() {
 	
 	//setElementVal("jointext",`result ${JSON.stringify(result)}`,"ov_join")
 	show("Badge received")
+	getBadges() // run asynchronous
 	await sleep(10000)
        
 }
@@ -367,7 +391,7 @@ async function init() {
 }
 
 
-var wantedCourseStudentId
+var globalwantedCourseStudentId
 
 async function NextStep() {
     console.log("In NextStep");
@@ -376,7 +400,7 @@ async function NextStep() {
     if (nid !=4) {
       DisplayMessage(`Make sure you are on the Rinkeby network (currently ${nid})`);   
     }    
-    accounts = await web3.eth.getAccounts();
+    globalaccounts = await web3.eth.getAccounts();
 	
 	
 	
@@ -390,8 +414,8 @@ async function NextStep() {
     } else {
 		nft_contract = await new web3.eth.Contract(nft_jsonobject.abi, nft_jsonobject.networks[nid].address);
 		//console.log(contract);
-		wantedCourseStudentId=await CheckCourses();
-		getBadges(wantedCourseStudentId);
+		globalwantedCourseStudentId=await CheckCourses();
+		getBadges();
 	}
       
 	  
@@ -405,5 +429,16 @@ async function NextStep() {
 		 getTokens();
 	 }
 }    
+
+
+subscribe("ethereumchanged",EthereumChanged)
+
+async function EthereumChanged() {
+	console.log("ethereumchanged");
+	globalaccounts = await web3.eth.getAccounts();
+	getElement("joincourse","scr_profile").dispatchEvent(new CustomEvent("show")); // initially show
+	getBadges(); // note parallel
+	getTokens(); // note parallel
+}	
 
 document.addEventListener('DOMContentLoaded', init)

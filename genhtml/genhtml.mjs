@@ -829,7 +829,7 @@ async function recurse(figdata,figmadocument,documentid,token,fpartofgrid,button
         var gridrow=   GetAtParam(figdata,"@gridrow")
         var scale=     GetAtParam(figdata,"@scale")
         
-        
+        var fwordwrap = GetAtParam(figdata,"@wordwrap")!=undefined
   
         
         
@@ -1288,7 +1288,8 @@ function ConvertColor(color) {
                 strstyle += "border-style: dashed;"
             
         }        
-        
+        if (fwordwrap)
+			strstyle +="overflow-wrap: break-word;"
         
         if (fhidden)
             display="none";

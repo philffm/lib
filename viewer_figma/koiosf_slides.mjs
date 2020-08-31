@@ -73,9 +73,17 @@ class SlideList {
         
     }
    
+    isFirst() { return this.currentSlide<=0 }
+	isLast()  { return this.currentSlide>=this.currentList.length-1 }
     
 }    
     
+
+function UpdateButtons() {
+	console.log("UpdateButtons")
+	getElement("slideleft").dispatchEvent(new CustomEvent(GlobalSlideList.isFirst()?"displaydisabled":"displaydefault"));
+	getElement("slideright").dispatchEvent(new CustomEvent(GlobalSlideList.isLast()?"displaydisabled":"displaydefault"));
+}	
 
  
 
@@ -91,6 +99,10 @@ async function InitShowSlides() {
 
 async function GetSlidesFromVideo(vidinfo) {    
     ClearSlides();
+	
+	 
+	 ShowSlide("loading");
+	
     console.log("In GetSlidesFromVideo");
     console.log(vidinfo);    
     if (!vidinfo) return
@@ -104,6 +116,7 @@ async function GetSlidesFromVideo(vidinfo) {
 	//console.log(currentlist);
     publish ("slidesloaded");
     ShowSlide();
+	UpdateButtons()
 }    
    
    
@@ -129,9 +142,15 @@ function ClearSlides() {
     slide.style.objectFit="contain"    
 }	
 
-function ShowSlide() {    
-    var url=GlobalSlideList.GetCurrentSlide()
-	if (!url) url=getElement("noslides").src
+function ShowSlide(template) {    
+
+	if (template)
+		url=getElement(template).src
+	else {
+		var url=GlobalSlideList.GetCurrentSlide()
+		if (!url)
+			url=getElement("noslides").src
+	}
     var slide=getElement("slideimage")
     slide.src=url;
     slide.style.width="100%"
@@ -150,12 +169,14 @@ function SlideLeft() {
     console.log(GlobalSlideList);
     GlobalSlideList.MoveSlide(false);
     ShowSlide()
+	UpdateButtons()
 }
 
 function SlideRight() {
     console.log(GlobalSlideList);
     GlobalSlideList.MoveSlide(true);
     ShowSlide()
+	UpdateButtons()
 }    
     
 

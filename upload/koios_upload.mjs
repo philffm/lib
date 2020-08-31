@@ -34,13 +34,8 @@ async function startprocess() {
     //var x=await getYtInfoIpfs("QmWRpcQt5wn49rAKrBE1NBEqEvoEd7c7XTALrDryJKwUqA");
     
     var x=await uploadYtDataToIpfs();
-    for (var i=0;i<x.res.length;i++) {
-        log(x.res[i]);
-		//log(MakeUrl(`https://koios.online/test/newviewer?videoinfo=${x.res[i].hash}`))
-		log(MakeUrl(`https://koios.online/newviewer?videoinfo=${x.res[i].hash}`))
-        
-    }    
-   var str = DisplayInfo(x.list)
+  
+   DisplayInfo(x)
    /*
    var pre=document.createElement("pre"); // already create to be able to log
     pre.style.width = "100%";
@@ -51,24 +46,33 @@ async function startprocess() {
     position.appendChild(pre);   
     pre.innerHTML=str;
 	*/
-    log(includeSubtitlesforIpfsExport() )
+//    log(await includeSubtitlesforIpfsExport() )
 	
 	
 }
 
-function DisplayInfo(list) {
-    var str=""
+function DisplayInfo(result) {
+
+	var list=result.list
     for (var z=0;z<list.length;z++) {
         var pl=list[z];
-        str +=pl.title+"\n";
-        
+        log(`Playlist ${pl.title} ${pl.id} duration: ${pl.duration}`);
+		log("Copy paste:")
+		log( `     "videoinfo": "${result.res[z].hash}",`)
+		log( `     "duration": "${pl.duration}",`)
+		log("")
+		
+		log(MakeUrl(`https://koios.online/newviewer?videoinfo=${result.res[z].hash}`))
           for (var i=0;i< pl.videos.length ;i++) {  
             //console.log(`${pl.videos[i].title} with id ${pl.videos[i].id} and thumb ${pl.videos[i].thumbnail}`);
             var id=pl.videos[i].videoid;
             var title=pl.videos[i].title;
+			var duration=pl.videos[i].duration;
 
-            if (pl.videos[i].chapter) 
-                str +=title;
+            if (pl.videos[i].chapter)  {
+				console.log(pl.videos[i]);
+                log(`Chapter ${title} duration:${duration}`);
+			}
             else {
                 var subs=pl.videos[i].subtitles;
                 var vorfound=-1;
@@ -78,7 +82,17 @@ function DisplayInfo(list) {
                 console.log(`vorfound=${vorfound}`);
                 var subtxt="";
                 
-                if (vorfound >=0) {
+                subtxt +=`<a href=https://studio.youtube.com/video/${id}/edit>edit</a>  `;
+                subtxt +=`<a href=https://studio.youtube.com/video/${id}/translations>menu</a>  `;
+                subtxt +=`<a href=https://www.youtube.com/timedtext_video?v=${id}&lang=vor&action_choose_add_method=1&nv=1>add vor</a>  `;
+                subtxt +=`<a href=https://www.youtube.com/timedtext_editor?v=${id}&lang=vor&contributor_id=0&nv=1>edit vor</a>  `;
+                subtxt +=`<a href=https://video.google.com/timedtext?v=${id}&lang=vor>vor txt</a>  `;                        
+                subtxt +=`<a href=https://i.ytimg.com/vi_webp/${id}/maxresdefault.webp>maxres webp</a>  `;
+                subtxt +=`<a href=https://i.ytimg.com/vi/${id}/maxresdefault.jpg>maxres jpg</a>  `;
+                subtxt +=`<a href=https://i.ytimg.com/vi/${id}/hqdefault.jpg>hq jpg</a>  `;                      
+                subtxt +=`${title.padEnd(80, '_')}`;                        
+                subtxt +=` #vor: ${subs.length}  `;    
+				if (vorfound >=0) {
                     var slides=pl.videos[i].subtitles[vorfound].subtitle;
                     for (var j=0;j< slides.length;j++) {
                         console.log(`Start: ${slides[j].start} Duration ${slides[j].dur} Text ${slides[j].text}`);
@@ -86,25 +100,12 @@ function DisplayInfo(list) {
                     }
                     console.log(`#vor subs: ${slides.length} subs: ${subtxt}`);
                 }    
-                //console.log(`Id ${id} Title ${title.padEnd(60, ' ')}`  );
-             
-                str +=`<a href=https://studio.youtube.com/video/${id}/edit>edit</a>  `;
-                str +=`<a href=https://studio.youtube.com/video/${id}/translations>menu</a>  `;
-                str +=`<a href=https://www.youtube.com/timedtext_video?v=${id}&lang=vor&action_choose_add_method=1&nv=1>add vor</a>  `;
-                str +=`<a href=https://www.youtube.com/timedtext_editor?v=${id}&lang=vor&contributor_id=0&nv=1>edit vor</a>  `;
-                str +=`<a href=https://video.google.com/timedtext?v=${id}&lang=vor>vor txt</a>  `;                        
-                str +=`<a href=https://i.ytimg.com/vi_webp/${id}/maxresdefault.webp>maxres webp</a>  `;
-                str +=`<a href=https://i.ytimg.com/vi/${id}/maxresdefault.jpg>maxres jpg</a>  `;
-                str +=`<a href=https://i.ytimg.com/vi/${id}/hqdefault.jpg>hq jpg</a>  `;                      
-                str +=`${title.padEnd(80, '_')}`;                        
-                str +=` #vor: ${subs.length}  `;        
-                str += subtxt;
+                
+                log(subtxt)
             }            
-            str +=`\n`        
-       }   
-       log(str);
+       }          
     }
-   return str;
+   
 }
 
 startprocess();
