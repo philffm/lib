@@ -64,7 +64,8 @@ async function SendTransaction() {
 
 async function GetAddressInformation() {
     var entries=document.getElementsByClassName("transfertokensentry");
-        for (var i=0;i<entries.length;i++)
+        for (var i=0;i<entries.length;i++) {
             console.log(entries[i]);
-            //tokenamount[i] = entries[i].getElementVal("tokenamounttextboxtext");
+            tokenamount[i] = entries[i].children.getElementVal("tokenamounttextboxtext").innerText;
+        }
 }
