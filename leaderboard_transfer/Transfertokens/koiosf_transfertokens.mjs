@@ -1,4 +1,4 @@
-import {DomList,getElement,FitOneLine, setElementVal, LinkClickButton, getElementVal} from '../../lib/koiosf_util.mjs';
+import {DomList,getElement,FitOneLine, setElementVal, LinkClickButton, getElementVal, GetJson} from '../../lib/koiosf_util.mjs';
 
 let useraddresses;
 let tokenamount;
