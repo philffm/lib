@@ -1,8 +1,8 @@
 import {DomList, getElement, subscribe, setElementVal, LinkClickButton, getElementVal, GetJson} from '../../lib/koiosf_util.mjs';
 import {DisplayMessage} from '../../viewer_figma/koiosf_messages.mjs';
 
-let useraddresses;
-let tokenamount;
+let useraddresses = new Array;
+let tokenamount = new Array;
 let usernames;
 let sendlist = new Array;
 var tokenfactoryJson;
