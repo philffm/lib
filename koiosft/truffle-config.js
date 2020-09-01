@@ -80,6 +80,8 @@ module.exports = {
             skipDryRun: true,     // Skip dry run before migrations? (default: false for public nets )
 			//networkCheckTimeout: 100000 // does this work?? const DEFAULT_NETWORK_CHECK_TIMEOUT = 5000;
         },
+		// https://rinkeby.etherscan.io/blocks
+		// Gas Limit => 10.000.000
 
         ava: {
             provider: () => new HDWalletProvider(mnemonic, `http://localhost:9650/ext/C/rpc`),
