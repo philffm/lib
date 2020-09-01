@@ -1,6 +1,6 @@
 import {DomList, getElement, subscribe, setElementVal, LinkClickButton, getElementVal, GetJson} from '../../lib/koiosf_util.mjs';
 import {DisplayMessage} from '../../viewer_figma/koiosf_messages.mjs';
-import {getWeb3,getWeb3Provider} from './koiosf_transferlogin.mjs'
+import {getWeb3} from './koiosf_transferlogin.mjs'
 
 let useraddresses = new Array;
 let tokenamount = new Array;
