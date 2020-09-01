@@ -265,19 +265,10 @@ async function onConnect() {
     
   } catch(e) {
     console.log("Could not get a wallet connection", e);
-    setElementVal("status1","Not connected","scr_comment")
-    getElement("login","scr_comment").dispatchEvent(new CustomEvent("show"));
-    getElement("login","scr_profile").dispatchEvent(new CustomEvent("show"));
     if (web3Modal)
         web3Modal.clearCachedProvider(); // clear cached because this didn't work (try again later)
     return;
   }
-  setElementVal("status1","Connected","scr_comment")
-  getElement("login","scr_comment").dispatchEvent(new CustomEvent("hide"));
-  getElement("login","scr_profile").dispatchEvent(new CustomEvent("hide"));
-  
-  
-  
   
   // Subscribe to accounts change
   
