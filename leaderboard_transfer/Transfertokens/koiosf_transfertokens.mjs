@@ -114,7 +114,7 @@ async function GetAddressInformation() {
     var entries=document.getElementsByClassName("transfertokensentry");
     console.log(entries)
     console.log(entries.length)
-    for (var i=0;i<entries.length;i++) {
+    for (var i=0;i<GlobalAddressList.length;i++) {
         tokenamount[i] = getElementVal("transfertokencounttext",entries[i])
         useraddresses[i] = getElementVal("transferuseraddresstext",entries[i])
     }
