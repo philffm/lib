@@ -77,13 +77,15 @@ async function AddElementsToList() {
 async function ShowAddresses(nameslist,addresses,tokenamount) {
     if((nameslist.length == addresses.length) && (tokenamount.length == nameslist.length)) {    
         for (var i=0;i<addresses.length;i++) {
-            var target = GlobalAddressList.AddListItem();
-            setElementVal("transferusernametext",nameslist[i],target)
-            setElementVal("transferuseraddresstext",addresses[i],target)
-            setElementVal("transfertokencounttext",tokenamount[i],target)
-            var tokenamountlist=getElement("transfertokencounttext",target);    
-            tokenamountlist.contentEditable="true"; // make div editable
-            tokenamountlist.style.whiteSpace ="pre";
+            if ((tokenamount[i] != 0) && (addresses[i] != "NOG IN TE VULLEN")) { // Check for 0 and non address values
+                var target = GlobalAddressList.AddListItem();
+                setElementVal("transferusernametext",nameslist[i],target)
+                setElementVal("transferuseraddresstext",addresses[i],target)
+                setElementVal("transfertokencounttext",tokenamount[i],target)
+                var tokenamountlist=getElement("transfertokencounttext",target);    
+                tokenamountlist.contentEditable="true"; // make div editable
+                tokenamountlist.style.whiteSpace ="pre";
+            }
         }
     }
     else {
