@@ -48,7 +48,7 @@ async function getBadges() {
 
     for (var i = 0; i < totalBadges; i++) {
         var urltarget = GlobalBadgeList.AddListItem() 
-         GetBadgeDetails(urltarget,i).then (x=>  globalbadgeinfo[i]=x);                    // note: runs in parallel!
+         globalbadgeinfo[i]=await GetBadgeDetails(urltarget,i)
     }
 }
 
@@ -103,6 +103,18 @@ function HasBadge(wantedname) {
          if (name==wantedname) return true;	 
 	}
 	return false;
+}	
+
+
+function GetBadgeInfo(wantedid) {
+	for (var i=0;i<globalbadgeinfo.length;i++) {
+		console.log(i);
+		console.log(globalbadgeinfo[i])
+		if (!globalbadgeinfo[i]) continue;
+		if (globalbadgeinfo[i].tokenid != wantedid) continue;
+		return globalbadgeinfo[i]
+	}
+	return undefined;
 }	
 
 
@@ -320,47 +332,59 @@ async function OvBadgeMadeVisible(event) {
 	if (!target) return;
 	console.log(target)
 	var id=target.id
-	var templateid=globalbadgeinfo[id].template
-	var manager=globalbadgeinfo[id].templateinfo[2];
+	console.log(id);
+	var info=GetBadgeInfo(id)
+	console.log(info);
 	
-	console.log(globalbadgeinfo[id])
+	var templateid=info.template
+	var manager=info.templateinfo.managedBy;
+	
+	
 			
     show(`Details about this badge...<br>`)
 	show(`id:${id}<br>`)
 	var opensea=`https://rinkeby.opensea.io/assets/${nft_address}/${target.id}`
 	show(`<a href="${opensea}" target="_blank">opensea</a><br>`)
-	show(`name:${globalbadgeinfo[id].templateinfo[0]}<br>`)
+	show(`name:${info.templateinfo.name}<br>`)
 	show(`this badge templateid:${templateid}<br>`)
 	show(`manager templateid:${manager}<br>`)
 	//str +=`description:${target.dataset.description}<br>`
 	
+	
+	
+	console.log(`manager templateid=${manager}`)
+	var managerinfo=globallisttemplates[manager]
+	console.log(managerinfo);
+	
+	
+	console.log(globallisttemplates);
+	
 	var studentbadge=undefined;
-	var keys = Object.keys(globalbadgeinfo);
-	if (keys.length > 0) {
-		for (var j=0;j< keys.length;j++) {
-			var badgeid=keys[j]
-			var badge=globalbadgeinfo[badgeid];    
-			if (badge.templateinfo[2] == templateid) {
-				show(`I manage: ${badge.templateinfo[0]} badgeid:${badgeid}<br>`)
-				if (badge.templateinfo[0].includes("Student-"))
-					studentbadge=badgeid
-			}			
+	for (var k=0;k<globallisttemplates.length;k++) {
+		if (globallisttemplates[k].managedBy == templateid)  {
+			show(`I manage: ${globallisttemplates[k].name} badgeid:${k}<br>`)
+				if (globallisttemplates[k].name.includes("Student-"))
+					studentbadge=k;
 		}
 	}
+	
+	console.log(studentbadge); // already a templateid
+	
 	if (studentbadge) {
-		var templatestudentbadge = await nft_contract.methods.GetTemplateId(studentbadge).call();
+		// var templatestudentbadge = await nft_contract.methods.GetTemplateId(studentbadge).call();
 	   show(`Also check everyone with badge with the same template as:${studentbadge}<br>`)
-       show(`which is ${templatestudentbadge}<br>`)
+       //show(`which is ${templatestudentbadge}<br>`)
 	   
-	   var nr = await nft_contract.methods.tokensOfType(templatestudentbadge).call();
+	   var nr = await nft_contract.methods.tokensOfType(studentbadge).call();
 	   
 	   show(`With number of them: ${nr}<br>`)
 	   for (var i=0;i<nr;i++) {
-		   var studenttokenid = await nft_contract.methods.tokenOfTypeByIndex(templatestudentbadge,i).call();
+		   var studenttokenid = await nft_contract.methods.tokenOfTypeByIndex(studentbadge,i).call();
 		   await ShowGetBadgeInfo(studenttokenid,show)
 	   }   
 		   
     } 	
+	
 }	
 
 
