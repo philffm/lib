@@ -1,4 +1,4 @@
-import { } from "../lib/3box.js"; // from "https://unpkg.com/3box/dist/3box.js"; // prevent rate errors
+import { } from "../../lib/3box.js"; // from "https://unpkg.com/3box/dist/3box.js"; // prevent rate errors
 
 import { getUserAddress, getWeb3Provider,authorize } from "../viewer_figma/koiosf_login.mjs";
 import {DomList,getElement,FitOneLine,LinkVisible,subscribe,GetImageIPFS} from '../lib/koiosf_util.mjs';
