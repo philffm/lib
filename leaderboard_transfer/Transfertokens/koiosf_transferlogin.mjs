@@ -63,11 +63,6 @@ console.log("asyncloaded login")
 //console.log(getElement("login"))
 //console.log(getElement("login_comment"))   
 
-console.log("Setting name link to 3box");
-getElement("name").href="http://3box.io/hub"
-getElement("name").target="_blank"
-console.log(getElement("name"));
-
     console.log("login");
     await initpromise;
    
