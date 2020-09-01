@@ -32,11 +32,10 @@ async function onLoad() {
     LinkClickButton("sendbutton",SendTransaction)
 
     initContractInformation();
-    subscribe("web3providerfound",NextStep) 
 }
 
 async function initContractInformation() {
-    //subscribe("web3providerfound",NextStep)   
+    subscribe("web3providerfound",NextStep)   
     var tokenfactoryinfo="https://koiosonline.github.io/lib/koiosft/build/contracts/ERC20TokenFactory.json"
 	tokenfactoryJson=await GetJson(tokenfactoryinfo)
 	console.log(tokenfactoryinfo);
