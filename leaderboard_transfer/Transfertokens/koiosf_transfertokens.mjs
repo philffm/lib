@@ -120,8 +120,7 @@ async function SendTransaction() {
             for (var i=0;i<sendlist.length;i++) {      
                 var amount = BigInt(parseInt(sendlist[i][1]) * (10**decimals));
                 console.log(amount);
-                var transaction = await contracttoken.methods.transfer(sendlist[i][0], amount).send({from: globalaccounts[0]});
-                console.log(transaction)
+                contracttoken.methods.transfer(sendlist[i][0], amount).send({from: globalaccounts[0]});
             }
         }
     }
