@@ -116,14 +116,9 @@ async function SendTransaction() {
         var contracttoken = await new web3.eth.Contract(tokenJson.abi, address);
         var name = await contracttoken.methods.name().call();
         if (name == "Titan") {
-            for (var i=0;i<sendlist.length;i++) {
-                console.log(await contracttoken.methods.decimals().call());
-                console.log(sendlist[i][0], " ", sendlist[i][1]);
-                console.log("numba: ", sendlist[i][1] * 10^18);
-                var transaction = await contracttoken.methods.transfer(sendlist[i][0], (sendlist[i][1] * 10^18)).send({from: globalaccounts[0]});
+            for (var i=0;i<sendlist.length;i++) {                
+                var transaction = await contracttoken.methods.transfer(sendlist[i][0], (parseInt(sendlist[i][1]) * 10^18)).send({from: globalaccounts[0]});
                 console.log(transaction)
-                var balance = await contracttoken.methods.balanceOf(getUserAddress()).call();
-                console.log(balance);
             }
         }
     }
