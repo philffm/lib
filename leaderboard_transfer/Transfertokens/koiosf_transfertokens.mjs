@@ -108,6 +108,13 @@ async function SendTransaction() {
     await GetAddressInformation();
     console.log(tokenamount);
     console.log(sendlist);
+    var totalTokens =   await contracttokenfactory.methods.NrTokens().call();
+    for (var i=0;i<totalTokens;i++) {
+        var address=await contracttokenfactory.methods.tokens(i).call();
+        var contracttoken = await new web3.eth.Contract(tokenJson.abi, address);
+        var name = await contracttoken.methods.name().call();
+        console.log(name);
+    }
 }
 
 async function GetAddressInformation() {
