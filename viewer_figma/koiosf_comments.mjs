@@ -32,6 +32,8 @@ async function asyncloaded() {
 }
 
 async function ScrCommentMadeVisible() {
+    console.log("In ScrCommentMadeVisible");
+    
     await authorize()
     console.log(init3boxpromise);
     await init3boxpromise;
@@ -50,17 +52,28 @@ async function NextStep() {
 }     
 
 async function Init3box() {
+    console.log("Init3box");
     var ga=getUserAddress()
     var pr=getWeb3Provider()
+    console.log(ga)
+    console.log(pr);
+    console.log("Start openbox")
+    console.log(Box);
     box = await Box.openBox(ga,pr);    
+    console.log("after openbox");
+   // await box.syncDone
+    console.log("after syncdone");
+    console.log(box);
     space = await box.openSpace(KoiosSpace);
+    console.log("after openspace");  
 }
 
 subscribe("loadvideo",NewVideo) 
 
 var currentvideo;
 
-async function NewVideo(vidinfo) {    
+async function NewVideo(vidinfo) {
+    console.log(`new video ${vidinfo.videoid}`)        
     currentvideo=vidinfo
     if (!space) return; //  no connection to 3box yet; fixed elsewhere
     WriteThread(currentvideo)
@@ -80,6 +93,7 @@ async function WriteThread(vidinfo) {
     })
     currentThread.onNewCapabilities((event, did) => console.log(did, event, ' the chat'))
     const posts = await currentThread.getPosts()
+    console.log("posts: ", posts);
     await ShowPosts(posts);
 }
 
@@ -90,7 +104,9 @@ async function ShowPosts(posts) {
 
     for (var i=0;i<posts.length;i++) {        
         if (!document.getElementById(posts[i].postId) ){ // check if post is already shown
+            console.log(posts[i]);
             var did=posts[i].author;           
+            console.log(`${i} ${posts[i].message} ${did}`)
             
             var target = GlobalCommentList.AddListItem() // make new entry
             target.getElementsByClassName("commentmessagetext")[0].innerHTML = posts[i].message            
@@ -101,16 +117,12 @@ async function ShowPosts(posts) {
             FitOneLine(target.getElementsByClassName("commentsendertext")[0])
             var deletebutton=target.getElementsByClassName("commentdelete")[0]
             SetDeleteButton(deletebutton,posts[i].postId)
-            var votecounter=target.getElementsByClassName("commentupvotecountertext")[0]
-            console.log("postid creation: ", posts[i].postId)
-            console.log("counter during creation: ", await space.public.get(posts[i].postId))    
+            var votecounter=target.getElementsByClassName("commentupvotecountertext")[0]    
             votecounter.innerHTML = await space.public.get(posts[i].postId)
-            if (await space.public.get(posts[i].postId) === 'undefined') {
+            if (votecounter.innerHTML === 'undefined') {
                 await space.public.set(posts[i].postId, 0)
                 votecounter.innerHTML = 0
             }  
-            console.log("vc creation: ", votecounter)
-            console.log("innerhtml creation: ", votecounter.innerHTML)
             var upvotebutton=target.getElementsByClassName("commentupvote")[0]
             SetUpVoteButton(upvotebutton,posts[i],votecounter.innerHTML);
             var downvotebutton=target.getElementsByClassName("commentdownvote")[0]
@@ -143,8 +155,8 @@ async function SetDeleteButton(domid,postid) {
     domid.addEventListener('animatedclick',DeleteForumEntry)
     
     async function DeleteForumEntry() {
+        console.log(currentThread);
         try {
-            DisplayMessage("Are you sure you want to delete this?");
             await currentThread.deletePost(postid);
         } catch (error) {
             console.log(error);
@@ -158,6 +170,7 @@ async function FindSender (target,did,profilepicture) {
     if (profile.image) {
         var imagecid=profile.image[0].contentUrl
         imagecid=imagecid[`\/`]
+        console.log(imagecid);
         profilepicture.src=await GetImageIPFS(imagecid)
     }           
 }
@@ -167,49 +180,34 @@ async function PostComment() {
     try {
         if (currentThread)
             await currentThread.post(target.innerHTML); 
-            target.innerHTML = "";
       } catch (error) {
         console.log(error);
       }
 }  
 
 async function SetUpVoteButton(domid,post,votecounter) { 
-    console.log("postid: ", post.postId);
-    console.log("counter: ", await space.public.get(post.postId))
-    console.log("votecounter before in function: ", votecounter)
     domid.addEventListener('animatedclick',UpVoteMessage)
     async function UpVoteMessage() {
         try {
-            console.log("postid: ", post.postId);
-            console.log("counter: ", await space.public.get(post.postId))
-            console.log(space)
-            console.log("useraddress thing: ", `${getUserAddress()}+${post.postId}`)
-            console.log("votestatus before: ", space.public.get(`${getUserAddress()}+${post.postId}`))
-            if (await space.public.get(`${getUserAddress()}+${post.postId}`) === 'upvoted') {
-                votecounter = await space.public.get(post.postId)
+            if (await space.public.get(`${getUserAddress()}+${post.postId}`) == "upvoted") {
                 votecounter = parseInt(votecounter) - 1
-                await space.public.set(post.postId, parseInt(votecounter))
-                await space.public.set((`${getUserAddress()}+${post.postId}`), 'notVoted')
+                await space.public.set(post.postId, votecounter)
+                await space.public.set(`${getUserAddress()}+${post.postId}`, "notVoted")
                 ShowPosts(post)
             }
-            else if (await space.public.get(`${getUserAddress()}+${post.postId}`) === 'downvoted') {
+            else if (await space.public.get(`${getUserAddress()}+${post.postId}`) == "downvoted") {
                 votecounter = await space.public.get(post.postId)
                 votecounter = parseInt(votecounter) + 2
-                await space.public.set(post.postId, parseInt(votecounter))
-                await space.public.set((`${getUserAddress()}+${post.postId}`), 'upvoted')
+                await space.public.set(post.postId, votecounter)
+                await space.public.set(`${getUserAddress()}+${post.postId}`, "upvoted")
                 ShowPosts(post)
             }
             else {
-                votecounter = await space.public.get(post.postId)
                 votecounter = parseInt(votecounter) + 1
-                await space.public.set(post.postId, parseInt(votecounter))
-                await space.public.set((`${getUserAddress()}+${post.postId}`), 'upvoted')
+                await space.public.set(post.postId, votecounter)
+                await space.public.set(`${getUserAddress()}+${post.postId}`, "upvoted")
                 ShowPosts(post)
             }
-            console.log("votestatus after: ", space.public.get(`${getUserAddress()}+${post.postId}`))
-            console.log("postid after: ", post.postId);
-            console.log("counter after: ", await space.public.get(post.postId))
-            console.log("votecouter after in function: ", votecounter)
         } catch (error) {
             console.log(error);
         }
@@ -220,25 +218,23 @@ async function SetDownVoteButton(domid,post,votecounter) {
     domid.addEventListener('animatedclick',DownVoteMessage)
     async function DownVoteMessage() {
         try {
-            if (await space.public.get(`${getUserAddress()}+${post.postId}`) === 'downvoted') {
-                votecounter = await space.public.get(post.postId)
+            if (await space.public.get(`${getUserAddress()}+${post.postId}`) == "downvoted") {
                 votecounter = parseInt(votecounter) + 1
                 await space.public.set(post.postId, votecounter)
-                await space.public.set((`${getUserAddress()}+${post.postId}`), 'notVoted')
+                await space.public.set(`${getUserAddress()}+${post.postId}`, "notVoted")
                 ShowPosts(post)
             }
-            else if (await space.public.get(`${getUserAddress()}+${post.postId}`) === 'upvoted') {
+            else if (await space.public.get(`${getUserAddress()}+${post.postId}`) == "upvoted") {
                 votecounter = await space.public.get(post.postId)
                 votecounter = parseInt(votecounter) - 2
                 await space.public.set(post.postId, votecounter)
-                await space.public.set((`${getUserAddress()}+${post.postId}`), 'downvoted')
+                await space.public.set(`${getUserAddress()}+${post.postId}`, "downvoted")
                 ShowPosts(post)
             }
             else {
-                votecounter = await space.public.get(post.postId)
                 votecounter = parseInt(votecounter) - 1
                 await space.public.set(post.postId, votecounter)
-                await space.public.set((`${getUserAddress()}+${post.postId}`), 'downvoted')
+                await space.public.set(`${getUserAddress()}+${post.postId}`, "downvoted")
                 ShowPosts(post)
             } 
         } catch (error) {
