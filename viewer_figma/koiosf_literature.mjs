@@ -125,6 +125,8 @@ async function SearchArray(slideindex,match) {
         if (!url && slideindex[i].pdf) {      
             type="topiclit"
             url = slideindex[i].pdf
+			if (url.substr(0, 2)=="Qm")  // probably cid
+				url = GetCidViaIpfsProvider(url,0)
             url = `https://docs.google.com/viewerng/viewer?url=${url}&embedded=true`;
         }    
         if (url) {     
