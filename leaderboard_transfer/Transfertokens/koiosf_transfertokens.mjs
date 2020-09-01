@@ -118,7 +118,8 @@ async function SendTransaction() {
         if (name == "Titan") {
             for (var i=0;i<sendlist.length;i++) {
                 console.log(sendlist[i][0], " ", sendlist[i][1]);
-                await contracttoken.methods.transfer(sendlist[i][0], sendlist[i][1]).call();
+                var transaction = await contracttoken.methods.transfer(sendlist[i][0], sendlist[i][1]).call();
+                console.log(transaction)
             }
         }
     }
