@@ -1,8 +1,5 @@
-
-
-
-import {loadScriptAsync,getElement,GetImageIPFS,publish,setElementVal} from '../lib/koiosf_util.mjs';
-import { } from "../lib/3box.js"; // from "https://unpkg.com/3box/dist/3box.js"; // prevent rate errors
+import {loadScriptAsync,getElement,GetImageIPFS,publish,setElementVal} from '../../lib/koiosf_util.mjs';
+import { } from "../../lib/3box.js"; // from "https://unpkg.com/3box/dist/3box.js"; // prevent rate errors
 
 /*
 
