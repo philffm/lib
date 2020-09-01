@@ -68,10 +68,10 @@ async function AddElementsToList() {
     var nameslist=getElementVal("namestextboxtext")
     usernames = nameslist.split(',');
     var addresslist=getElementVal("addresstextboxtext")
-    useraddresses = addresslist.split(',');
+    var addresses = addresslist.split(',');
     var tokenlist=getElementVal("tokenamounttextboxtext")
-    tokenamount = tokenlist.split(',');
-    ShowAddresses(usernames,useraddresses,tokenamount);
+    var tokens = tokenlist.split(',');
+    ShowAddresses(usernames,addresses,tokens);
 }
 
 async function ShowAddresses(nameslist,addresses,tokenamount) {
@@ -114,7 +114,7 @@ async function GetAddressInformation() {
     var entries=document.getElementsByClassName("transfertokensentry");
     console.log(entries)
     console.log(entries.length)
-    for (var i=0;i<GlobalAddressList.length;i++) {
+    for (var i=0;i<entries.length;i++) {
         tokenamount[i] = getElementVal("transfertokencounttext",entries[i])
         useraddresses[i] = getElementVal("transferuseraddresstext",entries[i])
     }
