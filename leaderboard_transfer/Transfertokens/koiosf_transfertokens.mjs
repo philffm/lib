@@ -118,8 +118,8 @@ async function SendTransaction() {
         if (name == "Titan") {
             var decimals = await contracttoken.methods.decimals().call();   
             for (var i=0;i<sendlist.length;i++) {      
-                var amountinput = new BN(parseInt(sendlist[i][1]))  
-                var amount = ten.pow(new BN(decimals)).mul(amountinput)
+                var amount = BigInt(parseInt(sendlist[i][1]) * (10**decimals));
+                console.log(amount);
                 var transaction = await contracttoken.methods.transfer(sendlist[i][0], amount).send({from: globalaccounts[0]});
                 console.log(transaction)
             }
