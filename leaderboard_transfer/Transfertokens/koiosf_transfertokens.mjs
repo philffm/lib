@@ -89,7 +89,7 @@ async function ShowAddresses(nameslist,addresses,tokenamount) {
         }
     }
     else {
-        DisplayMessage("error, difference in listlength");
+        console.log("error, difference in listlength");
     }
 }
 
