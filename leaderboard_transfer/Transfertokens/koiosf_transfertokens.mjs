@@ -34,7 +34,7 @@ async function onLoad() {
 }
 
 async function initContractInformation() {
-    subscribe("web3providerfound",NextStep)   
+    NextStep();   
     var tokenfactoryinfo="https://koiosonline.github.io/lib/koiosft/build/contracts/ERC20TokenFactory.json"
 	tokenfactoryJson=await GetJson(tokenfactoryinfo)
 	console.log(tokenfactoryinfo);
@@ -108,7 +108,7 @@ async function SendTransaction() {
     await GetAddressInformation();
     console.log(tokenamount);
     console.log(sendlist);
-    var totalTokens =   await contracttokenfactory.methods.NrTokens().call();
+    var totalTokens = await contracttokenfactory.methods.NrTokens().call();
     for (var i=0;i<totalTokens;i++) {
         var address=await contracttokenfactory.methods.tokens(i).call();
         var contracttoken = await new web3.eth.Contract(tokenJson.abi, address);
