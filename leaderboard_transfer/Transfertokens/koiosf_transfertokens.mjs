@@ -35,7 +35,7 @@ async function onLoad() {
 }
 
 async function initContractInformation() {
-    subscribe("web3providerfound",NextStep)   
+    NextStep();   
     var tokenfactoryinfo="https://koiosonline.github.io/lib/koiosft/build/contracts/ERC20TokenFactory.json"
 	tokenfactoryJson=await GetJson(tokenfactoryinfo)
 	console.log(tokenfactoryinfo);
