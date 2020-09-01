@@ -12,8 +12,9 @@ Functional updates:
 Technical updates:
 - fixed pdf documents in literature, based on cid
 Layout updates:
-Course content:
 
+Course content:
+- added chapter 1.1 for blockchain level 1
 
 Version 2.00
 Functional updates:
