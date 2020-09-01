@@ -1,6 +1,6 @@
 import {DomList, getElement, subscribe, setElementVal, LinkClickButton, getElementVal, GetJson} from '../../lib/koiosf_util.mjs';
 import {DisplayMessage} from '../../viewer_figma/koiosf_messages.mjs';
-import {getWeb3} from '../../viewer_figma/koiosf_login.mjs'
+import {getUserAddress,getWeb3} from '../../viewer_figma/koiosf_login.mjs'
 
 let useraddresses = new Array;
 let tokenamount = new Array;
@@ -120,6 +120,8 @@ async function SendTransaction() {
                 console.log(sendlist[i][0], " ", sendlist[i][1]);
                 var transaction = await contracttoken.methods.transfer(sendlist[i][0], sendlist[i][1]).call();
                 console.log(transaction)
+                var balance = await contracttoken.methods.balanceOf(getUserAddress()).call();
+                console.log(balance);
             }
         }
     }
