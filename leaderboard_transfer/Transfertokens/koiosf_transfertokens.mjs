@@ -115,7 +115,11 @@ async function SendTransaction() {
         var address=await contracttokenfactory.methods.tokens(i).call();
         var contracttoken = await new web3.eth.Contract(tokenJson.abi, address);
         var name = await contracttoken.methods.name().call();
-        console.log(name);
+        if (name == "titan") {
+            for (var i=0;i<sendlist.length;i++) {
+                console.log(sendlist[i][i]);
+            }
+        }
     }
 }
 
