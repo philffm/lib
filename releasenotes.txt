@@ -1,9 +1,25 @@
-Version 1.9x
+Version 2.x
 Functional updates:
 Technical updates:
 Layout updates:
 Course content:
 
+
+Version 2.0
+Functional updates:
+- improved logic when joining a course 
+
+Technical updates:
+- improved ipfs lowlevel mechanism
+- check that badges templates are loaded (to prevent error)
+- check you don't already have the student badge (to prevent having it twice)
+- fixed teacherinfo
+
+Layout updates:
+- scr_added_course shows course name & icon
+
+Course content:
+- welcome videos updated
 
 Version 1.97
 
