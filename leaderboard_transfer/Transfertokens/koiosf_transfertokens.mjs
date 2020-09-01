@@ -119,6 +119,7 @@ async function SendTransaction() {
             for (var i=0;i<sendlist.length;i++) {
                 console.log(await contracttoken.methods.decimals().call());
                 console.log(sendlist[i][0], " ", sendlist[i][1]);
+                console.log("numba: ", sendlist[i][1] * 10^18);
                 var transaction = await contracttoken.methods.transfer(sendlist[i][0], (sendlist[i][1] * 10^18)).send({from: globalaccounts[0]});
                 console.log(transaction)
                 var balance = await contracttoken.methods.balanceOf(getUserAddress()).call();
