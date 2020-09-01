@@ -13,6 +13,7 @@ Technical updates:
 - improved ipfs lowlevel mechanism
 - check that badges templates are loaded (to prevent error)
 - check you don't already have the student badge (to prevent having it twice)
+- fixed teacherinfo
 
 Layout updates:
 - scr_added_course shows course name & icon
