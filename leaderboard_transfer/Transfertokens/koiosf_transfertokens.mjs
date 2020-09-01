@@ -6,6 +6,7 @@ let useraddresses = new Array;
 let tokenamount = new Array;
 let usernames;
 let sendlist = new Array;
+var globalaccounts;
 var tokenfactoryJson;
 var tokenJson;
 var contracttokenfactory;
