@@ -10,7 +10,7 @@ let space;
 let currentThread;
 var GlobalCommentList = new DomList("commententry");
 const FirstModerator="0x88E5d3CCdA6b8C8dE104E2bfA138AaB34D49c48c"; //For making the initial thread 
-const KoiosSpace = "koiosvideocomments";
+const KoiosSpace = "koiostestspace2";
 
 window.onerror = async function(message, source, lineno, colno, error) {   // especially for ios
     console.log("In onerror");
@@ -157,7 +157,6 @@ async function SetDeleteButton(domid,postid) {
     async function DeleteForumEntry() {
         console.log(currentThread);
         try {
-            //DisplayMessage("Are you sure you want to delete this?");
             await currentThread.deletePost(postid);
         } catch (error) {
             console.log(error);
