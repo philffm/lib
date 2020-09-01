@@ -118,7 +118,7 @@ async function SendTransaction() {
         console.log(name);
         if (name == "Titan") {
             for (var i=0;i<sendlist.length;i++) {
-                console.log(sendlist[i][i]);
+                console.log(sendlist[i][0], " ", sendlist[i][1]);
             }
         }
     }
