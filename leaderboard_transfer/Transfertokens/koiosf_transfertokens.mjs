@@ -1,5 +1,6 @@
 import {DomList, getElement, subscribe, setElementVal, LinkClickButton, getElementVal, GetJson} from '../../lib/koiosf_util.mjs';
 import {DisplayMessage} from '../../viewer_figma/koiosf_messages.mjs';
+import {getWeb3,getWeb3Provider} from './koiosf_login.mjs'
 
 let useraddresses = new Array;
 let tokenamount = new Array;
@@ -34,7 +35,7 @@ async function onLoad() {
 }
 
 async function initContractInformation() {
-    NextStep();   
+    subscribe("web3providerfound",NextStep)   
     var tokenfactoryinfo="https://koiosonline.github.io/lib/koiosft/build/contracts/ERC20TokenFactory.json"
 	tokenfactoryJson=await GetJson(tokenfactoryinfo)
 	console.log(tokenfactoryinfo);
