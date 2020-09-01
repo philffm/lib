@@ -118,63 +118,52 @@ export async function authorize() {
  
 var fOnlyOnce=false;
 async function onConnect() {
-
-  console.log("Opening a dialog", web3Modal);
+    console.log("Opening a dialog", web3Modal);
   
-  if (fOnlyOnce) return;
-  fOnlyOnce=true;
+    if (fOnlyOnce) return;
+    fOnlyOnce=true;
   
-  //getElement("WEB3_CONNECT_MODAL_ID").style.zIndex="20" // to make sure it's in front of everything
-  
-  try {
-    provider = await web3Modal.connect();
-    
-  } catch(e) {
-    console.log("Could not get a wallet connection", e);
-    if (web3Modal)
-        web3Modal.clearCachedProvider(); // clear cached because this didn't work (try again later)
-    return;
-  }
+    try {
+        provider = await web3Modal.connect();
+    } catch(e) {
+        console.log("Could not get a wallet connection", e);
+        if (web3Modal)
+            web3Modal.clearCachedProvider(); // clear cached because this didn't work (try again later)
+        return;
+    }
   
   // Subscribe to accounts change
   
-  try {
-      provider.on("accountsChanged", (accounts) => {
-        fetchAccountData();
-		publish("ethereumchanged")
-      });
+    try {
+        provider.on("accountsChanged", (accounts) => {
+            fetchAccountData();
+            publish("ethereumchanged")
+        });
 
-      // Subscribe to chainId change
-      provider.on("chainChanged", (chainId) => {
-        fetchAccountData();
-		publish("ethereumchanged")
-      });
+        // Subscribe to chainId change
+        provider.on("chainChanged", (chainId) => {
+            fetchAccountData();
+            publish("ethereumchanged")
+        });
 
-      // Subscribe to networkId change
-      provider.on("networkChanged", (networkId) => {
-        fetchAccountData();
-		publish("ethereumchanged")
-      });
-  } catch(e) {
-    console.log("provider on error", e);
-    return;
-  }
+        // Subscribe to networkId change
+        provider.on("networkChanged", (networkId) => {
+            fetchAccountData();
+            publish("ethereumchanged")
+        });
+    } catch(e) {
+        console.log("provider on error", e);
+        return;
+    }
   
- web3 = new Web3(provider);
+    web3 = new Web3(provider);
 
-  console.log("Web3 instance is", web3);
+    console.log("Web3 instance is", web3);
 
   
-  await refreshAccountData();
-  console.log("web3providerfound");
-  publish("web3providerfound")
+    await refreshAccountData();
+    console.log("web3providerfound");
+    publish("web3providerfound")
 
-console.log(provider);
-  
+    console.log(provider);
 }
-
-
-    
- 
-
- 
