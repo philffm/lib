@@ -77,7 +77,7 @@ async function AddElementsToList() {
 async function ShowAddresses(nameslist,addresses,tokenamount) {
     if((nameslist.length == addresses.length) && (tokenamount.length == nameslist.length)) {    
         for (var i=0;i<addresses.length;i++) {
-            if ((tokenamount[i] != 0) && (addresses[i] != "NOG IN TE VULLEN")) { // Check for 0 and non address values
+            if ((tokenamount[i] != 0) && (addresses[i] != "NOG IN TE VULLEN ")) { // Check for 0 and non address values
                 var target = GlobalAddressList.AddListItem();
                 setElementVal("transferusernametext",nameslist[i],target)
                 setElementVal("transferuseraddresstext",addresses[i],target)
@@ -112,6 +112,8 @@ async function SendTransaction() {
 
 async function GetAddressInformation() {
     var entries=document.getElementsByClassName("transfertokensentry");
+    console.log(entries)
+    console.log(entries.length)
     for (var i=0;i<entries.length;i++) {
         tokenamount[i] = getElementVal("transfertokencounttext",entries[i])
         useraddresses[i] = getElementVal("transferuseraddresstext",entries[i])
