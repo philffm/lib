@@ -90,6 +90,9 @@ async function ShowAddresses(nameslist,addresses,tokenamount) {
     }
     else {
         console.log("error, difference in listlength");
+        console.log(nameslist.length)
+        console.log(addresses.length)
+        console.log(tokenamount.length)
     }
 }
 
