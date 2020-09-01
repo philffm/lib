@@ -18,7 +18,7 @@ async function init() {
 
 var counter=0;
 async function recurse(thisid,obj,prefix) {
-await sleep(200);
+//await sleep(300); // don't overload chrome
 	//log(`${prefix} ${thisid} ${JSON.stringify(obj)} ${typeof(obj)}`);
 	if (!obj) return;
 	switch (typeof(obj)) {
@@ -49,6 +49,7 @@ await sleep(200);
 }
 
 async function CheckChild(obj,prefix) {
+//await sleep(300); // don't overload chrome
 	counter++;
 	setElementVal("loaded",counter)
 	try { var child=await FetchIPFS(obj); } catch (error) { log(error); }
