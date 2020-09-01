@@ -29,7 +29,6 @@ async function onLoad() {
  
     LinkClickButton("confirmbutton",AddElementsToList)
     LinkClickButton("emptylistbutton",EmptyList)  
-    LinkClickButton("showdomlist",ConsoleLogDomList)
     LinkClickButton("sendbutton",SendTransaction)
 
     initContractInformation();
@@ -100,10 +99,6 @@ async function ShowAddresses(nameslist,addresses,tokenamount) {
 
 async function EmptyList() {
     GlobalAddressList.EmptyList();
-}
-
-async function ConsoleLogDomList() {
-    console.log(GlobalAddressList);
 }
 
 async function SendTransaction() {
