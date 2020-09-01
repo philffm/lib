@@ -5,7 +5,17 @@ Layout updates:
 Course content:
 
 
-Version 2.0
+Version 2.01
+Functional updates:
+- leaderboard & transfer tokens added
+
+Technical updates:
+- fixed pdf documents in literature, based on cid
+Layout updates:
+Course content:
+
+
+Version 2.00
 Functional updates:
 - improved logic when joining a course 
 
