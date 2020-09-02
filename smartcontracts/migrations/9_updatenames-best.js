@@ -9,8 +9,13 @@ module.exports = async function(deployer) {
     console.log(`KOIOSNFTContract is at address:  ${KOIOSNFTContract.address}`);
     console.log(`totalSupply is now:  ${await KOIOSNFTContract.totalSupply()}`);	
 	
+	
+	var nrTemplates=await KOIOSNFTContract.nrTemplates()
+	console.log(`nrTemplates=${nrTemplates}`);
+	
     for (var i=0;i<list.length;i++) {
-		var item=list[i]		
+		var item=list[i]	
+if (i >= nrTemplates) continue; // not yet deployed		
 		
 			console.log(`To update: #${i} ${item.name} ${item.cid}`);	
 				var templateinfo = await KOIOSNFTContract.GetTemplateInfo(i);
