@@ -407,7 +407,7 @@ async function LoadVideo(vidinfo) { // call when first video is loaded or a diff
             //FoundSlides(vidinfo.subtitles[i].subtitle,vidinfo);
     //GetSetupLitAndAssInfo(vidinfo.txt);
 
-    seeninfo=await GlobalLessonList.LoadVideoSeen(vidinfo);
+    seeninfo=GlobalLessonList.LoadVideoSeen(vidinfo);
 	console.log(seeninfo)
     
     GlobalCanvasProgressInfo.Update(seeninfo)

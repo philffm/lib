@@ -4,6 +4,16 @@ Technical updates:
 Layout updates:
 Course content:
 
+Version 2.02
+Functional updates:
+- elapsed coursetime displayed
+Technical updates:
+- added badges for security & datascience
+Layout updates:
+Course content:
+
+
+
 
 Version 2.01
 Functional updates:
