@@ -8,7 +8,7 @@ Version 2.02
 Functional updates:
 - elapsed coursetime displayed
 Technical updates:
-- added badget for security & datascience
+- added badges for security & datascience
 Layout updates:
 Course content:
 
