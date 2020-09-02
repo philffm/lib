@@ -15,25 +15,8 @@ var contracttokenfactory;
 
 
 /////////////////// NFT //////////////////////////////////////////////////////////////////////////////
-async function getBadgeBalance(badgeId) {
-    return await nft_contract.methods.balanceOf(globalaccounts[0], badgeId).call();
-}
-async function reloadBadges() {
-    var totalBadges = await nft_contract.methods.nonce().call();
 
-    for (var i = 1; i <= totalBadges; i++) {
-        var balance = await nft_contract.methods.balanceOf(globalaccounts[0], i).call();
-        var badge = document.getElementById(i.toString())
-
-        if (badge !== undefined) {
-            if (parseInt(balance) === 0) {
-                badge.style.opacity = 0.5;
-            } else {
-                badge.style.opacity = 1;
-            }
-        }
-    }
-}
+ 
 async function getBadges() {
     console.log("In getBadges");
      GlobalBadgeList.EmptyList()    
@@ -50,6 +33,7 @@ async function getBadges() {
         var urltarget = GlobalBadgeList.AddListItem() 
          globalbadgeinfo[i]=await GetBadgeDetails(urltarget,i)
     }
+	console.log("End getBadges");
 }
 
 function StudentBadgeName() {
@@ -315,6 +299,7 @@ async function Joincourse() {
 	show("Badge received")
 	getBadges() // run asynchronous
 	await sleep(10000)
+	ShowJoinButtons()
        
 }
 async function OvBadgeMadeVisible(event) {
@@ -415,8 +400,9 @@ async function init() {
     LinkVisible("ov_join",Joincourse,"scr_profile")    
 	LinkVisible("ov_join",Joincourse,"scr_added_course" )    
 	LinkVisible("ov_badge",OvBadgeMadeVisible)        
+	ShowJoinButtons()
 	
-	
+	subscribe("setcurrentcourse",NewCourseSelected)
 	
 	console.log("Init in badges");
 	console.log(getElement("joincourse"))	
@@ -465,8 +451,9 @@ async function NextStep() {
     } else {
 		nft_contract = await new web3.eth.Contract(nft_jsonobject.abi, nft_jsonobject.networks[nid].address);
 		//console.log(contract);
-		GetTemplates(); // runs in parallel
-		getBadges(); // runs in parallel
+		await GetTemplates(); 
+		await getBadges(); 
+		ShowJoinButtons()
 	}
       
 	  
@@ -484,12 +471,27 @@ async function NextStep() {
 
 subscribe("ethereumchanged",EthereumChanged)
 
+function NewCourseSelected() {
+	ShowJoinButtons()
+}	
+
+function ShowJoinButtons() {
+	console.log("ShowJoinButtons");
+	var sbn=StudentBadgeName()
+	console.log(sbn)
+	console.log(HasBadge(sbn))
+	console.log(FindBadge(sbn))
+	var showjoin=(fglobalTemplatesLoaded && (!HasBadge(sbn)) && (FindBadge(sbn) >=0))
+	getElement("joincourse","scr_profile").dispatchEvent(new CustomEvent(showjoin?"show":"hide")); 
+	getElement("joincourse","scr_added_course").dispatchEvent(new CustomEvent(showjoin?"show":"hide")); 
+}
+
 async function EthereumChanged() {
 	console.log("ethereumchanged");
-	globalaccounts = await web3.eth.getAccounts();
-	getElement("joincourse","scr_profile").dispatchEvent(new CustomEvent("show")); // initially show
-	getBadges(); // note parallel
+	globalaccounts = await web3.eth.getAccounts();	
+	getBadges(); 
 	getTokens(); // note parallel
+	ShowJoinButtons()
 }	
 
 document.addEventListener('DOMContentLoaded', init)

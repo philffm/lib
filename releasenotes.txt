@@ -7,14 +7,17 @@ Course content:
 
 Version 2.01
 Functional updates:
-- leaderboard & transfer tokens added
 - added koios.online/transfertokens
 Technical updates:
 - fixed pdf documents in literature, based on cid
+- fullscreen working again in courses
 Layout updates:
+- hides join buttons when not available
+- checkmark button in left pane updated
 
 Course content:
 - added chapter 1.1 for blockchain level 1
+- added slides for tdfa
 
 Version 2.00
 Functional updates:
