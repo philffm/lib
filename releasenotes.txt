@@ -1,3 +1,187 @@
+Version 2.x
+Functional updates:
+Technical updates:
+Layout updates:
+Course content:
+
+Version 2.02
+Functional updates:
+- elapsed coursetime displayed
+Technical updates:
+- added badges for security & datascience
+Layout updates:
+Course content:
+
+
+
+
+Version 2.01
+Functional updates:
+- added koios.online/transfertokens
+Technical updates:
+- fixed pdf documents in literature, based on cid
+- fullscreen working again in courses
+- stop video when going back from viewer
+Layout updates:
+- hides join buttons when not available
+- checkmark button in left pane updated
+- updated course icons
+
+Course content:
+- added chapter 1.1 for blockchain level 1
+- added slides for tdfa
+
+Version 2.00
+Functional updates:
+- improved logic when joining a course 
+
+Technical updates:
+- improved ipfs lowlevel mechanism
+- check that badges templates are loaded (to prevent error)
+- check you don't already have the student badge (to prevent having it twice)
+- fixed teacherinfo
+
+Layout updates:
+- scr_added_course shows course name & icon
+
+Course content:
+- welcome videos updated
+
+Version 1.97
+
+Functional updates:
+- quiz allow multiple questions
+
+Technical updates:
+- add staticfiles to literature (via script)
+
+Layout updates:
+- left pane: remove redundant text & optimized layout
+- left/right buttons of slide made inactive at ends
+- load slide images
+- wordwrap for long quiz answers
+
+Course content:
+
+
+
+
+Version 1.96
+
+Functional updates:
+- get & show duration for courses
+
+Technical updates:
+- reverted to old 3box.js
+- added chapterduration and totalduration in videoinfo
+- get 0.01 eth from faucet
+- reload badges after "join"
+- reload badges & tokens after account change
+
+Layout updates:
+- quiz button layout fixed
+- changed name & description of badges (on blockchain/ipfs)
+- fixed layout of badges
+
+
+Course content:
+- update videoinfo to latest version
+
+Version 1.95
+
+Functional updates:
+- filter & uptimeze literature links
+
+Technical updates:
+
+Layout updates:
+- updated right pane
+
+Course content:
+
+
+Version 1.94
+
+Functional updates:
+- updated left screen of viewer : start video directly
+
+Technical updates:
+
+Layout updates:
+- renamed blockchain course to level 1/2/3
+- fullscreen button in left screen
+
+Course content:
+- added chapter for bc level 2
+- remove wrong disclaimer from bc level 2
+
+Version 1.93
+
+Functional updates:
+- check if it's possible to join course
+- updated sheets, videos, quizes
+
+Technical updates:
+- fixed variable wanted
+- redeployed the tokens contract with other eth account
+- generator automatically makes production ipfs version
+- generator refactored recursion
+- fixed tokens being shown twice
+
+Layout updates:
+- updated logo of contract badge to latest logo
+- fixed layout of course buttons (related to doctype tag)
+- fixed middle buttons
+- fixed layout of comment buttons
+
+Version 1.92
+
+Functional updates:
+
+
+Technical updates:
+
+Layout updates:
+- updated html generator
+- buttons less divs
+- textbuttons autoresize
+- moved join button to left to prevent accidental use
+
+Version 1.91
+
+Functional updates:
+
+
+Technical updates:
+- removed further reliance on gpersoon.com
+
+Most recent 3box: https://unpkg.com/3box@1.21.0/dist/3box.js (includes most recent ipfs 0.46)
+- webflow traces delete further to prevent interference
+- add koios.online/blockchain & koios.online/trading
+
+Layout updates:
+- update button layout
+- auto vertical scroll (for small screens)
+
+Version 1.90
+Functional updates:
+- link to 3box.io via url in name
+- only showing tokens where you have a balance
+- show info about badges (including who are students of a course)
+- comments max upvotes
+
+Technical updates:
+- Generation via figma
+- Updated ipfs link to smartcontract info in NFT smart contract, for opensea 
+- redeployed NFT smart contract with new deployment address
+- comments new thread management address
+- embed via javascript (no iframe neccesary anymore)
+
+Layout updates:
+- moved version number to profile page
+- updated NFT images & redeployed on rinkeby
+- updated quiz questions for level 1&2 (now fits in 4 answers)
+
 Version 1.02:
 
 Functional updates:

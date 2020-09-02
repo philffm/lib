@@ -1,0 +1,85 @@
+    
+        <h1>Check ipfs</h1>
+		retry:      <span id="retry"></span>
+		loaded:     <span id="loaded"></span>
+        <pre id="log" style="width:100%;height:100%"></pre>
+
+
+<script type="module">
+// https://gpersoon.com/koios/lib/lib/checkipfs.html
+console.log("Start");
+import {GetJson,GetJsonIPFS,FetchIPFS,GetImageIPFS,setElementVal,sleep} from '../lib/koiosf_util.mjs';
+
+async function init() {
+	var courseinfo=await GetJson("https://gpersoon.com/koios/lib/viewer_figma/courseinfo.json")
+	await recurse("courseinfo",courseinfo,"");
+	log("Done");
+}
+
+var counter=0;
+async function recurse(thisid,obj,prefix) {
+//await sleep(300); // don't overload chrome
+	//log(`${prefix} ${thisid} ${JSON.stringify(obj)} ${typeof(obj)}`);
+	if (!obj) return;
+	switch (typeof(obj)) {
+		case "object":
+				//log(`${prefix} ${thisid}`);
+				var keys = Object.keys(obj);
+					if (keys.length > 0) {
+						for (var j=0;j< keys.length;j++) {
+							var id=keys[j]
+							var val=obj[id];                
+							//log(`${prefix} recurse ${id} ${JSON.stringify(val)}`);
+							await recurse(id,val,prefix+"   ") // note: run in parallel
+						   // log(`${j} ${pad(id)} ${pad(val.course)} ${val.courselevel}`);				
+							//console.log(typeof(val));				
+						}
+					} 
+				break;
+		case "string": //log(`${prefix} ${thisid}: ${obj}`);
+				if (obj.includes("Qm") && !obj.includes("youtube")) {
+					//log(`${prefix} loading ${obj}`)
+					await CheckChild(obj,prefix)   // run in parallel!
+				}
+				//log("end string");
+				break
+		default: //log(`${prefix} ${thisid} ${typeof(obj)}: ${obj}`);
+	}
+	//log("leaving recurse");
+}
+
+async function CheckChild(obj,prefix) {
+//await sleep(300); // don't overload chrome
+	counter++;
+	setElementVal("loaded",counter)
+	try { var child=await FetchIPFS(obj); } catch (error) { log(error); }
+	//console.log(child);
+	if (!child || !child.ok) { 
+		log(`can't find ${obj}`);return;  
+	}
+	
+	var txt=await child.text();
+	var firstpart=txt.replace(/\r\n/g,"").replace(/ \t/g,"").substring(1, 50)
+	//log(`${prefix} content: ${firstpart}`); // replace all newlines);
+	
+	if (firstpart.includes("{")) {
+		try { var json=await GetJsonIPFS(obj); } catch (error) { log(error); }					
+		await recurse(obj,json,prefix+"   ");
+	}
+}
+
+
+
+
+function log(logstr) {   
+            document.getElementById("log").innerHTML +=logstr+"\n";
+        }
+
+function pad(str) {
+	return str.padEnd(30, ' ')
+}
+
+console.log(Promise.any)
+init();
+
+</script>

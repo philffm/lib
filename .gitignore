@@ -10,3 +10,6 @@ web3js/package.json
 *.pptx
 mathieu/
 Node_ipfs/
+*.cmd
+courses/.figma
+courses/.figmadocument
