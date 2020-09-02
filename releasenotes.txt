@@ -8,7 +8,7 @@ Course content:
 Version 2.01
 Functional updates:
 - leaderboard & transfer tokens added
-
+- added koios.online/transfertokens
 Technical updates:
 - fixed pdf documents in literature, based on cid
 Layout updates:
