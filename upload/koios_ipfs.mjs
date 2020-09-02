@@ -87,10 +87,11 @@ export async function LessonFormat(_playid = "PL_tbH3aD86KvZcwoEAdFyMCWijbYGDBIo
   ECTS: 15,
   Responsible: {}
   };
-  for (var i=0;i<list.length;i++)
+
+  for (var i=0;i<list.resultlist.length;i++)
   {
     json.Chapter[0].Paragraph[0].Lesson.push(
-    {Lesson_Id:i, Title:list[i].title, Video:{Description:list[i].description, Duration:list[i].duration, Thumbnail:list[i].thumbnail, Youtube_Id:list[i].videoid}});
+    {Lesson_Id:i, Title:list.resultlist[i].title, Video:{Description:list.resultlist[i].description, Duration:list.resultlist[i].duration, Thumbnail:list.resultlist[i].thumbnail, Youtube_Id:list.resultlist[i].videoid}});
   }
   return json;
 }
@@ -136,7 +137,7 @@ export async function get(hash, ipfs) {
 
 
 
-
+/*
 export async function getYtInfoIpfs(hash)           //Gets the json string from ipfs and parses it into an object /// not used, see ipfsgetjson
 {
  // await setupBuffer();
@@ -150,7 +151,7 @@ export async function getYtInfoIpfs(hash)           //Gets the json string from 
     chunks.push(chunk);
   }
   return Buf.concat(chunks).toString();
-}
+}*/
 
 export async function getYtInfoIpfs(hash)           //Gets the json string from ipfs and parses it into an object /// not used, see ipfsgetjson
 //Split into GET and getYTinfo

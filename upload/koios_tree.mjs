@@ -39,6 +39,7 @@ import {uploadFilesIntoPlatform} from '../upload/koios_File_Uploader.mjs'
 
 
     async function onInput() {          //for test try PL_tbH3aD86KtN40_30P9S_rPryycQPr9k
+      console.log("oninput");
       temp = await LessonFormat(getInput());
       console.log(temp);
       plotParagraphs(temp);
