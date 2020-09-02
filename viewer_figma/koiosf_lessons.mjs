@@ -151,7 +151,7 @@ class LessonList {
 }    
 
   async SaveVideoSeen(seeninfo,vidinfo) {
-	  console.log(`SaveVideoSeen id ${vidinfo.videoid} seenend ${seeninfo.seenend}`);
+	  //console.log(`SaveVideoSeen id ${vidinfo.videoid} seenend ${seeninfo.seenend}`);
 	   //var currentcourse=GlobalCourseList.GetCurrentCourse()
 	  //var lessons=await this.GetLessonsList()
 	  //var vidinfo=lessons[currentcourse]
