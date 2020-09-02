@@ -196,6 +196,7 @@ async function ScrOtherMadeVisible() {
         c1.dataset.whattoselect="other"
 		
 		var seen=GlobalLessonList.GetCourseSeen(course)
+		if (!seen) seen=0
 		var perc=parseInt(100 * parseInt(seen) /  parseInt(data.duration))
 		console.log(perc)
 		getElement("progressbar",c1).style.width=`${perc}%`
@@ -229,6 +230,7 @@ async function ScrMyMadeVisible() {
         c1.dataset.whattoselect="my"
 
 		var seen=GlobalLessonList.GetCourseSeen(course)
+		if (!seen) seen=0
 console.log(seen)
 console.log(data.duration)
 		var perc=parseInt(100 * parseInt(seen) /  parseInt(data.duration))
