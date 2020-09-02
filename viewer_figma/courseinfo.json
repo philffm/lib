@@ -11,7 +11,7 @@
                 "description": "This course-level is to test all the possiblities of the viewer",
                 "goal": "testing",
                 "start": "now",
-                "image":"https://upload.wikimedia.org/wikipedia/commons/1/11/Test-Logo.svg",
+				"image": "https://ipfs.io/ipfs/QmcKXFH1VVYUL7FjKZX6de31wgrNLk52DnK77e4FRwXVLR",
                 "community":"https://koiosonline.slack.com",
                 "communityinvite":"https://join.slack.com/t/koiosonline/shared_invite/enQtNjE0MjAyNzMyODY4LTFlYWIzODRkNTI2ZWExOWM0NGNmMjFjNTU1YzFmZGExOWUzY2EzYTg4NDMwNDVhOTBkMGU0MTFkNzJkN2I5MWM"                
             },
@@ -22,7 +22,7 @@
 				"videoinfo": "Qmd25gC2DUDgzNDrPNyLUKDYH6higPhtxK86sfyJYLUyLR",
 				"duration": "636",
                 "slides": "QmUmFccDF5h4kouHpD5gRJA1jdux6Rm8LDTe92i59NHjzQ",
-                "image":"https://cdn.pixabay.com/photo/2014/03/24/17/15/school-295210_1280.png",
+				"image": "https://ipfs.io/ipfs/QmYP1v6mchB9uJZvHtfi3hgbCrc8QHP1z6aB8FnR716kDR",
                 "community":"https://koiosonline.slack.com",
                 "communityinvite":"https://join.slack.com/t/koiosonline/shared_invite/enQtNjE0MjAyNzMyODY4LTFlYWIzODRkNTI2ZWExOWM0NGNmMjFjNTU1YzFmZGExOWUzY2EzYTg4NDMwNDVhOTBkMGU0MTFkNzJkN2I5MWM"
             },
@@ -33,13 +33,9 @@
                 "contributer": "ricardo",
 				"videoinfo": "Qmb962GtaL395iQMz6jtKQSD4Hdaq8G5ECpp6iEki9zJet",
 				"duration": "6356",
-                "slides": "QmYESXaPpfYz4fBmtS6UhKSCQHwMxDvGCay38kDu9u3gkD",				
-				
-				
-				
-				
+                "slides": "QmYESXaPpfYz4fBmtS6UhKSCQHwMxDvGCay38kDu9u3gkD",								
 				"quizinfo": "QmXsnYGKXxrAKiZKQ6AHtiwJq19xQoav9ea5Fs6tmB7xtU",
-                "image": "https://uploads-ssl.webflow.com/5d25da7a03e410dc1f3b7f36/5e942c8236c30b7dc3e8d270_TRADING%20ICON%20GREEN%20SVG.svg",
+				"image": "https://ipfs.io/ipfs/QmXG1pdYUovDFZ9jLQx4XqPhg1MYU6ghB1zyVT1jNutZYy",
                 "community":"https://tdfaslack.slack.com",
                 "communityinvite":"https://join.slack.com/t/tdfaslack/shared_invite/zt-f8ghb2gg-e8bUiNK~T1zU6vNvfseIdA"
             },
@@ -56,7 +52,7 @@
                 "description": "This introduction course will take you through the absolute basics of blockchain technology. After completion you will understand theimportance of blockchain technology and have a small grasp of how a blockchainworks. A course for everyone.",
                 "goal": "Ledger technology / Bitcoin / Smart contracts",
                 "start": "31-8-2020",
-                "image": "https://uploads-ssl.webflow.com/5d25da7a03e410dc1f3b7f36/5e907618bc1f1241137f8345_Blockchain%20lvl1%20SVG.svg",
+				"image": "https://ipfs.io/ipfs/QmcR3DR5wZWBUaJzpbkhV7Nspne1dJ75P4eHzXrtgbniRE",
                 "community":"https://koiosblockcha-ma69869.slack.com",
                 "communityinvite":"https://join.slack.com/t/koiosblockcha-ma69869/shared_invite/zt-glxugcib-ZJCMueimSPN3svG45gG0Xw"                
             },	
@@ -73,7 +69,7 @@
                 "description": "After completing the introduction course, you are ready todive a bit deeper into the technology. You'll learn about different blockchainsand what makes them different from one another. You'll also get a deeperunderstanding of the bitcoin protocol.",
                 "goal": "Bitcoin deep dive / Ethereum  Smart contracts",
                 "start": "31-8-2020",
-                "image": "https://uploads-ssl.webflow.com/5d25da7a03e410dc1f3b7f36/5e907624c9af5c89fff02255_Blockchain%20lvl2%20SVG.svg",
+				"image": "https://ipfs.io/ipfs/QmYPt618XA9KHnLsfTwXPBsgvt8YJi8Tp4amysDUVCg1zn",
                 "community":"https://koiosblockcha-ma69869.slack.com",
                 "communityinvite":"https://join.slack.com/t/koiosblockcha-ma69869/shared_invite/zt-glxugcib-ZJCMueimSPN3svG45gG0Xw"                
             },    
@@ -88,7 +84,7 @@
                 "subtitle": "The intermediate level. This is where things get serious.",
                 "description": "Welcome to the third part of the KOIOS Blockchain Technology course. This is the so called 'economic deep dive', where we will focus on economics in relation to Blockchain Technology.",
                 "goal": "More advanced blockchain stuff",
-                "image": "https://uploads-ssl.webflow.com/5d25da7a03e410dc1f3b7f36/5e90762efc30d3b72957f562_Blockchain%20lvl3%20SVG.svg",
+				"image": "https://ipfs.io/ipfs/QmfAh2yJyHN9pPP93Sm58QrqSnVsw2MyVXQz6vCcgZRZzU",
                 "community":"https://koiosblockcha-ma69869.slack.com",
                 "communityinvite":"https://join.slack.com/t/koiosblockcha-ma69869/shared_invite/zt-glxugcib-ZJCMueimSPN3svG45gG0Xw"                
             },
@@ -101,7 +97,7 @@
                 "description": "Once you know python you can start data analytics",
                 "goal": "TBA",
                 "start": "Soon",
-                "image": "https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg",
+				"image": "https://ipfs.io/ipfs/Qmd6PcdyMEKdfeeeu1ELeqiCLGcifvh2FzAYuQ3VAhB6uE",
 				"videoinfo": "Qme2ULVZ68EtXQ9GVbFTkJiFLh6cnrn9maUpudVCrBAvnB",
 				"duration": "10464",
 				"slides":	"QmYnwkcPDog79Qr8pqW1jRpg62DTDebAJhqmEkJTDiE8aH",
@@ -117,7 +113,7 @@
                 "description": "",
                 "goal": "TBA",
                 "start": "Soon",
-                "image": "https://upload.wikimedia.org/wikipedia/commons/9/9a/CIAJMK1209.png",
+				"image": "https://ipfs.io/ipfs/QmVrj8SJC6YKdb6X6g4tdUVzT6x9oRMenr6Rv2s1TLPDcX",
 				"videoinfo": "QmScbSrivEWHmdwyJGgDkvksAyek5MAX83p6eh67kTZ1zN",
 				"duration": "7457",
 				"slides": "QmagLJr432F86K6YEy4yzWHb499cdsyAyyE1jrVn1ctHvN",				
