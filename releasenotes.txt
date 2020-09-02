@@ -11,9 +11,11 @@ Functional updates:
 Technical updates:
 - fixed pdf documents in literature, based on cid
 - fullscreen working again in courses
+- stop video when going back from viewer
 Layout updates:
 - hides join buttons when not available
 - checkmark button in left pane updated
+- updated course icons
 
 Course content:
 - added chapter 1.1 for blockchain level 1

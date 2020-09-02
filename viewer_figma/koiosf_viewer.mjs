@@ -454,7 +454,7 @@ async function asyncloaded() {
     
     LinkVisible("scr_community" ,ScrCommunityMadeVisible)    
     LinkClickButton("slackjoin",SlackJoin);
-    
+    LinkClickButton("back",stopVideo,"scr_viewer");    
     
     //LinkButton("start",startVideo);
     
