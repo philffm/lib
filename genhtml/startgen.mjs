@@ -229,7 +229,8 @@ if (newpage && newpage.includes("http")) {// must be webpage
 
 
 export function GetToggleState(domid,key) {
-   if (!domid.dataset[key]) return false
+	
+   if (!domid || !domid.dataset || !domid.dataset[key]) return false
    return domid.dataset[key]=="true"
 }    
 
@@ -312,6 +313,8 @@ async function onhidehandler(event) {
     //console.log("In onhidehandler");    
     SetToggleState(this,"display",false);    
     this.style.display="none";
+	var ev = new CustomEvent("madeinvisible",{detail:event});
+    this.dispatchEvent(ev); 
 }    
 
 async function onshowhandler(event) {
