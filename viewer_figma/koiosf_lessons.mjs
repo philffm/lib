@@ -1,6 +1,6 @@
 //console.log(`In ${window.location.href} starting script: ${import.meta.url}`);
 
-import {LinkButton,HideButton,LinkClickButton,subscribe,MonitorDomid,DomList,sleep,SelectTabBasedOnNumber,GetJsonIPFS, getElement,FitOneLine,publish,setElementVal,LinkToggleButton } from '../lib/koiosf_util.mjs';
+import {LinkButton,HideButton,LinkClickButton,subscribe,MonitorDomid,DomList,sleep,SelectTabBasedOnNumber,GetJsonIPFS, getElement,FitOneLine,publish,setElementVal,LinkToggleButton,ConvertDurationToString } from '../lib/koiosf_util.mjs';
 //import {player} from './koiosf_viewer.mjs';
 import {GetCourseInfo,GlobalCourseList} from './koiosf_course.mjs';
 import {GetToggleState} from '../genhtml/startgen.mjs'
@@ -113,19 +113,31 @@ class LessonList {
         
     }
 
+	async SaveCourseSeen() {
+	    var lessons=await this.GetLessonsList()   
+		var totaltime=0
+        for (var i=0;i<lessons.length;i++)  {      
+			var seeninfo=this.LoadVideoSeen(lessons[i])
+			if (seeninfo.seenend)
+				totaltime += lessons[i].duration
+			else 
+				totaltime += seeninfo.seensum
+		}
+				
+		var currentcourse=GlobalCourseList.GetCurrentCourse()
+		var storageid=`course-${currentcourse}-totaltime`;    
+		console.log(`SaveCourseSeen ${currentcourse} ${totaltime}`)
+		localStorage.setItem(storageid,totaltime)  
+		publish("courseseenupdated")
+	}	
+	GetCourseSeen(courseid) {
+		var storageid=`course-${courseid}-totaltime`;    		
+		var get=localStorage.getItem(storageid);
+		console.log(`GetCourseSeen ${courseid} ${get}`)
+		return get;
+	}	
 
-
-  async LoadVideoSeen(vidinfo) {
-	/*  var currentcourse=GlobalCourseList.GetCurrentCourse()
-	  console.log(currentcourse);
-	  var lessons=await this.GetLessonsList()
-	  var vidinfo=lessons[currentcourse]
-	  console.log(vidinfo)
-	  */
-	 // console.log(videoid);
-	//var vidinfo= await this.GetLessonData(videoid)
-	
-	//console.log(vidinfo)
+  LoadVideoSeen(vidinfo) {
 	
     var storageid=`video-${vidinfo.videoid}`;
     var get=localStorage.getItem(storageid);
@@ -151,7 +163,7 @@ class LessonList {
 }    
 
   async SaveVideoSeen(seeninfo,vidinfo) {
-	  console.log(`SaveVideoSeen id ${vidinfo.videoid} seenend ${seeninfo.seenend}`);
+	  //console.log(`SaveVideoSeen id ${vidinfo.videoid} seenend ${seeninfo.seenend}`);
 	   //var currentcourse=GlobalCourseList.GetCurrentCourse()
 	  //var lessons=await this.GetLessonsList()
 	  //var vidinfo=lessons[currentcourse]
@@ -193,8 +205,11 @@ async function NewCourseSelected() {
     if (lessons) {
 		console.log("Have lesson info:")
 		console.log(lessons);
+		var seentotal=0
         for (var i=0;i<lessons.length;i++)
-               await AddLessonsItem(lessons[i],i)    
+               seentotal +=await AddLessonsItem(lessons[i],i)    
+		   
+		await GlobalLessonList.SaveCourseSeen()
         var chapters=await GlobalLessonList.GetChaptersList()   
         if (chapters)    
             for (var i=0;i<chapters.length;i++)
@@ -207,25 +222,15 @@ function AddChapter(vidinfo) {
     var txt=vidinfo.title;    
     console.log(`AddChapter ${txt}`)
     var cln=PrepareChapterList.AddListItem()
-    //cln.getElementsByClassName("chapter-name")[0].innerHTML=txt;
-    
-	
-	
+    //cln.getElementsByClassName("chapter-name")[0].innerHTML=txt;	
     var sp=txt.split(" ")
-    var chapter=sp[0]
-    
-	cln.id=`chapter-${chapter}`;   
-	
-    setElementVal("__label",chapter,cln)
-    
-    
+    var chapter=sp[0]    
+	cln.id=`chapter-${chapter}`;   	
+    setElementVal("__label",chapter,cln)        
     txt=txt.replace(sp[0],"").trim()
-    setElementVal("chapter-name",txt,cln)
-    
-	FitOneLine(getElement("chapter-name",cln))    
-	
-    SetClickFilter(cln,chapter)    //getElement("chapter",cln)
-    
+    setElementVal("chapter-name",txt,cln)    
+	FitOneLine(getElement("chapter-name",cln))    	
+    SetClickFilter(cln,chapter)    //getElement("chapter",cln)    
 } 
 
 var oldindexchapter;
@@ -255,17 +260,14 @@ function SetClickFilter(domid,mask) {
 }    
 
 
-	subscribe("videoseen",VideoSeen)
+subscribe("videoseen",VideoSeen)
 	
 async function VideoSeen(currentvidinfo) {
 	var index=await GlobalLessonList.GetCurrentLesson()
-	
-	
-	 var  el=getElement(`lesson-${index}`)
-	 
-	 // could also use cln.dataset.videoid
-	 
-	 getElement("seenvideo",el).dispatchEvent(new CustomEvent("displayactive"))    
+	var  el=getElement(`lesson-${index}`)
+	 // could also use cln.dataset.videoid	 
+	 getElement("seenvideo",el).dispatchEvent(new CustomEvent("displayactive"))    	 
+	 await GlobalLessonList.SaveCourseSeen()
 }	
 
 
@@ -277,86 +279,45 @@ function SimplifyName(name) {
 	return nr+" "+right
 }
 
+
+
 async function AddLessonsItem(vidinfo,index) { // txt,thumbnail,description,videoid,duration) {
-    console.log(`AddLessonsItem ${vidinfo.title} ${vidinfo.chapter}`);
-    //console.log(vidinfo);
-    
+    console.log(`AddLessonsItem ${vidinfo.title} ${vidinfo.chapter}`);   
     vidinfo.txt=vidinfo.title; /// refactor
     var cln = PrepareLessonsList.AddListItem() //Template.cloneNode(true);
     getElement("lesson-name",cln).innerHTML=SimplifyName(vidinfo.txt);
     FitOneLine(getElement("lesson-name",cln))    
 	if (!vidinfo.duration) vidinfo.duration=1
-	{
-		var date = new Date(null);
-		//console.log(date);
-		date.setSeconds(vidinfo.duration); // specify value for SECONDS here
-		var result = date.toISOString().substr(10, 9);
-		result=result.replace("T00:", "T");
-		result=result.replace("T", "");
-		getElement("videolength",cln).innerHTML=result        
-	}
-    cln.id=`lesson-${index}`;    
-    
+	
+	var str=ConvertDurationToString(vidinfo.duration)
+	
+	setElementVal("videolength",str,cln)
+	
+    cln.id=`lesson-${index}`;        
     cln.dataset.chapter=vidinfo.chapter;
     cln.dataset.videoid=vidinfo.videoid; // to store & retrieve data about the video       
     SetClickPlay(cln,index)    
     var seeninfothisvideo=await GlobalLessonList.LoadVideoSeen(vidinfo)        
-    //console.log("AddLessonsItem");
-    //console.log(vidinfo.txt);
     console.log(seeninfothisvideo);
     var disp=seeninfothisvideo.seenend?"displayactive":"displaydefault"
-    //console.log(disp);
-    getElement("seenvideo",cln).dispatchEvent(new CustomEvent(disp))    
-    //console.log(getElement("seenvideo",cln))
-	
-	//LinkToggleButton("seenvideo",ToggleSeenVideo)
-	
-	
+    getElement("seenvideo",cln).dispatchEvent(new CustomEvent(disp))    	
+	return seeninfothisvideo.seensum;
 } 
 
-/*
-function ToggleSeenVideo() {
-	  var fOn=GetToggleState(this,"displayactive")
-	  
-	  console.log(this)
-	  console.log(fOn);
-}	
-*/
 
 async function SetClickPlay(cln,index) { // seperate function to remember state
-
-	
-
-//var txt=getElement("lesson-name",cln) 
-
-    //console.log(`SetClickPlay ${index}`);
-    //console.log(domid);
-    
-    cln.addEventListener('click', e=> {
-        //console.log("Click event in SetClickPlay");
-       // console.log(e);    
-       // console.log(index);       
-          
-        SelectLesson(index)
-	}
-     );
-	 var seenvideo=getElement("seenvideo",cln) 
-	  cln.addEventListener('click', async e=> {
-        //console.log("Click event in SetClickPlay");
-       // console.log(e);    
-       // console.log(index);       
-          
+    cln.addEventListener('click', e=> {  SelectLesson(index) }  );
+	var seenvideo=getElement("seenvideo",cln) 
+	cln.addEventListener('click', async e=> {          
         SelectLesson(index)
 		console.log(this)
-		  var fOn=GetToggleState(seenvideo,"displayactive")
-		  console.log(fOn)
-        
+	    var fOn=GetToggleState(seenvideo,"displayactive")
+		console.log(fOn)        
 		var vidinfo=await GlobalLessonList.GetCurrentLessonData()
 		console.log(vidinfo)
-		var seeninfo=await GlobalLessonList.LoadVideoSeen(vidinfo)
+		var seeninfo=GlobalLessonList.LoadVideoSeen(vidinfo)
 		seeninfo.seenend=fOn;
-		console.log(seeninfo);
-		
+		console.log(seeninfo);		
 		await GlobalLessonList.SaveVideoSeen(seeninfo,vidinfo)
 	  }
      );
@@ -392,19 +353,25 @@ function VideoCued() {
 
 subscribe('videocued',   VideoCued ); 
 
+
+subscribe('videostopped',   VideoStopped ); 
+
+  
+async function VideoStopped() {
+   await GlobalLessonList.SaveCourseSeen()
+}
+	
   
 var prefindex=undefined;
 
 export async function SelectLesson(index) {   
     console.log(`In SelectLesson !! index=${index}`);
-    
+    await GlobalLessonList.SaveCourseSeen()
+	 	 
 	if (prefindex == index) return; // already set
-	prefindex=index;
-	
-    var oldindex=await GlobalLessonList.GetCurrentLesson()
-	
-    var newindex=await GlobalLessonList.SetCurrentLesson(index)
-       
+	prefindex=index;	
+    var oldindex=await GlobalLessonList.GetCurrentLesson()	
+    var newindex=await GlobalLessonList.SetCurrentLesson(index)       
     
     var prevdomid=getElement(`lesson-${oldindex}`);
     if (prevdomid) {        
