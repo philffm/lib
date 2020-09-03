@@ -117,7 +117,7 @@ async function SendTransaction() {
                 tokenamount[i] = BigInt(parseInt(tokenamount[i]) * (10**decimals));
                 console.log(tokenamount[i]);  
             }
-            contracttoken.methods.transferBulk(useraddresses, amount).send({from: globalaccounts[0]});
+            contracttoken.methods.transferBulk(useraddresses, tokenamount).send({from: globalaccounts[0]});
             //batch.execute();
         }
     }
