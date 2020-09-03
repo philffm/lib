@@ -6,6 +6,7 @@ Course content:
 
 Version 2.03
 Functional updates:
+- state of screenlayoutbuttons is remembered (including fullscreen)
 Technical updates:
 - token contracts: added allowance & added bulktransfer
 Layout updates:
