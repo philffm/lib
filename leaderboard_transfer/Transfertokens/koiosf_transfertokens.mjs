@@ -102,6 +102,8 @@ async function EmptyList() {
 
 async function SendTransaction() {
     await GetAddressInformation();
+    console.log(tokenamount);
+    console.log(useraddresses);
     var totalTokens = await contracttokenfactory.methods.NrTokens().call();
     for (var i=0;i<totalTokens;i++) {
         var address=await contracttokenfactory.methods.tokens(i).call();
