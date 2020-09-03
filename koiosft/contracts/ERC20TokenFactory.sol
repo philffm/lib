@@ -13,9 +13,11 @@ contract ERC20Token {
 	
 	string private _tokenURI;
     mapping (address => uint256) private _balances;
+	mapping (address => mapping (address => uint256)) private _allowances;
     uint256 private _totalSupply;
 
     event Transfer(address indexed from, address indexed to, uint256 value);
+	event Approval(address indexed owner, address indexed spender, uint256 value);
 	
     modifier isAdmin {
         require( (msg.sender == _admin) || (msg.sender==_factory),"Must have admin role");
@@ -33,7 +35,7 @@ contract ERC20Token {
 	function _transfer(address sender, address recipient, uint256 amount) internal {
         require(sender != address(0), "ERC20: transfer from the zero address");
         require(recipient != address(0), "ERC20: transfer to the zero address");
-        _balances[sender] = sub(_balances[sender],amount);
+        _balances[sender] = sub(_balances[sender],amount,"ERC20: transfer amount exceeds balance");
         _balances[recipient] = add(_balances[recipient],amount);
         emit Transfer(sender, recipient, amount);
     }
@@ -43,6 +45,14 @@ contract ERC20Token {
         _balances[account] = add(_balances[account],amount);
         emit Transfer(address(0), account, amount);
     }
+
+	function _approve(address owner, address spender, uint256 amount) internal virtual {
+        require(owner != address(0), "ERC20: approve from the zero address");
+        require(spender != address(0), "ERC20: approve to the zero address");
+        _allowances[owner][spender] = amount;
+        emit Approval(owner, spender, amount);
+    }
+
 
 // public functions -------------------------------------------------------------------------------
     function name() public view returns (string memory) {
@@ -64,6 +74,13 @@ contract ERC20Token {
         uint256 c = a - b;
         return c;
     }
+    
+	function sub(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
+        require(b <= a, errorMessage);
+        uint256 c = a - b;
+        return c;
+    }
+    
     function totalSupply() public view returns (uint256) {
         return _totalSupply;
     }
@@ -74,6 +91,36 @@ contract ERC20Token {
         _transfer(msg.sender, recipient, amount);
         return true;
     }
+	
+	 function allowance(address owner, address spender) public view returns (uint256) {
+        return _allowances[owner][spender];
+    }
+	
+	 function approve(address spender, uint256 amount) public  returns (bool) {
+        _approve(msg.sender, spender, amount);
+        return true;
+    }
+	
+    function transferFrom(address sender, address recipient, uint256 amount) public   returns (bool) {
+        _transfer(sender, recipient, amount);
+        _approve(sender, msg.sender, sub(_allowances[sender][msg.sender],amount, "ERC20: transfer amount exceeds allowance"));
+        return true;
+    }
+    function increaseAllowance(address spender, uint256 addedValue) public returns (bool) {
+        _approve(msg.sender, spender, add(_allowances[msg.sender][spender],addedValue));
+        return true;
+    }
+    function decreaseAllowance(address spender, uint256 subtractedValue) public returns (bool) {
+        _approve(msg.sender, spender, sub(_allowances[msg.sender][spender],subtractedValue, "ERC20: decreased allowance below zero"));
+        return true;
+    }
+	
+	function transferBulk(address[] memory recipients, uint256[] memory amounts) public returns (bool) {      
+        for(uint256 i=0; i<recipients.length; i++)          
+           _transfer(msg.sender, recipients[i], amounts[i]);
+          return true;
+    }
+	
     function adminmint(uint256 amount) public isAdmin {
 		_mint(msg.sender, amount);
 	}
