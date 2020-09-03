@@ -5,7 +5,6 @@ import {getUserAddress,getWeb3} from '../../viewer_figma/koiosf_login.mjs'
 let useraddresses = new Array;
 let tokenamount = new Array;
 let usernames;
-let sendlist = new Array;
 var globalaccounts;
 var tokenfactoryJson;
 var tokenJson;
@@ -103,22 +102,18 @@ async function EmptyList() {
 
 async function SendTransaction() {
     await GetAddressInformation();
-    console.log(tokenamount);
-    console.log(sendlist);
     var totalTokens = await contracttokenfactory.methods.NrTokens().call();
     for (var i=0;i<totalTokens;i++) {
         var address=await contracttokenfactory.methods.tokens(i).call();
         var contracttoken = await new web3.eth.Contract(tokenJson.abi, address);
         var name = await contracttoken.methods.name().call();
         if (name == "Titan") {
-            //var batch = new web3.BatchRequest();
             var decimals = await contracttoken.methods.decimals().call();   
             for (var i=0;i<tokenamount.length;i++) {      
                 tokenamount[i] = BigInt(parseInt(tokenamount[i]) * (10**decimals));
                 console.log(tokenamount[i]);  
             }
             contracttoken.methods.transferBulk(useraddresses, tokenamount).send({from: globalaccounts[0]});
-            //batch.execute();
         }
     }
 }
@@ -130,9 +125,5 @@ async function GetAddressInformation() {
     for (var i=0;i<entries.length;i++) {
         tokenamount[i] = getElementVal("transfertokencounttext",entries[i])
         useraddresses[i] = getElementVal("transferuseraddresstext",entries[i])
-    }
-
-    for (var j=0;j<tokenamount.length;j++) {
-        sendlist[j] = new Array(useraddresses[j], tokenamount[j]);
     }
 }
