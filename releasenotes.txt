@@ -9,7 +9,9 @@ Functional updates:
 Technical updates:
 - token contracts: added allowance & added bulktransfer
 Layout updates:
+- minwidth at left & right panes
 Course content:
+- updated security essentials videos
 
 
 
