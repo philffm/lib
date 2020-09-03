@@ -29,6 +29,7 @@ async function onLoad() {
     LinkClickButton("confirmbutton",AddElementsToList)
     LinkClickButton("emptylistbutton",EmptyList)  
     LinkClickButton("sendbutton",SendTransaction)
+    LinkClickButton("orderbutton",OrderList)
 
     initContractInformation();
 }
@@ -128,4 +129,8 @@ async function GetAddressInformation() {
         tokenamount[i] = getElementVal("transfertokencounttext",entries[i])
         useraddresses[i] = getElementVal("transferuseraddresstext",entries[i])
     }
+}
+
+async function OrderList() {
+    GlobalAddressList.OrderBy();
 }
