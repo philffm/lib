@@ -1,9 +1,9 @@
 //console.log(`In ${window.location.href} starting script: ${import.meta.url}`);
 
 
-import {loadScriptAsync,DomList,LinkToggleButton,subscribe,getElement,MonitorVisible,ForAllElements,setElementVal,publish,GetJson,LinkClickButton,LinkVisible,GetURLParam,FindDomidWithId,appendElementVal,GetJsonIPFS} from '../lib/koiosf_util.mjs';
+import {loadScriptAsync,DomList,LinkToggleButton,subscribe,getElement,MonitorVisible,ForAllElements,setElementVal,publish,GetJson,LinkClickButton,LinkVisible,GetURLParam,FindDomidWithId,appendElementVal,GetJsonIPFS,ConvertDurationToString} from '../lib/koiosf_util.mjs';
 import {} from './koiosf_literature.mjs'// must be initialised to be able to follow up on setcurrentcourse
-import {} from './koiosf_lessons.mjs'// must be initialised to be able to follow up on setcurrentcourse
+import {GlobalLessonList} from './koiosf_lessons.mjs'// must be initialised to be able to follow up on setcurrentcourse
 
 
 class CourseList {    
@@ -181,44 +181,31 @@ async function ScrOtherMadeVisible() {
    var ml=GlobalCourseList.GetMyList();   
    for (const course in listofcourses) {    
         console.log(listofcourses[course]);
-        if (ml.includes(course) ) continue; // skip my course        
-		
-		
-		
-		
-        var c1 = globaldomlistcoursesother.AddListItem()        
+        if (ml.includes(course) ) continue; // skip my course        		
+        var c1 = globaldomlistcoursesother.AddListItem()        		
         var data=listofcourses[course]        
         var mask=[["courselevel","__label"],["image","__icon"]]; 
             ForAllElements(data, mask, (id,val) => { setElementVal(id,val,c1) }) // find domid object with same name and copy value
 			
 		console.log(data)
-		var duration=GetDuration(data)
+		var duration=ConvertDurationToString(data.duration)
 		if (duration)
 			appendElementVal("__label",`\nT: ${duration}`,c1)			
 			
         c1.id=course; // to be able to access it later
         c1.dataset.whattoselect="other"
+		
+		var seen=GlobalLessonList.GetCourseSeen(course)
+		if (!seen) seen=0
+		var perc=parseInt(100 * parseInt(seen) /  parseInt(data.duration))
+		console.log(perc)
+		getElement("progressbar",c1).style.width=`${perc}%`
+		
     }
 }    
 
 
- function GetDuration(course) {	
- /* too slow
-	var cid=await GetCourseInfo("videoinfo",course);
-	var videoinfo=await GetJsonIPFS(cid)
-	console.log(videoinfo);
-	*/
-	
-	var date = new Date(null);
-	var duration=course.duration;
-	if (!duration) return undefined;
-	date.setSeconds(duration); // specify value for SECONDS here
-	console.log(date)
-	var result = date.toISOString().substr(10, 9);
-	result=result.replace("T00:", "T");
-	result=result.replace("T", "");
-	return result;
-}
+
 
 
 async function ScrMyMadeVisible() {
@@ -229,23 +216,26 @@ async function ScrMyMadeVisible() {
     var current=GlobalCourseList.GetCurrentCourse()
     globaldomlistcoursesmy.EmptyList()    
     for (const course in listofcourses) {   
-        if (!ml.includes(course) ) continue; // skip othercourses 
-		
-		
+        if (!ml.includes(course) ) continue; // skip othercourses 		
         console.log(listofcourses[course]);
-        var c1 = globaldomlistcoursesmy.AddListItem()         
+        var c1 = globaldomlistcoursesmy.AddListItem()    
         var data=listofcourses[course]        
         var mask=[["courselevel","__label"],["image","__icon"]]; 
         ForAllElements(data, mask, (id,val) => { setElementVal(id,val,c1) }) // find domid object with same name and copy value
-        
 		console.log(data)
-		var duration=GetDuration(data)
+		var duration=ConvertDurationToString(data.duration)
 		if (duration)
-			appendElementVal("__label",`\nT: ${duration}`,c1)			
-
-		
+			appendElementVal("__label",`\nT: ${duration}`,c1)					
         c1.id=course; // to be able to access it later
         c1.dataset.whattoselect="my"
+
+		var seen=GlobalLessonList.GetCourseSeen(course)
+		if (!seen) seen=0
+console.log(seen)
+console.log(data.duration)
+		var perc=parseInt(100 * parseInt(seen) /  parseInt(data.duration))
+		console.log(perc)
+		getElement("progressbar",c1).style.width=`${perc}%`
         
         
     }
@@ -292,23 +282,38 @@ async function ScrProfileMadeVisible() {
     ForAllElements(data, mask, (id,val) => { setElementVal(id,val,getElement("scr_profile")) }) // find domid object with same name and copy value
 
 		console.log(data)
-		var duration=GetDuration(data)
+		var duration=ConvertDurationToString(data.duration)
 		if (duration)
 			setElementVal("timetotal",duration,"scr_profile")	
 
 
 }  
 
+subscribe("courseseenupdated",CourseSeenUpdated)
+
+function CourseSeenUpdated() {
+	var currentcourse=GlobalCourseList.GetCurrentCourse()
+	var seen=GlobalLessonList.GetCourseSeen(currentcourse)
+	console.log(seen)
+  
+	setElementVal("timewatched",ConvertDurationToString(seen),"scr_profile")
+	
+}
+
 async function ScrViewerMadeVisible() {
+	console.log("ScrViewerMadeVisible")
 	var coursedetails=await GlobalCourseList.GetCurrentCourseData()
 	
     var strcurrentcourse=coursedetails?coursedetails.courselevel:"No course selected yet";
-     setElementVal("currentcoursename",strcurrentcourse,getElement("scr_viewer"))
+     setElementVal("currentcoursename",strcurrentcourse,"scr_viewer")
     if (!coursedetails) return 
      
    var data=(await GlobalCourseList.GetCurrentCourseData());
   var mask=[["courselevel","currentcoursename"],["image","courseicon"]]; 
   ForAllElements(data, mask, (id,val) => { setElementVal(id,val,getElement("scr_viewer")) }) // find domid object with same name and copy value
+  
+  
+  
 }    
 
 
@@ -379,8 +384,10 @@ function RemoveCourse(event) {
     switch (whattoselect) {
         case "my":
             GlobalCourseList.UpdateMyList(courseid,true)            
-            var domidclick=getElement("@click",originalbutton)    
-            domidclick.dispatchEvent(new CustomEvent("hide"));  
+			console.log(originalbutton)
+            //var domidclick=getElement("@click",originalbutton)    
+            //domidclick.dispatchEvent(new CustomEvent("hide"));  
+			originalbutton.style.display="none" // parentNode.parentNode.parentNode.
             break;
         case "other":
             break;

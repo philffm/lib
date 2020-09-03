@@ -4,8 +4,40 @@ Technical updates:
 Layout updates:
 Course content:
 
+Version 2.03
+Functional updates:
+Technical updates:
+- token contracts: added allowance & added bulktransfer
+Layout updates:
+Course content:
 
-Version 2.0
+
+
+Version 2.02
+Functional updates:
+- elapsed coursetime displayed
+Technical updates:
+- added badges for security & datascience
+Layout updates:
+Course content:
+
+Version 2.01
+Functional updates:
+- added koios.online/transfertokens
+Technical updates:
+- fixed pdf documents in literature, based on cid
+- fullscreen working again in courses
+- stop video when going back from viewer
+Layout updates:
+- hides join buttons when not available
+- checkmark button in left pane updated
+- updated course icons
+
+Course content:
+- added chapter 1.1 for blockchain level 1
+- added slides for tdfa
+
+Version 2.00
 Functional updates:
 - improved logic when joining a course 
 
