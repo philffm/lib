@@ -111,14 +111,14 @@ async function SendTransaction() {
         var contracttoken = await new web3.eth.Contract(tokenJson.abi, address);
         var name = await contracttoken.methods.name().call();
         if (name == "Titan") {
-            var batch = new web3.BatchRequest();
+            //var batch = new web3.BatchRequest();
             var decimals = await contracttoken.methods.decimals().call();   
-            for (var i=0;i<sendlist.length;i++) {      
-                var amount = BigInt(parseInt(sendlist[i][1]) * (10**decimals));
-                console.log(amount);
-                batch.add(contracttoken.methods.transfer(sendlist[i][0], amount).send.request({from: globalaccounts[0]}));
+            for (var i=0;i<tokenamount.length;i++) {      
+                tokenamount[i] = BigInt(parseInt(tokenamount[i]) * (10**decimals));
+                console.log(tokenamount[i]);  
             }
-            batch.execute();
+            contracttoken.methods.transferBulk(useraddresses, tokenamount).send({from: globalaccounts[0]});
+            //batch.execute();
         }
     }
 }
