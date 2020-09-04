@@ -104,12 +104,15 @@ console.log("start");
 												cidlocation=test;cidfile="newviewer";break;
 			case "viewer.koios.online": 	 						 
 			case "QmZEgAo2Su99vcSwCf14AGokucaPCcshxr8zK3fZ5fKjf5": 	 
+			case "":
 												cidlocation=prod;cidfile="newviewer";break;
 		}
-		if (url.href.includes("koios.eth") ) {cidlocation=prod;cidfile="newviewer";}
+		
 		var loadfile=cidlocation+"/"+cidfile
 		console.log(`Loading config file ${loadfile}`)
-		try { cid=(await (await fetch(loadfile)).text()).trim(); } catch (error) { console.log(error); }
+		var result=await fetch(loadfile)
+		console.log(result);
+		try { cid=(await result.text()).trim(); } catch (error) { console.log(error); }
 	}
 	console.log(`cid ${cid}`)
 	if (cid) {
