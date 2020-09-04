@@ -83,6 +83,19 @@ function MakeBlob(html,fjavascript) {
 }   
 
 
+ var  headers=
+   {
+    "accept": "*/*",
+    "accept-language": "nl-NL,nl;q=0.9,en-US;q=0.8,en;q=0.7,de;q=0.6",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "cross-site"
+  }
+
+
+
 async function start() { 
 console.log("start");
 	let url = (new URL(document.location));
@@ -110,7 +123,7 @@ console.log("start");
 		
 		var loadfile=cidlocation+"/"+cidfile
 		console.log(`Loading config file ${loadfile}`)
-		var result=await fetch(loadfile)
+		var result=await fetch(loadfile,{ headers:headers})
 		console.log(result);
 		try { cid=(await result.text()).trim(); } catch (error) { console.log(error); }
 	}
