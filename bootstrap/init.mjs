@@ -106,6 +106,7 @@ console.log("start");
 			case "QmZEgAo2Su99vcSwCf14AGokucaPCcshxr8zK3fZ5fKjf5": 	 
 												cidlocation=prod;cidfile="newviewer";break;
 		}
+		if (url.href.includes("koios.eth") ) {cidlocation=prod;cidfile="newviewer";}
 		var loadfile=cidlocation+"/"+cidfile
 		console.log(`Loading config file ${loadfile}`)
 		try { cid=(await (await fetch(loadfile)).text()).trim(); } catch (error) { console.log(error); }
