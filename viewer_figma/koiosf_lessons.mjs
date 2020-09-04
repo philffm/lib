@@ -138,7 +138,7 @@ class LessonList {
 	}	
 
   LoadVideoSeen(vidinfo) {
-	
+	if (!vidinfo) return;
     var storageid=`video-${vidinfo.videoid}`;
     var get=localStorage.getItem(storageid);
     var jsonparsed={}

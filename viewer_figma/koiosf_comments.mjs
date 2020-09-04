@@ -73,6 +73,7 @@ subscribe("loadvideo",NewVideo)
 var currentvideo;
 
 async function NewVideo(vidinfo) {
+    if (!vidinfo) return;
     console.log(`new video ${vidinfo.videoid}`)        
     currentvideo=vidinfo
     if (!space) return; //  no connection to 3box yet; fixed elsewhere
