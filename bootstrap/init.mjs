@@ -123,7 +123,7 @@ console.log("start");
 		
 		var loadfile=cidlocation+"/"+cidfile
 		console.log(`Loading config file ${loadfile}`)
-		var result=await fetch(loadfile,{ headers:headers})
+		var result=await fetch(loadfile) //,{ headers:headers})
 		console.log(result);
 		try { cid=(await result.text()).trim(); } catch (error) { console.log(error); }
 	}
