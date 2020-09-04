@@ -10,7 +10,9 @@ Technical updates:
 - changed default in webflow to koios.online ==> reverted back to www.koios.online (stored browser data not accessible)
 - init.mjs : use infura ipfs (for metamask mobile)
 - several other changes to be compatible with metamask mobile
+
 Layout updates:
+- allow overlays to scroll (for mobile use)
 Course content:
 
 

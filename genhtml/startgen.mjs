@@ -200,6 +200,7 @@ if (newpage && newpage.includes("http")) {// must be webpage
        
         if (destdomid.classList.contains("@overlay")) {
             destdomid.style.zIndex="2"                // note check web3modal is visible
+			destdomid.style.overflowY="auto";
             currentoverlay=destdomid
         } else {
             if (globalprevpage) {
