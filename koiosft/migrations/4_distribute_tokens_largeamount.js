@@ -59,7 +59,8 @@ var toarrayamount=[ // addres, wanted amount
 	        ["0xC3036b696Ea52F6846F3F22E2EB709C595F0e09A", 1000,  "Jordi"],	
 			["0x118DF8e8557eB3DEd10Eb6Fde3EF183ca8106d56", 1000,  "Wicky"],
 			["0x4373294DD0f98eC2783f759Ae546A55E527487e7", 1000,  "Dennis"],
-			["0xbca3533d21a4538C43A4CC2A6f5c6D38271351C3", 1000,  "Malva"]
+			["0xbca3533d21a4538C43A4CC2A6f5c6D38271351C3", 1000,  "Malva"],
+			["0xB268B478F4B9e501dafFCe74dA60CAb8b7449871", 1000,  "Ricardo"]
 		]
     
   
