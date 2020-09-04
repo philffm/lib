@@ -4,6 +4,14 @@ Technical updates:
 Layout updates:
 Course content:
 
+Version 2.04
+Functional updates:
+Technical updates:
+- compatible with metamask mobile
+Layout updates:
+Course content:
+
+
 Version 2.03
 Functional updates:
 - state of screenlayoutbuttons is remembered (including fullscreen)

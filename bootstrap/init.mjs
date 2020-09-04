@@ -100,8 +100,11 @@ console.log("start");
 		var cidlocation=(beforelast=="test")?test:prod;
 		var cidfile=last;
 		switch (last) {
-			case "viewer.test.koios.online": cidlocation=test;cidfile="newviewer";break;
-			case "viewer.koios.online": 	 cidlocation=prod;cidfile="newviewer";break;
+			case "viewer.test.koios.online": 							
+												cidlocation=test;cidfile="newviewer";break;
+			case "viewer.koios.online": 	 						 
+			case "QmZEgAo2Su99vcSwCf14AGokucaPCcshxr8zK3fZ5fKjf5": 	 
+												cidlocation=prod;cidfile="newviewer";break;
 		}
 		var loadfile=cidlocation+"/"+cidfile
 		console.log(`Loading config file ${loadfile}`)
