@@ -112,7 +112,7 @@ function PrepareSpeechIcons() {                            //==> DomList omzette
 
 export function InitSpeak() { // called once
     console.log("In InitSpeak");
-    if (speechSynthesis.onvoiceschanged !== undefined) {
+    if (window.speechSynthesis && window.speechSynthesis.onvoiceschanged !== undefined) {
 //        speechSynthesis.onvoiceschanged = populateVoiceList;   // ff uitgezet
      }
     // responsiveVoice.setDefaultVoice("Dutch Female");
