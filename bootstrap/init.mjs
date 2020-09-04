@@ -83,6 +83,19 @@ function MakeBlob(html,fjavascript) {
 }   
 
 
+ var  headers=
+   {
+    "accept": "*/*",
+    "accept-language": "nl-NL,nl;q=0.9,en-US;q=0.8,en;q=0.7,de;q=0.6",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "cross-site"
+  }
+
+
+
 async function start() { 
 console.log("start");
 	let url = (new URL(document.location));
@@ -104,12 +117,15 @@ console.log("start");
 												cidlocation=test;cidfile="newviewer";break;
 			case "viewer.koios.online": 	 						 
 			case "QmZEgAo2Su99vcSwCf14AGokucaPCcshxr8zK3fZ5fKjf5": 	 
+			case "":
 												cidlocation=prod;cidfile="newviewer";break;
 		}
-		if (url.href.includes("koios.eth") ) {cidlocation=prod;cidfile="newviewer";}
+		
 		var loadfile=cidlocation+"/"+cidfile
 		console.log(`Loading config file ${loadfile}`)
-		try { cid=(await (await fetch(loadfile)).text()).trim(); } catch (error) { console.log(error); }
+		var result=await fetch(loadfile,{ headers:headers})
+		console.log(result);
+		try { cid=(await result.text()).trim(); } catch (error) { console.log(error); }
 	}
 	console.log(`cid ${cid}`)
 	if (cid) {
