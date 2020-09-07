@@ -103,7 +103,11 @@ class CourseList {
 
 }    
 
-export var GlobalCourseList=new CourseList("https://gpersoon.com/koios/lib/viewer_figma/courseinfo.json");
+//export var GlobalCourseList=new CourseList("https://gpersoon.com/koios/lib/viewer_figma/courseinfo.json");
+
+export var GlobalCourseList=new CourseList("https://koiosonline.github.io/lib/viewer_figma/courseinfo.json");
+
+
 
 export async function GetCourseInfo(key,courseid) {
 	
