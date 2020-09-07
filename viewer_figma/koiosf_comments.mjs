@@ -158,7 +158,6 @@ async function SetDeleteButton(domid,postid) {
     async function DeleteForumEntry() {
         console.log(currentThread);
         try {
-            DisplayMessage("Are you sure you want to delete this?");
             await currentThread.deletePost(postid);
         } catch (error) {
             console.log(error);
