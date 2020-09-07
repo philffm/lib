@@ -15,6 +15,10 @@ contract ERC20Token {
     mapping (address => uint256) private _balances;
 	mapping (address => mapping (address => uint256)) private _allowances;
     uint256 private _totalSupply;
+    
+    mapping(address => uint256) private index;
+    address[] private allowners; 
+    
 
     event Transfer(address indexed from, address indexed to, uint256 value);
 	event Approval(address indexed owner, address indexed spender, uint256 value);
@@ -30,6 +34,7 @@ contract ERC20Token {
         _decimals = decimals;
 		_factory = msg.sender;
 		_tokenURI = tokenURI;
+		allowners.push(address(0)); // keep the 0 value occupied
         _mint(admin, 10000 * (10 ** uint256(_decimals)));
     }
 	function _transfer(address sender, address recipient, uint256 amount) internal {
@@ -37,12 +42,23 @@ contract ERC20Token {
         require(recipient != address(0), "ERC20: transfer to the zero address");
         _balances[sender] = sub(_balances[sender],amount,"ERC20: transfer amount exceeds balance");
         _balances[recipient] = add(_balances[recipient],amount);
+        
+        if (index[recipient] == 0) {
+            allowners.push(recipient);
+            index[recipient]=allowners.length-1;
+        }
+        
         emit Transfer(sender, recipient, amount);
     }
     function _mint(address account, uint256 amount) internal isAdmin {
         require(account != address(0), "ERC20: mint to the zero address");
         _totalSupply = add(_totalSupply,amount);
         _balances[account] = add(_balances[account],amount);
+        
+        if (index[account] == 0) {
+            allowners.push(account);
+            index[account]=allowners.length-1;
+        }
         emit Transfer(address(0), account, amount);
     }
 
@@ -120,6 +136,15 @@ contract ERC20Token {
            _transfer(msg.sender, recipients[i], amounts[i]);
           return true;
     }
+	
+    function GetOwner(uint256 _nr) public view returns ( address)   {       
+       return allowners[_nr];
+    }
+    
+    function nrOwners() external view returns (uint256) {
+        return allowners.length;
+    }
+	
 	
     function adminmint(uint256 amount) public isAdmin {
 		_mint(msg.sender, amount);

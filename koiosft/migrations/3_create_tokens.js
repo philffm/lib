@@ -18,13 +18,13 @@ module.exports = async function(deployer) {
 		
 	var ERC20TokenContract=[];
 	for (var i=0;i<NrTokens;i++) {
-		tokenaddress=await ERC20TokenFactoryContract.tokens(i);	
-		ERC20TokenContract[i] = await ERC20Token.at(tokenaddress) // don't process directly => timeouts
+		tokenaddress[i]=await ERC20TokenFactoryContract.tokens(i);	
+		ERC20TokenContract[i] = await ERC20Token.at(tokenaddress[i]) // don't process directly => timeouts
 	}	
 	for (var i=0;i<NrTokens;i++) {	   
 	   name=await ERC20TokenContract[i].name()
 	   tokenURI=await ERC20TokenContract[i].tokenURI()
-	   console.log(`Address token ${i} ${tokenaddress} name:${name} tokenURI:${tokenURI}`)
+	   console.log(`Address token ${i} ${tokenaddress[i]} name:${name} tokenURI:${tokenURI}`)
     }	
 };
  
