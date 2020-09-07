@@ -4,7 +4,7 @@ import {DisplayMessage} from '../../viewer_figma/koiosf_messages.mjs';
 import {getUserAddress,getWeb3} from '../../viewer_figma/koiosf_login.mjs'
 
 var GlobalLeaderboardList = new DomList("leaderboardentry");
-var addresses = ["0x4373294dd0f98ec2783f759ae546a55e527487e7",
+/*var addresses = ["0x4373294dd0f98ec2783f759ae546a55e527487e7",
                  "0x336101f6685906ffe861ac519a98a6736d2d5b37",
                  "0x8e2a89ff2f45ed7f8c8506f846200d671e2f176f",
                  "0xc3036b696ea52f6846f3f22e2eb709c595f0e09a",
@@ -17,12 +17,15 @@ var addresses = ["0x4373294dd0f98ec2783f759ae546a55e527487e7",
                  "0xb268b478f4b9e501daffce74da60cab8b7449871",
                  "0x3d07b3629a319aabb2311c3f1f2ff048b1550bea",
                  "0x5c84209877934c61047100121c70a4cf68ec270e"
-]
+]*/
+
 var globalaccounts;
 var tokenfactoryJson;
 var tokenJson;
 var contracttokenfactory;
 var tokencount = new Array;
+var addresses = new Array;
+var ranking = new Array;
 
 window.addEventListener('DOMContentLoaded', onLoad)
 
@@ -70,12 +73,20 @@ async function getTitanTokenCount() {
         var contracttoken = await new web3.eth.Contract(tokenJson.abi, address);
         var name = await contracttoken.methods.name().call();
         if (name == "Titan") {
+            var nrOwners=await contracttoken.methods.nrOwners().call();
+            for (var j=0;j<nrOwners;j++) {
+                addresses[j] = await contracttoken.methods.GetOwner(j).call();
+            }
             var decimals = await contracttoken.methods.decimals().call();
             for (var i=0;i<addresses.length;i++) {      
                 tokencount[i] = Math.round((await contracttoken.methods.balanceOf(addresses[i]).call())/(10**decimals));
             }
         }
     }
+    for (var i=0;i<addresses.length;i++) {
+        ranking[i] = [addresses[i], tokencount[i]];
+    }
+    console.log(ranking);
 }
 
 async function ShowLeaderboard(addresses) {
