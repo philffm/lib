@@ -93,13 +93,13 @@ async function ShowLeaderboard() {
     await getTitanTokenCount();
     ranking.sort(function(a, b){return b[1]-a[1]});
     console.log(ranking);
-    /*for (var i=0;i<addresses.length;i++) {
+    for (var i=0;i<ranking.length;i++) {
         var target = GlobalLeaderboardList.AddListItem();
-        setElementVal("leaderboardtokencounttext",tokencount[i],target);
-        FindProfile(target.getElementsByClassName("leaderboardusertext")[0],addresses[i],target.getElementsByClassName("userphoto")[0]);
+        setElementVal("leaderboardtokencounttext",ranking[i][1],target);
+        FindProfile(target.getElementsByClassName("leaderboardusertext")[0],ranking[i][0],target.getElementsByClassName("userphoto")[0]);
         FitOneLine(target.getElementsByClassName("leaderboardusertext")[0])
         setElementVal("leaderboardpositiontext",parseInt(i+1),target)
-    }*/
+    }
 }
 
 /*
