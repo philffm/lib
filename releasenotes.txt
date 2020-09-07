@@ -4,6 +4,41 @@ Technical updates:
 Layout updates:
 Course content:
 
+Version 2.05
+Functional updates:
+- remove gpersoon link for courseinfo.json
+Technical updates:
+- Some extra checks transfer token
+- (beginning of) sort in DomList
+- updated ft smartcontract to be able to retrieve tokenholders
+Layout updates:
+Course content:
+- tdfa pfd's added & removed links from slides
+
+Version 2.04
+Functional updates:
+Technical updates:
+- changed default in webflow to koios.online ==> reverted back to www.koios.online (stored browser data not accessible)
+- init.mjs : use infura ipfs (for metamask mobile)
+- several other changes to be compatible with metamask mobile
+
+Layout updates:
+- allow overlays to scroll (for mobile use)
+Course content:
+
+
+Version 2.03
+Functional updates:
+- state of screenlayoutbuttons is remembered (including fullscreen)
+Technical updates:
+- token contracts: added allowance & added bulktransfer
+Layout updates:
+- minwidth at left & right panes
+Course content:
+- updated security essentials videos
+
+
+
 Version 2.02
 Functional updates:
 - elapsed coursetime displayed
@@ -11,9 +46,6 @@ Technical updates:
 - added badges for security & datascience
 Layout updates:
 Course content:
-
-
-
 
 Version 2.01
 Functional updates:

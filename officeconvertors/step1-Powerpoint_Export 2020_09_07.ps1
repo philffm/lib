@@ -44,6 +44,8 @@ function StoreIPFS {
 $mdarray1 = @()
 
 
+
+
 Get-ChildItem -Path $curr_path -Recurse -Filter *.ppt? | ForEach-Object {
     Write-Host "Processing powerpoint" $_.FullName "..."
     $document = $ppt_app.Presentations.Open($_.FullName,[Microsoft.Office.Core.MsoTriState]::msoFalse)
@@ -60,6 +62,12 @@ Get-ChildItem -Path $curr_path -Recurse -Filter *.ppt? | ForEach-Object {
     Write-Host "Powerpoint file:" $_.BaseName
     Write-Host "PNG's will be stored here:" $destination
 
+
+$fnolinks = ($_.BaseName -like '*nolinks*')
+write-host "fnolinks" $fnolinks
+
+
+if ($string -like '*win*') { }
 
     $powerpointname = $_.BaseName
     $outputTypeImg = [Microsoft.Office.Interop.PowerPoint.PpSaveAsFileType]::ppSaveAsPNG
@@ -151,12 +159,14 @@ Get-ChildItem -Path $curr_path -Recurse -Filter *.ppt? | ForEach-Object {
 
         $mdarray1 += ,@{ chapter=$chapterprefixed;title=$title;png=$ipfs.Name;size=$ipfs.Size;source=$source}  #slidenr=$ipfs.nr;
 
-         For ($z=1; $z -le $document.Slides[$nr].Hyperlinks.Count; $z++) { # find all hyperlinks
-           $h = $document.Slides[$nr].Hyperlinks[$z].Address
-           Write-Host $chapterprefixed, $h
-           $mdarray1 += ,@{ chapter=$chapterprefixed;url=$h}   
-        }
 
+        if (-Not $fnolinks) { #skip to links, usefull for tdfa
+                 For ($z=1; $z -le $document.Slides[$nr].Hyperlinks.Count; $z++) { # find all hyperlinks
+                   $h = $document.Slides[$nr].Hyperlinks[$z].Address
+                   Write-Host $chapterprefixed, $h
+                   $mdarray1 += ,@{ chapter=$chapterprefixed;url=$h}   
+                }
+          }
 
     }
   

@@ -49,8 +49,8 @@ var ipfsurl="https://ipfs.infura.io/ipfs/" //metamask mobile prefers this (other
 
 async function start() { 
 	console.log("start");
-	fetch("https://koiosonline.github.io/lib/releasenotes.txt").then(console.log) // workaround so metamask mobile knows how to access github
-		
+    fetch("https://koiosonline.github.io/lib/releasenotes.txt").then(console.log) // workaround so metamask mobile knows how to access github
+
 	let url = (new URL(document.location));
 	console.log(url)
     var split=url.pathname.split("/");

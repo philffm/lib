@@ -42,7 +42,12 @@ module.exports = async function(deployer) {
 			var left=await ERC20TokenContract[i].balanceOf(item[0])
 			console.log(`${item[2].padEnd(20, ' ')} ${item[0]} needs ${item[1].toString().padEnd(15, ' ')} and has ${web3.utils.fromWei(left,'ether').padEnd(15, ' ')}`)
 		}
-		
+		var nrOwners=await ERC20TokenContract[i].nrOwners()
+		console.log(`Total ${nrOwners} owners`);
+		for (var j=0;j<nrOwners;j++) {
+			var owner=await ERC20TokenContract[i].GetOwner(j)
+			console.log(`Owner ${j} ${owner}`);
+		}		
 	}
 error
 }  
@@ -58,8 +63,13 @@ var toarrayamount=[ // addres, wanted amount
             ["0x4Ad2eaE4137e11EB3834840f1DC38F5f0fa181c3", 1000,  "Mathieu"],
 	        ["0xC3036b696Ea52F6846F3F22E2EB709C595F0e09A", 1000,  "Jordi"],	
 			["0x118DF8e8557eB3DEd10Eb6Fde3EF183ca8106d56", 1000,  "Wicky"],
-			["0x4373294DD0f98eC2783f759Ae546A55E527487e7", 1000,  "Dennis"],
-			["0xbca3533d21a4538C43A4CC2A6f5c6D38271351C3", 1000,  "Malva"]
+			["0x4373294DD0f98eC2783f759Ae546A55E527487e7", 100000,  "Dennis"],
+			["0xbca3533d21a4538C43A4CC2A6f5c6D38271351C3", 1000,  "Malva"],
+			["0xB268B478F4B9e501dafFCe74dA60CAb8b7449871", 1000,  "Ricardo"],
+			["0xD4402f6AC4BdBdc3d966D1ACAB0c1c104bA7d89f", 1000,  "Jamie"],
+			
+			["0x3d07b3629a319aabb2311c3f1f2ff048b1550bea",	5,	"?"],   // give old balance back
+			["0x5c84209877934c61047100121c70a4cf68ec270e",	3,	"?"]
 		]
     
   
