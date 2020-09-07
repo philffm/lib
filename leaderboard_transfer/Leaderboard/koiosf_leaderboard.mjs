@@ -28,8 +28,6 @@ window.addEventListener('DOMContentLoaded', onLoad)
 
 async function onLoad() {
     await initContractInformation();
-    await getTitanTokenCount();
-    await ShowLeaderboard(addresses, tokencount);
 }
 
 async function initContractInformation() {
@@ -61,6 +59,8 @@ async function NextStep() {
         contracttokenfactory = await new web3.eth.Contract(tokenfactoryJson.abi, tokenfactoryJson.networks[nid].address);
         console.log(contracttokenfactory);
     }
+
+    await ShowLeaderboard(addresses, tokencount);
 }
 
 async function getTitanTokenCount() {
@@ -77,7 +77,8 @@ async function getTitanTokenCount() {
     }
 }
 
-async function ShowLeaderboard(addresses, tokencount) {
+async function ShowLeaderboard(addresses) {
+    await getTitanTokenCount();
     for (var i=0;i<addresses.length;i++) {
         var target = GlobalLeaderboardList.AddListItem();
         setElementVal("leaderboardtokencounttext",tokencount[i],target)
