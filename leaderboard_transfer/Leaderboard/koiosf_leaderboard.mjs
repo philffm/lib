@@ -5,22 +5,22 @@ import {getUserAddress,getWeb3} from '../../viewer_figma/koiosf_login.mjs'
 
 var GlobalLeaderboardList = new DomList("leaderboardentry");
 
-var nogoaddresses = ["0x4373294dd0f98ec2783f759ae546a55e527487e7",
-                 "0x336101f6685906ffe861ac519a98a6736d2d5b37",
-                 "0x8e2a89ff2f45ed7f8c8506f846200d671e2f176f",
-                 "0xc3036b696ea52f6846f3f22e2eb709c595f0e09a",
-                 "0x4ad2eae4137e11eb3834840f1dc38f5f0fa181c3",
-                 "0x118df8e8557eb3ded10eb6fde3ef183ca8106d56",
-                 "0xea9a7c7cd8d4dc3acc6f0aaec1506c8d6041a1c5",
-                 "0xd4402f6ac4bdbdc3d966d1acab0c1c104ba7d89f",
-                 "0xbca3533d21a4538c43a4cc2a6f5c6d38271351c3",
-                 "0xe88cac4e10c4d316e0d52b82dd54f26ade3f0bb2",
-                 "0xb268b478f4b9e501daffce74da60cab8b7449871",
-                 "0x3d07b3629a319aabb2311c3f1f2ff048b1550bea",
-                 "0x5c84209877934c61047100121c70a4cf68ec270e",
-                 "0x0000000000000000000000000000000000000000",
-                 "0x59cDECe70FDd85E37546d9BE808Ae64892f1aD47",
-                 "0xC1b80113902f9cA05F159DAd4dDCD330E9d0F061"
+var nogoaddresses = [0x4373294dd0f98ec2783f759ae546a55e527487e7,
+                 0x336101f6685906ffe861ac519a98a6736d2d5b37,
+                 0x8e2a89ff2f45ed7f8c8506f846200d671e2f176f,
+                 0xc3036b696ea52f6846f3f22e2eb709c595f0e09a,
+                 0x4ad2eae4137e11eb3834840f1dc38f5f0fa181c3,
+                 0x118df8e8557eb3ded10eb6fde3ef183ca8106d56,
+                 0xea9a7c7cd8d4dc3acc6f0aaec1506c8d6041a1c5,
+                 0xd4402f6ac4bdbdc3d966d1acab0c1c104ba7d89f,
+                 0xbca3533d21a4538c43a4cc2a6f5c6d38271351c3,
+                 0xe88cac4e10c4d316e0d52b82dd54f26ade3f0bb2,
+                 0xb268b478f4b9e501daffce74da60cab8b7449871,
+                 0x3d07b3629a319aabb2311c3f1f2ff048b1550bea,
+                 0x5c84209877934c61047100121c70a4cf68ec270e,
+                 0x0000000000000000000000000000000000000000,
+                 0x59cDECe70FDd85E37546d9BE808Ae64892f1aD47,
+                 0xC1b80113902f9cA05F159DAd4dDCD330E9d0F061
 ]
 var globalaccounts;
 var tokenfactoryJson;
