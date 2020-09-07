@@ -91,7 +91,7 @@ async function getTitanTokenCount() {
 
 async function ShowLeaderboard() {
     await getTitanTokenCount();
-    ranking.sort(function(a, b){return b-a});
+    ranking.sort(function(a, b){return b[1]-a[1]});
     console.log(ranking);
     /*for (var i=0;i<addresses.length;i++) {
         var target = GlobalLeaderboardList.AddListItem();
