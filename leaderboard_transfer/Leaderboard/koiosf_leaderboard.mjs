@@ -1,5 +1,5 @@
 import { } from "../../lib/3box.js"; // from "https://unpkg.com/3box/dist/3box.js"; // prevent rate errors
-import {DomList, getElement, subscribe, setElementVal, LinkClickButton, getElementVal, GetJson} from '../../lib/koiosf_util.mjs';
+import {DomList, getElement, subscribe, setElementVal, LinkClickButton, getElementVal, GetJson, GetImageIPFS} from '../../lib/koiosf_util.mjs';
 import {DisplayMessage} from '../../viewer_figma/koiosf_messages.mjs';
 import {getUserAddress,getWeb3} from '../../viewer_figma/koiosf_login.mjs'
 
@@ -70,8 +70,9 @@ async function getTitanTokenCount() {
         var contracttoken = await new web3.eth.Contract(tokenJson.abi, address);
         var name = await contracttoken.methods.name().call();
         if (name == "Titan") {
+            var decimals = await contracttoken.methods.decimals().call();
             for (var i=0;i<addresses.length;i++) {      
-                tokencount[i] = await contracttoken.methods.balanceOf(addresses[i]).call();
+                tokencount[i] = (await contracttoken.methods.balanceOf(addresses[i]).call())/(10**decimals);
             }
         }
     }
