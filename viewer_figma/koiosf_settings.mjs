@@ -4,8 +4,7 @@ import {GetToggleState} from '../genhtml/startgen.mjs'
 
 var globalplayer=0;
 var globalVideospeed=0;
-var fTriedFullScreen=false;
-var fFullScreen=false;
+
 
 async function asyncloaded() {    
     console.log(`In asyncloaded of script: ${import.meta.url}`); 
@@ -15,10 +14,7 @@ async function asyncloaded() {
     LinkClickButton("fontsize",FontSize);
     LinkToggleButton("audioonoff",AudioOnOff)
 	
-    LinkToggleButton("fullscreen",FullScreenOnOff,"scr_profile") // multiple copies of the fullscreen button // use clickbutton (otherwise state is confusing)
-    LinkToggleButton("fullscreen",FullScreenOnOff,"scr_my")
-    LinkToggleButton("fullscreen",FullScreenOnOff,"scr_other")
-	LinkToggleButton("fullscreen",FullScreenOnOff,"scr_viewer")
+  
       
 }
 
@@ -85,46 +81,3 @@ function AudioOnOff(event) {
         globalplayer.mute(); 
 }   
 
-function FullScreenOnOff(event) {
-    console.log("In FullScreenOnOff");
- 
-    
-	var fOn=GetToggleState(this,"displayactive")    
-	
-    /* was used when running in an iframe
-    var x=window.parent.postMessage({"fullscreen":fOn}, "*"); // 'https://ipfs.io'); received in util
-    console.log(`After postmessage ${x}`)
-    */
-	
-    fFullScreen =  fOn; // !fFullScreen
- 
-    
-    console.log(`Making fullscreen ${fFullScreen}`);
-    let elem = document.body; // let elem = document.documentElement;
-    if (fFullScreen) {                
-        if (elem.requestFullScreen)       console.log("elem.requestFullScreen")  
-        if (elem.mozRequestFullScreen)    console.log("elem.mozRequestFullScreen") 
-        if (elem.webkitRequestFullScreen) console.log("elem.webkitRequestFullScreen")
-        
-        if (elem.requestFullScreen) {
-            elem.requestFullScreen({ navigationUI: "hide" });
-        } else if (elem.mozRequestFullScreen) {
-            elem.mozRequestFullScreen({ navigationUI: "hide" });
-        } else if (elem.webkitRequestFullScreen) {
-            elem.webkitRequestFullScreen({ navigationUI: "hide" });
-        }   
-    } else {
-        if (document.exitFullscreen)       console.log("document.exitFullscreen")  
-        if (document.mozExitFullscreen)    console.log("document.mozExitFullscreen") 
-        if (document.webkitExitFullscreen) console.log("document.webkitExitFullscreen")
-        if (document.exitFullscreen) {
-            document.exitFullscreen();
-        } else if (document.mozExitFullscreen) {
-            document.mozExitFullscreen();
-        } else if (document.webkitExitFullscreen) {
-            document.webkitExitFullscreen();
-        }
-    }          
- 
-   console.log(`Making fullscreen at end ${fFullScreen}`);
-}    

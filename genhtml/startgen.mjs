@@ -200,6 +200,7 @@ if (newpage && newpage.includes("http")) {// must be webpage
        
         if (destdomid.classList.contains("@overlay")) {
             destdomid.style.zIndex="2"                // note check web3modal is visible
+			destdomid.style.overflowY="auto";
             currentoverlay=destdomid
         } else {
             if (globalprevpage) {
@@ -229,7 +230,8 @@ if (newpage && newpage.includes("http")) {// must be webpage
 
 
 export function GetToggleState(domid,key) {
-   if (!domid.dataset[key]) return false
+	
+   if (!domid || !domid.dataset || !domid.dataset[key]) return false
    return domid.dataset[key]=="true"
 }    
 
@@ -312,6 +314,8 @@ async function onhidehandler(event) {
     //console.log("In onhidehandler");    
     SetToggleState(this,"display",false);    
     this.style.display="none";
+	var ev = new CustomEvent("madeinvisible",{detail:event});
+    this.dispatchEvent(ev); 
 }    
 
 async function onshowhandler(event) {
