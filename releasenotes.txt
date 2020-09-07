@@ -4,6 +4,13 @@ Technical updates:
 Layout updates:
 Course content:
 
+Version 2.05
+Functional updates:
+Technical updates:
+Layout updates:
+Course content:
+- tdfa pfd's added & removed links from slides
+
 Version 2.04
 Functional updates:
 Technical updates:
