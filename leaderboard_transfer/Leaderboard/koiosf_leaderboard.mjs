@@ -1,5 +1,5 @@
 import { } from "../../lib/3box.js"; // from "https://unpkg.com/3box/dist/3box.js"; // prevent rate errors
-import {DomList, getElement, subscribe, setElementVal, LinkClickButton, getElementVal, GetJson, GetImageIPFS} from '../../lib/koiosf_util.mjs';
+import {DomList, getElement, subscribe, setElementVal, LinkClickButton, getElementVal, GetJson, GetImageIPFS, FitOneLine} from '../../lib/koiosf_util.mjs';
 import {DisplayMessage} from '../../viewer_figma/koiosf_messages.mjs';
 import {getUserAddress,getWeb3} from '../../viewer_figma/koiosf_login.mjs'
 
@@ -84,6 +84,7 @@ async function ShowLeaderboard(addresses) {
         var target = GlobalLeaderboardList.AddListItem();
         setElementVal("leaderboardtokencounttext",tokencount[i],target);
         FindProfile(target.getElementsByClassName("leaderboardusertext")[0],addresses[i],target.getElementsByClassName("userphoto")[0]);
+        FitOneLine(target.getElementsByClassName("leaderboardusertext")[0])
         setElementVal("leaderboardpositiontext",parseInt(i+1),target)
     }
 }
