@@ -6,7 +6,11 @@ Course content:
 
 Version 2.05
 Functional updates:
+- remove gpersoon link for courseinfo.json
 Technical updates:
+- Some extra checks transfer token
+- (beginning of) sort in DomList
+- updated ft smartcontract to be able to retrieve tokenholders
 Layout updates:
 Course content:
 - tdfa pfd's added & removed links from slides
