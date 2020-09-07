@@ -4,8 +4,28 @@ Technical updates:
 Layout updates:
 Course content:
 
+Version 2.05
+Functional updates:
+Technical updates:
+Layout updates:
+Course content:
+- tdfa pfd's added & removed links from slides
+
+Version 2.04
+Functional updates:
+Technical updates:
+- changed default in webflow to koios.online ==> reverted back to www.koios.online (stored browser data not accessible)
+- init.mjs : use infura ipfs (for metamask mobile)
+- several other changes to be compatible with metamask mobile
+
+Layout updates:
+- allow overlays to scroll (for mobile use)
+Course content:
+
+
 Version 2.03
 Functional updates:
+- state of screenlayoutbuttons is remembered (including fullscreen)
 Technical updates:
 - token contracts: added allowance & added bulktransfer
 Layout updates:

@@ -1128,9 +1128,9 @@ console.log(dimensions)
         if (figdata.clipsContent==true) strstyle +="overflow: hidden;"
         
         switch (figdata.overflowDirection) {
-            case "VERTICAL_SCROLLING":   strstyle +="overflow-y: scroll;";break;
-            case "HORIZONTAL_SCROLLING": strstyle +="overflow-x: scroll;";break;
-            case "HORIZONTAL_AND_VERTICAL_SCROLLING": strstyle +="overflow: scroll;";break;
+            case "VERTICAL_SCROLLING":   strstyle +="overflow-y: auto;";break;
+            case "HORIZONTAL_SCROLLING": strstyle +="overflow-x: auto;";break;
+            case "HORIZONTAL_AND_VERTICAL_SCROLLING": strstyle +="overflow: auto;";break;
        //  default: // includes figdata.overflowDirection == undefined
        //         strstyle +="overflow: hidden;"
         }
