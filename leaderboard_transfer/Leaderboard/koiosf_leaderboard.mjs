@@ -82,7 +82,7 @@ async function ShowLeaderboard(addresses) {
     await getTitanTokenCount();
     for (var i=0;i<addresses.length;i++) {
         var target = GlobalLeaderboardList.AddListItem();
-        setElementVal("leaderboardtokencounttext",tokencount[i],target)
+        setElementVal("leaderboardtokencounttext",Math.trunc(tokencount[i],target));
         FindProfile(target.getElementsByClassName("leaderboardusertext")[0],addresses[i],target.getElementsByClassName("userphoto")[0]);
         setElementVal("leaderboardpositiontext",parseInt(i+1),target)
     }
