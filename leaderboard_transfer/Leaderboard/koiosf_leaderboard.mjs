@@ -62,7 +62,7 @@ async function getTitanTokenCount() {
             var decimals = await contracttoken.methods.decimals().call();
             var nrOwners=await contracttoken.methods.nrOwners().call();
             for (var i=0;i<nrOwners;i++) {
-                addresses[j] = await contracttoken.methods.GetOwner(j).call();
+                addresses[i] = await contracttoken.methods.GetOwner(i).call();
                 tokencount[i] = Math.round((await contracttoken.methods.balanceOf(addresses[i]).call())/(10**decimals));
                 ranking[i] = [addresses[i], tokencount[i]];
             }
