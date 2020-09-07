@@ -72,7 +72,7 @@ async function getTitanTokenCount() {
         if (name == "Titan") {
             var decimals = await contracttoken.methods.decimals().call();
             for (var i=0;i<addresses.length;i++) {      
-                tokencount[i] = (await contracttoken.methods.balanceOf(addresses[i]).call())/(10**decimals);
+                tokencount[i] = Math.round((await contracttoken.methods.balanceOf(addresses[i]).call())/(10**decimals));
             }
         }
     }
@@ -82,7 +82,7 @@ async function ShowLeaderboard(addresses) {
     await getTitanTokenCount();
     for (var i=0;i<addresses.length;i++) {
         var target = GlobalLeaderboardList.AddListItem();
-        setElementVal("leaderboardtokencounttext",Math.trunc(tokencount[i],target));
+        setElementVal("leaderboardtokencounttext",tokencount[i],target);
         FindProfile(target.getElementsByClassName("leaderboardusertext")[0],addresses[i],target.getElementsByClassName("userphoto")[0]);
         setElementVal("leaderboardpositiontext",parseInt(i+1),target)
     }
