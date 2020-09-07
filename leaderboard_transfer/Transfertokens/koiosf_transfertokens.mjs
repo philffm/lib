@@ -29,7 +29,6 @@ async function onLoad() {
     LinkClickButton("confirmbutton",AddElementsToList)
     LinkClickButton("emptylistbutton",EmptyList)  
     LinkClickButton("sendbutton",SendTransaction)
-    LinkClickButton("orderbutton",OrderList)
 
     initContractInformation();
 }
@@ -78,7 +77,7 @@ async function AddElementsToList() {
 async function ShowAddresses(nameslist,addresses,tokenamount) {
     if((nameslist.length == addresses.length) && (tokenamount.length == nameslist.length)) {    
         for (var i=0;i<addresses.length;i++) {
-            if ((tokenamount[i] != 0) && (addresses[i] != "NOG IN TE VULLEN ")) { // Check for 0 and non address values
+            if ((tokenamount[i] != 0) && ((addresses[i] != "NOG IN TE VULLEN ") || (addresses[i] != "x")) && ((addresses[i] != "") || (tokenamount[i] != "") || (nameslist[i] != ""))) { // Check for 0 and non address values
                 var target = GlobalAddressList.AddListItem();
                 setElementVal("transferusernametext",nameslist[i],target)
                 setElementVal("transferuseraddresstext",addresses[i],target)
@@ -129,8 +128,4 @@ async function GetAddressInformation() {
         tokenamount[i] = getElementVal("transfertokencounttext",entries[i])
         useraddresses[i] = getElementVal("transferuseraddresstext",entries[i])
     }
-}
-
-async function OrderList() {
-    GlobalAddressList.OrderBy();
 }
