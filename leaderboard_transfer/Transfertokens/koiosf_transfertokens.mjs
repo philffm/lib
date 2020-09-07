@@ -79,6 +79,7 @@ async function ShowAddresses(nameslist,addresses,tokenamount) {
     if((nameslist.length == addresses.length) && (tokenamount.length == nameslist.length)) {    
         for (var i=0;i<addresses.length;i++) {
             if ((tokenamount[i] != 0) && ((addresses[i] != "NOG IN TE VULLEN ") && (addresses[i] != "x")) && ((addresses[i] != "") && (tokenamount[i] != "") && (nameslist[i] != ""))) { // Check for 0 and non address values
+                console.log(addresses[i].length)
                 var target = GlobalAddressList.AddListItem();
                 setElementVal("transferusernametext",nameslist[i],target)
                 setElementVal("transferuseraddresstext",addresses[i],target)
