@@ -63,7 +63,7 @@ async function NextStep() {
         console.log(contracttokenfactory);
     }
 
-    await ShowLeaderboard(addresses, tokencount);
+    await ShowLeaderboard();
 }
 
 async function getTitanTokenCount() {
@@ -89,15 +89,17 @@ async function getTitanTokenCount() {
     console.log(ranking);
 }
 
-async function ShowLeaderboard(addresses) {
+async function ShowLeaderboard() {
     await getTitanTokenCount();
-    for (var i=0;i<addresses.length;i++) {
+    ranking.sort(function(a, b){return b-a});
+    console.log(ranking);
+    /*for (var i=0;i<addresses.length;i++) {
         var target = GlobalLeaderboardList.AddListItem();
         setElementVal("leaderboardtokencounttext",tokencount[i],target);
         FindProfile(target.getElementsByClassName("leaderboardusertext")[0],addresses[i],target.getElementsByClassName("userphoto")[0]);
         FitOneLine(target.getElementsByClassName("leaderboardusertext")[0])
         setElementVal("leaderboardpositiontext",parseInt(i+1),target)
-    }
+    }*/
 }
 
 /*
