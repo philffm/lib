@@ -84,7 +84,7 @@ async function ShowLeaderboard(addresses) {
         var target = GlobalLeaderboardList.AddListItem();
         setElementVal("leaderboardtokencounttext",tokencount[i],target)
         FindProfile(target.getElementsByClassName("leaderboardusertext")[0],addresses[i],target.getElementsByClassName("userphoto")[0]);
-        setElementVal("leaderboardpositiontext",parseInt(i+1))
+        setElementVal("leaderboardpositiontext",parseInt(i+1),target)
     }
 }
 
