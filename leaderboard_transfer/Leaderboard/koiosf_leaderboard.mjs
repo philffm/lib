@@ -79,9 +79,9 @@ async function getTitanTokenCount() {
                 var decimals = await contracttoken.methods.decimals().call();
                 var nrOwners=await contracttoken.methods.nrOwners().call();
                 for (var i=16;i<nrOwners;i++) {
-                    addresses[i] = await contracttoken.methods.GetOwner(i).call();
-                    tokencount[i] = Math.round((await contracttoken.methods.balanceOf(addresses[i]).call())/(10**decimals));
-                    ranking[i] = [addresses[i], tokencount[i]];
+                    addresses[i-16] = await contracttoken.methods.GetOwner(i).call();
+                    tokencount[i-16] = Math.round((await contracttoken.methods.balanceOf(addresses[i]).call())/(10**decimals));
+                    ranking[i-16] = [addresses[i-16], tokencount[i-16]];
                 }
             }
     }
