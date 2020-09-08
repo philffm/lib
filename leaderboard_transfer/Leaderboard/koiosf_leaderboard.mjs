@@ -72,6 +72,7 @@ async function NextStep() {
 async function getTitanTokenCount() {
     var totalTokens = await contracttokenfactory.methods.NrTokens().call();
     var addresspromises = new Array;
+    var tokencountpromises = new Array;
     for (var i=0;i<totalTokens;i++) {
             var address=await contracttokenfactory.methods.tokens(i).call();
             var contracttoken = await new web3.eth.Contract(tokenJson.abi, address);
@@ -89,23 +90,19 @@ async function getTitanTokenCount() {
                 }
                 await Promise.all(addresspromises).then((values) => addresses = values);
                 
-                console.log(addresses);
-            
-               /*for (var i=0;i<addresses.length;i++) {
-                    var promise = contracttoken.methods.balanceOf(addresses[i]).call();
-                    tokencount.push(promise);
+                for (var i=0;i<addresses.length;i++) {
+                    var promise = Math.round(contracttoken.methods.balanceOf(addresses[i]).call()/(10**decimals));
+                    tokencountpromises.push(promise);
                 }
-                await Promise.all(tokencount);
-                for (var i=0;i<tokencount.length;i++) {
-                    tokencount[i] = Math.round(tokencount[i]/(10**decimals));
-                }
-
+                await Promise.all(tokencountpromises).then((values) => tokencount = values);
+                
                 for (var i=0;i<addresses.length;i++) {
                     ranking[i] = [addresses[i], tokencount[i]];
-                }*/
+                }
             }
     }
     console.log(addresses);
+    console.log(tokencount);
     console.log(ranking);
 }
 
