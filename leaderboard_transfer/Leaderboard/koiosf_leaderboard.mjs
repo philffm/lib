@@ -103,6 +103,7 @@ async function getTitanTokenCount() {
                 }
             }
     }
+    console.log(addresses);
 }
 
 async function ShowLeaderboard() {
