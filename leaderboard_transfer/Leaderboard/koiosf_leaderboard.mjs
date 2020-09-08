@@ -73,7 +73,7 @@ async function getTitanTokenCount() {
     var totalTokens = await contracttokenfactory.methods.NrTokens().call();
     var addresspromises = new Array;
     var tokencountpromises = new Array;
-    for (var i=0;i<totalTokens;i++) {
+    for (var i=13;i<totalTokens;i++) {
             var address=await contracttokenfactory.methods.tokens(i).call();
             var contracttoken = await new web3.eth.Contract(tokenJson.abi, address);
             var name = await contracttoken.methods.name().call();
