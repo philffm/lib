@@ -5,7 +5,7 @@ import {getUserAddress,getWeb3} from '../../viewer_figma/koiosf_login.mjs'
 
 var GlobalLeaderboardList = new DomList("leaderboardentry");
 
-var nogoaddresses = ["0x4373294DD0f98eC2783f759Ae546A55E527487e7",
+/*var nogoaddresses = ["0x4373294DD0f98eC2783f759Ae546A55E527487e7",
                  "0x336101f6685906fFe861ac519A98A6736d2D5b37",
                  "0x8e2A89fF2F45ed7f8C8506f846200D671e2f176f",
                  "0xC3036b696Ea52F6846F3F22E2EB709C595F0e09A",
@@ -21,7 +21,7 @@ var nogoaddresses = ["0x4373294DD0f98eC2783f759Ae546A55E527487e7",
                  "0x0000000000000000000000000000000000000000",
                  "0x59cDECe70FDd85E37546d9BE808Ae64892f1aD47",
                  "0xC1b80113902f9cA05F159DAd4dDCD330E9d0F061"
-]
+]*/
 var globalaccounts;
 var tokenfactoryJson;
 var tokenJson;
@@ -78,7 +78,7 @@ async function getTitanTokenCount() {
             if (name == "Titan") {
                 var decimals = await contracttoken.methods.decimals().call();
                 var nrOwners=await contracttoken.methods.nrOwners().call();
-                for (var i=0;i<nrOwners;i++) {
+                for (var i=16;i<nrOwners;i++) {
                     addresses[i] = await contracttoken.methods.GetOwner(i).call();
                     tokencount[i] = Math.round((await contracttoken.methods.balanceOf(addresses[i]).call())/(10**decimals));
                     ranking[i] = [addresses[i], tokencount[i]];
