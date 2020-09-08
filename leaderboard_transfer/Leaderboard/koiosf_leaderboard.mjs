@@ -80,7 +80,7 @@ async function getTitanTokenCount() {
             if (name == "Titan") {
                 var decimals = await contracttoken.methods.decimals().call();
                 var nrOwners=await contracttoken.methods.nrOwners().call();
-                for (var i=15;i<nrOwners;i++) {
+                for (var i=0;i<nrOwners;i++) {
                     var promise = contracttoken.methods.GetOwner(i).call();
                     addresspromises.push(promise);
                 }
