@@ -88,10 +88,14 @@ async function getTitanTokenCount() {
                 }
                 await Promise.all(addresses);
                 for (var i=0;i<addresses.length;i++) {
-                    var promise = Math.round((await contracttoken.methods.balanceOf(addresses[i]).call())/(10**decimals));
+                    var promise = contracttoken.methods.balanceOf(addresses[i]).call();
                     tokencount.push(promise);
                 }
                 await Promise.all(tokencount);
+                for (var i=0;i<tokencount.length;i++) {
+                    tokencount[i] = Math.round(tokencount[i]/(10**decimals));
+                }
+
                 for (var i=0;i<addresses.length;i++) {
                     ranking[i] = [addresses[i], tokencount[i]];
                 }
