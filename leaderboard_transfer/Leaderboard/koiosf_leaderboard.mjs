@@ -75,23 +75,21 @@ async function getTitanTokenCount() {
             var address=await contracttokenfactory.methods.tokens(i).call();
             var contracttoken = await new web3.eth.Contract(tokenJson.abi, address);
             var name = await contracttoken.methods.name().call();
+            var addresspromises;
             if (name == "Titan") {
                 var decimals = await contracttoken.methods.decimals().call();
                 var nrOwners=await contracttoken.methods.nrOwners().call();
                 for (var i=16;i<nrOwners;i++) {
                     var promise = contracttoken.methods.GetOwner(i).call();
-                    addresses.push(promise);
+                    addresspromises.push(promise);
                     /*
                     addresses[i-16] = await contracttoken.methods.GetOwner(i).call();
                     tokencount[i-16] = Math.round((await contracttoken.methods.balanceOf(addresses[i-16]).call())/(10**decimals));
                     ranking[i-16] = [addresses[i-16], tokencount[i-16]];*/
                 }
-                await Promise.all(addresses);
+                await Promise.all(addresspromises).then((values) => addresses.push(values));
                 console.log(addresses);
-                console.log(addresses.values);
-                for (var i=0;i<addresses.length;i++) {
-                    console.log(addresses[i].value);
-                }
+            
                /*for (var i=0;i<addresses.length;i++) {
                     var promise = contracttoken.methods.balanceOf(addresses[i]).call();
                     tokencount.push(promise);
