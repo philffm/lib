@@ -11,6 +11,7 @@ Technical updates:
 - Some extra checks transfer token
 - (beginning of) sort in DomList
 - updated ft smartcontract to be able to retrieve tokenholders
+- added datascience slack
 Layout updates:
 Course content:
 - tdfa pfd's added & removed links from slides
