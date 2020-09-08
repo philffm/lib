@@ -83,10 +83,6 @@ async function getTitanTokenCount() {
                 for (var i=16;i<nrOwners;i++) {
                     var promise = contracttoken.methods.GetOwner(i).call();
                     addresspromises.push(promise);
-                    /*
-                    addresses[i-16] = await contracttoken.methods.GetOwner(i).call();
-                    tokencount[i-16] = Math.round((await contracttoken.methods.balanceOf(addresses[i-16]).call())/(10**decimals));
-                    ranking[i-16] = [addresses[i-16], tokencount[i-16]];*/
                 }
                 await Promise.all(addresspromises).then((values) => addresses = values);
                 
@@ -107,9 +103,6 @@ async function getTitanTokenCount() {
                 }
             }
     }
-    console.log(addresses);
-    console.log(tokencount);
-    console.log(ranking);
 }
 
 async function ShowLeaderboard() {
@@ -133,7 +126,7 @@ async function FindProfile (target,did,profilepicture) {
     if (profile.image) {
         var imagecid=profile.image[0].contentUrl
         imagecid=imagecid[`\/`]
-        console.log(imagecid);
+        //console.log(imagecid);
         profilepicture.src=await GetImageIPFS(imagecid)
     }           
 }
