@@ -110,7 +110,7 @@ async function ShowLeaderboard() {
     await getTitanTokenCount();
     ranking.sort(function(a, b){return b[1]-a[1]});
     console.log(ranking);
-    for (var i=0;i<ranking.length;i++) {
+    for (var i=0;i<10;i++) {
         if ((ranking[i][1] != 0)) {
             var target = GlobalLeaderboardList.AddListItem();
             setElementVal("leaderboardtokencounttext",ranking[i][1],target);
