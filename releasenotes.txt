@@ -7,6 +7,8 @@ Course content:
 Version 2.05
 Functional updates:
 - remove gpersoon link for courseinfo.json
+- download literature files (including jupyter notebooks)
+
 Technical updates:
 - Some extra checks transfer token
 - (beginning of) sort in DomList
@@ -16,6 +18,7 @@ Technical updates:
 Layout updates:
 Course content:
 - tdfa pfd's added & removed links from slides
+- jupiter notebooks added, including links to nbviewer & downloads
 
 Version 2.04
 Functional updates:
