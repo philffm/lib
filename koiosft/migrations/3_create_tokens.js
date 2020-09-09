@@ -6,6 +6,7 @@ const fs2 = require('fs');
 const list = JSON.parse(fs2.readFileSync("tokens.json").toString())
 
 module.exports = async function(deployer) {
+	var tokenaddress=[];
 	ERC20TokenFactoryContract = await ERC20TokenFactory.deployed()
 	NrTokens=await ERC20TokenFactoryContract.NrTokens();	
 	console.log(`NrTokens=${NrTokens}`);

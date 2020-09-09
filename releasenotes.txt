@@ -12,6 +12,7 @@ Technical updates:
 - (beginning of) sort in DomList
 - updated ft smartcontract to be able to retrieve tokenholders
 - added datascience slack
+- seperated token owners to distribute.json
 Layout updates:
 Course content:
 - tdfa pfd's added & removed links from slides
