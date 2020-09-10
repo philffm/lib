@@ -4,6 +4,13 @@ Technical updates:
 Layout updates:
 Course content:
 
+Version 2.06
+Functional updates:
+Technical updates:
+Layout updates:
+Course content:
+- datascience moved chapter 9 to begining of 9.1
+
 Version 2.05
 Functional updates:
 - remove gpersoon link for courseinfo.json
