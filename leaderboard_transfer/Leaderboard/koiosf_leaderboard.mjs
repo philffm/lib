@@ -117,7 +117,7 @@ async function ShowLeaderboard() {
     for (var i=0;i<ranking.length;i++) {
         totalAmount += ranking[i][1]; 
     }
-    var averageAmount = totalAmount / ranking.length;
+    var averageAmount = Math.round(totalAmount / ranking.length);
     setElementVal("averagetokencounttext",averageAmount);
 }
 
