@@ -120,6 +120,7 @@ async function ShowLeaderboard() {
         addresses2[i] = ranking[i][0];
     }
     console.log(addresses2);
+    console.log(ranking);
     var averageAmount = Math.round(totalAmount / ranking.length);
     setElementVal("averagetokencounttext",averageAmount);
 }
