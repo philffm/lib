@@ -113,6 +113,12 @@ async function ShowLeaderboard() {
             setElementVal("leaderboardpositiontext",parseInt(i+1),target)
         }
     }
+    var totalAmount = 0;
+    for (var i=0;i<ranking.length;i++) {
+        total += ranking[i][1]; 
+    }
+    var averageAmount = totalAmount / ranking.length;
+    setElementVal("averagetokencounttext",averageAmount);
 }
 
 async function FindProfile (target,did,profilepicture) {
