@@ -114,15 +114,13 @@ async function ShowLeaderboard() {
         }
     }
     var totalAmount = 0;
-    var addresses2 = new Array;
     for (var i=0;i<ranking.length;i++) {
         totalAmount += ranking[i][1]; 
-        addresses2[i] = ranking[i][0];
     }
-    console.log(addresses2);
-    console.log(ranking);
+    var median = ranking[Math.round(ranking.length/2)][1];
     var averageAmount = Math.round(totalAmount / ranking.length);
     setElementVal("averagetokencounttext",averageAmount);
+    setElementVal("mediantokencounttext",median);
 }
 
 async function FindProfile (target,did,profilepicture) {
