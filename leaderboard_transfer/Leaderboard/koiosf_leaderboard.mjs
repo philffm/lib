@@ -114,9 +114,12 @@ async function ShowLeaderboard() {
         }
     }
     var totalAmount = 0;
+    var addresses2 = new Array;
     for (var i=0;i<ranking.length;i++) {
         totalAmount += ranking[i][1]; 
+        addresses2[i] = ranking[i][0];
     }
+    console.log(addresses2);
     var averageAmount = Math.round(totalAmount / ranking.length);
     setElementVal("averagetokencounttext",averageAmount);
 }
