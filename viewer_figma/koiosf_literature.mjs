@@ -206,6 +206,7 @@ console.log(`DownloadLink ${cid} ${title}`);
 	var mime="application/pdf" // default type
 	switch (fileext) {
 		case "ipynb": mime='application/x-ipynb+json';break;
+		case "cmd": mime='application/cmd';break;
 		case "": break;
 		case "pdf": break;
 		default: title = title+".pdf" // for the situations no realistic extenstion is present
