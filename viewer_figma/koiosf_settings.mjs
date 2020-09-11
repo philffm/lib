@@ -26,12 +26,14 @@ async function asyncloaded() {
 function setLangNl(){
   console.log("Set nl");
   currentlang="nl";
+  localStorage.setItem("currentlang", currentlang);
   SetglobalplayerSubtitle(currentlang);
 }
 
 export function setLangEn(){
   console.log("Set en")
   currentlang="en";
+  localStorage.setItem("currentlang", currentlang);
   SetglobalplayerSubtitle(currentlang);
 }
 
@@ -114,8 +116,9 @@ function AudioOnOff(event) {
         globalplayer.mute();
 }
 
-function DarkmodeOnOff(event) {
+export function DarkmodeOnOff(event) {
     var fOn=GetToggleState(this,"displayactive");
+    localStorage.setItem("darkmodestatus", fOn);
     console.log(`In darkmodeOnOff ${fOn}`);
     if (!fOn)
         disableDarkmode();
@@ -123,27 +126,42 @@ function DarkmodeOnOff(event) {
         enableDarkmode();
 }
 
-async function enableDarkmode() {
-  console.log("enableDarkmode");
-  var css = await LoadCSS();
-  css.disabled = false;
+export function setDarkmode(temp){    //ran on start
+  LoadCSS().then( function() {
+  if(!temp){
+    disableDarkmode();
+  }
+  else {
+    enableDarkmode();
+  }
+});
 }
 
-async function LoadCSS(){
+function enableDarkmode() {
+  console.log("enableDarkmode");
+  globalInjectedCSS.disabled = false;
+}
+
+function LoadCSS(){
   console.log("In load css");
+  return new Promise( function( resolve, reject ) {
   var link = document.createElement('link');
   link.rel  = 'stylesheet';
   link.href = "https://www.mgatsonides.online:5001/lib/viewer_figma/dm.css";
   document.body.appendChild(link);
+  link.onload = function() {
+            console.log( 'CSS has loaded!' );
+            globalInjectedCSS = link;
+            resolve();
+        };
+    } );
   //link.transition="all 200 ease-in-out";
   //link.transitionDelay="2s";
   //link.disabled == false;
-  globalInjectedCSS = link;
-  LoadCSS = function (){return globalInjectedCSS;};
+  //LoadCSS = function (){return globalInjectedCSS;};
 }
 
-async function disableDarkmode() {
+function disableDarkmode() {
   console.log("disableDarkmode");
-  var css = await LoadCSS();
-  css.disabled = true;
+  globalInjectedCSS.disabled = true;
 }

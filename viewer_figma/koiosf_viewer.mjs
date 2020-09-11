@@ -24,7 +24,7 @@
     import {} from './koiosf_comments.mjs';
     import {} from './koiosf_quiz.mjs';
     import {} from './koiosf_badges.mjs';
-    import {currentlang, setLangEn} from './koiosf_settings.mjs';
+    import {currentlang, setLangEn, setDarkmode} from './koiosf_settings.mjs';
 
 var globalplayer=0;
 //export var currentduration;
@@ -520,15 +520,16 @@ console.log("Init ready3");
     //SetupSliders(); now done via move.mjs
     //NavigateLessons();
 
-
     InitPopup();
     console.log("Init ready4");
-
+    console.log(localStorage.getItem("currentlang"));
+    SetglobalplayerSubtitle(localStorage.getItem("currentlang"));
     console.log("Init ready5");
     SetVideoTranscriptCallbacks(SetVideoSeconds,TranscriptShownCB);
     console.log("Init ready6");
-    setLangEn();
-console.log("Init ready7");
+    setDarkmode(localStorage.getItem("darkmodestatus")=="true");
+    console.log(localStorage.getItem("darkmodestatus")=="true");
+    console.log("Init ready7");
 
     console.log("Init ready");
 }
