@@ -4,6 +4,14 @@ Technical updates:
 Layout updates:
 Course content:
 
+Version 2.07
+Functional updates:
+Technical updates:
+- support .cmd filetype for literature (for installer for datascience)
+Layout updates:
+Course content:
+
+
 Version 2.06
 Functional updates:
 - subtitle off
