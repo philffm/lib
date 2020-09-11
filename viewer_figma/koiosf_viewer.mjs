@@ -25,6 +25,7 @@
     import {} from './koiosf_quiz.mjs';
     import {} from './koiosf_badges.mjs';
     import {currentlang, setLangEn} from './koiosf_settings.mjs';
+    import {} from './koiosf_leaderboard.mjs';
 
 var globalplayer=0;
 //export var currentduration;
