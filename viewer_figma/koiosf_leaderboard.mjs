@@ -1,7 +1,7 @@
-import { } from "../../lib/3box.js"; // from "https://unpkg.com/3box/dist/3box.js"; // prevent rate errors
-import {DomList, subscribe, setElementVal, GetJson, GetImageIPFS, FitOneLine} from '../../lib/koiosf_util.mjs';
-import {DisplayMessage} from '../../viewer_figma/koiosf_messages.mjs';
-import {getWeb3} from '../../viewer_figma/koiosf_login.mjs'
+import { } from "../lib/3box.js"; // from "https://unpkg.com/3box/dist/3box.js"; // prevent rate errors
+import {DomList, subscribe, setElementVal, GetJson, GetImageIPFS, FitOneLine} from '../lib/koiosf_util.mjs';
+import {DisplayMessage} from './koiosf_messages.mjs';
+import {getWeb3} from './koiosf_login.mjs'
 
 var GlobalLeaderboardList = new DomList("leaderboardentry");
 
@@ -93,7 +93,7 @@ async function getTitanTokenCount() {
 
             //remove the non student addresses from the ranking
             for( var i = 0; i < ranking.length; i++) { 
-                if (nonStudentAddresses.includes(ranking[i][0])) { 
+                if ((nonStudentAddresses.includes(ranking[i][0])) || (ranking[i][1] == 0)) { 
                     ranking.splice(i, 1); i--; 
                 }
             }
@@ -105,14 +105,20 @@ async function ShowLeaderboard() {
     await getTitanTokenCount();
     ranking.sort(function(a, b){return b[1]-a[1]});
     for (var i=0;i<10;i++) {
-        if ((ranking[i][1] != 0)) {
-            var target = GlobalLeaderboardList.AddListItem();
-            setElementVal("leaderboardtokencounttext",ranking[i][1],target);
-            FindProfile(target.getElementsByClassName("leaderboardusertext")[0],ranking[i][0],target.getElementsByClassName("userphoto")[0]);
-            FitOneLine(target.getElementsByClassName("leaderboardusertext")[0])
-            setElementVal("leaderboardpositiontext",parseInt(i+1),target)
-        }
+        var target = GlobalLeaderboardList.AddListItem();
+        setElementVal("leaderboardtokencounttext",ranking[i][1],target);
+        FindProfile(target.getElementsByClassName("leaderboardusertext")[0],ranking[i][0],target.getElementsByClassName("userphoto")[0]);
+        FitOneLine(target.getElementsByClassName("leaderboardusertext")[0])
+        setElementVal("leaderboardpositiontext",parseInt(i+1),target)
     }
+    var totalAmount = 0;
+    for (var i=0;i<ranking.length;i++) {
+        totalAmount += ranking[i][1]; 
+    }
+    var median = ranking[Math.round(ranking.length/2)][1];
+    var averageAmount = Math.round(totalAmount / ranking.length);
+    setElementVal("averagetokencounttext",averageAmount);
+    setElementVal("mediantokencounttext",median);
 }
 
 async function FindProfile (target,did,profilepicture) {
