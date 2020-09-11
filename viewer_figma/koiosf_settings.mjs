@@ -147,7 +147,7 @@ function LoadCSS(){
   return new Promise( function( resolve, reject ) {
   var link = document.createElement('link');
   link.rel  = 'stylesheet';
-  link.href = "https://www.mgatsonides.online:5001/lib/viewer_figma/dm.css";
+  link.href = "https://koiosonline.github.io/lib/viewer_figma/dm.css";
   document.body.appendChild(link);
   link.onload = function() {
             console.log( 'CSS has loaded!' );
