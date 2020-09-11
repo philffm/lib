@@ -103,132 +103,165 @@ async function SearchArray(slideindex,match) {
             continue; // ignore
   //     console.log(slideindex[i]);
         var type="";
-        
+        var urlcid=undefined;
+		var pdf=""
         var url = slideindex[i].url
-        if (url) type="topicweb"
+        if (url) {
+			type="topicweb"
+		}
         
+		if (slideindex[i].fullname)
+			urlcid = slideindex[i].fullname
+		
         if (!url && slideindex[i].cid) {
             type="topiclit"            
-			/*
-			console.log(`Trying to find ${slideindex[i].cid}`)
-			var result=await FetchIPFS(slideindex[i].cid)
-			console.log(result);
-			if (result) 
-				url=result.url;   // this one works, because just loaded
-			else {
-			*/	
-				console.log(`Not found ${slideindex[i].cid}`)
-                url = GetCidViaIpfsProvider(slideindex[i].cid,0)
-			//}
-            url = `https://docs.google.com/viewerng/viewer?url=${url}&embedded=true`;
+			console.log(`Not found ${slideindex[i].cid}`)
+			urlcid=slideindex[i].cid
+			var cid = GetCidViaIpfsProvider(slideindex[i].cid,0)			
+            url = `https://docs.google.com/viewerng/viewer?url=${cid}&embedded=true`;
         }
         if (!url && slideindex[i].pdf) {      
             type="topiclit"
-            url = slideindex[i].pdf
-			if (url.substr(0, 2)=="Qm")  // probably cid
-				url = GetCidViaIpfsProvider(url,0)
-            url = `https://docs.google.com/viewerng/viewer?url=${url}&embedded=true`;
+            pdf = slideindex[i].pdf
+			if (pdf.substr(0, 2)=="Qm") { // probably cid
+				urlcid=pdf;
+				pdf = GetCidViaIpfsProvider(pdf,0)				
+			}
+            url = `https://docs.google.com/viewerng/viewer?url=${pdf}&embedded=true`;
         }    
         if (url) {     
 //console.log(		slideindex[i])
-            str +=SetInfo(url,slideindex[i].title,"browse-window-frame",slideindex[i].url?false:true,type)+"<br>"
+            str +=SetInfo(url,slideindex[i].title,type,urlcid)+"<br>"
         }
 		
     }          
 }
 
 
+    
+
+var prevurl=undefined
+
+function SetInfo(url,title,type,urlcid) { 
+	if (url == prevurl) return "";  // filter out duplicates (already sorted)
+	prevurl = url;
+	
+	url = CleanUrl(url)
+	if (!url) return; // ignore this url
+	var txt = GetTxt(url,title)
+	
+	var urltarget = GlobalUrlList.AddListItem()  
+	setElementVal("link_txt",txt,urltarget)
+	FitOneLine(getElement("link_txt",urltarget))
+	SetClickShow(urltarget,url,urlcid,title)
+	urltarget.dataset.type=type;
+	
+	return "";
+}    
+
+
+
+function SetClickShow(cln,url,urlcid,title) { // seperate function to remember state
+	
+    cln.addEventListener('click', e=> {    // link_int / connect to entire gray bar
+			Highlight(cln)
+			window.open(url, "browse-window-frame")
+        }
+     );	 
+	 var link_ext=getElement("link_ext",cln)    
+	 link_ext.addEventListener('click', e=> {         
+			e.stopPropagation();
+			window.open(url, "_blank")
+			Highlight(cln)
+        }
+     );
+	 
+	 var link_down=getElement("link_down",cln)    
+	 
+	 if (urlcid) {// different from url	 
+		 link_down.addEventListener('click', e=> {   
+				e.stopPropagation();		 
+				DownloadLink(urlcid,title)
+				//window.open(urlcid, 'Download') // just open in a different window
+				Highlight(cln)
+			}
+		 );
+	 } else {
+		 link_down.style.display="none" // not relevant, so hide
+	 }
+}   
+
+
+
+async function DownloadLink(cid,title) { 
+console.log(`DownloadLink ${cid} ${title}`);
+
+    if (!title) title=cid;  // cid could/should contain a filename
+	if (title.includes("/"))
+		title=title.split("/")[1]
+	
+	var fileparts=title.split(".")
+	var fileext=fileparts[fileparts.length-1]
+	console.log(`fileext=${fileext}`)
+	var mime="application/pdf" // default type
+	switch (fileext) {
+		case "ipynb": mime='application/x-ipynb+json';break;
+		case "": break;
+		case "pdf": break;
+		default: title = title+".pdf" // for the situations no realistic extenstion is present
+	}
+	
+	var data=await FetchIPFS(cid)
+	var datablob = await data.blob();
+	console.log(data)
+	
+	var blob = new Blob([datablob], {type: mime});
+	var url = URL.createObjectURL(blob);     
+    var link = document.createElement('a');
+	link.href = url;
+	link.download = title
+	document.body.appendChild(link); //Firefox requires the link to be in the body	
+	link.click(); 	//simulate click
+	document.body.removeChild(link); 	//remove the link when done
+	URL.revokeObjectURL(url) 
+}
+
+
+
+
+
 function CleanUrl(url) {
 	if (url.includes("localhost"))    // sometimes localhost http for jupyter
 		return url
-
+	
+	url = url.replace("http:","https:"); // to prevent error messages from browser  	
 	try { var check = new URL(url) } catch(error) { console.log(`Error ${error} ${url}`); return undefined; }
-	//console.log(`${url} ${check.protocol}`);
-	//console.log(check);
-	
 	if (check.protocol != "https:") return undefined; // strip about:, file: etc.
-	
-	//if (url.includes("about:")) return undefined;
-	
-	url = url.replace("http:","https:"); // to prevent error messages from browser  
-
 	url = url.replace("youtube.com/watch?v=","youtube.com/embed/");
 	url = url.replace("youtu.be/","youtube.com/embed/");
-	
-	
-	
 	if (url.includes("youtube.com")) {
 		console.log(url);
 		url=url.split("&")[0]
 		console.log(url);
 	}
-	
 	if (url.includes("wikipedia") && !url.includes("m.wikipedia"))
 		url = url.replace("wikipedia","m.wikipedia");
-		
     return url
 }
 
 function GetTxt(url,txt) {	    
 	if (!txt)
 		txt=url
-	txt=txt.replace("https://","")
-	
-	txt = txt.replace(/\/+$/, ""); // remove trailing /
-	txt=txt.replace(/_/g, " ")
-	
+	txt=txt.replace("https://","")	
+	txt=txt.replace(/\/+$/, ""); // remove trailing /
+	txt=txt.replace(/_/g, " ")	
 	txt=txt.replace("www.","")
-	txt=txt.replace("youtube.com/embed/","YT:")
-	
+	txt=txt.replace("youtube.com/embed/","YT:")	
 	txt=txt.replace("en.m.wikipedia.org/wiki/","Wiki:")
-	
-	
-	
 	return txt;
 }
 
-    
 
-var prevurl=undefined
-
-    function SetInfo(url,txt,target,fDocument,type) { 
-        if (url == prevurl) return "";  // filter out duplicates (already sorted)
-        prevurl = url;
-    	
-		url = CleanUrl(url)
-		if (!url) return; // ignore this url
-		txt = GetTxt(url,txt)
-		
-		var urltarget = GlobalUrlList.AddListItem()  
-		setElementVal("link_txt",txt,urltarget)
-		FitOneLine(getElement("link_txt",urltarget))
-		SetClickShow(urltarget,url)
-        urltarget.dataset.type=type;
-		
-        return "";
-    }    
-
-/*
-    function SetExtLink(html) {
-        var blob = new Blob([html], {type: 'text/html'});
-        var url = URL.createObjectURL(blob);      
-        SetInfo(url,"external","_blank",false);    
-    }    
-*/
-
-function SetClickShow(cln,url) { // seperate function to remember state
-	var link_ext=getElement("link_ext",cln)    
-    cln.addEventListener('click', e=> {    
-			Highlight(cln)
-			window.open(url, "browse-window-frame")
-        }
-     );	 
-	 link_ext.addEventListener('click', e=> {         
-			window.open(url, "_blank")
-			Highlight(cln)
-        }
-     );
-}   
 
 
   var prevdomid=undefined;
