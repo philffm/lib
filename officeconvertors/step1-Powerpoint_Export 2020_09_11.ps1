@@ -66,8 +66,8 @@ Get-ChildItem -Path $curr_path -Recurse -Filter *.ppt? | ForEach-Object {
 $fnolinks = ($_.BaseName -like '*nolinks*')
 write-host "fnolinks" $fnolinks
 
-
-if ($string -like '*win*') { }
+$filenamecontainschapter = ($_.BaseName -like '*fn_ch*')
+write-host "filenamecontainschapter" $filenamecontainschapter
 
     $powerpointname = $_.BaseName
     $outputTypeImg = [Microsoft.Office.Interop.PowerPoint.PpSaveAsFileType]::ppSaveAsPNG
@@ -76,27 +76,29 @@ if ($string -like '*win*') { }
     $result = $document.SaveAs($destination, $outputTypeImg, $EmbedFonts)
     Write-Host "PNG's saved" $result
 
-
+    $destname="$($_.BaseName) Sheets.pdf"
+    $destname = $destname -replace ' nolinks', ''  #remove info tags
+    $destname = $destname -replace ' fn_ch', ''    #remove info tags
     $outputTypeImg = [Microsoft.Office.Interop.PowerPoint.PpSaveAsFileType]::ppSaveAsPDF
-    $destinationsheets = "$($curr_path)\sheets_$($_.BaseName).pdf"
+    $destinationsheets = "$($curr_path)\$($destname)"
     $result = $document.SaveAs($destinationsheets, $outputTypeImg, $EmbedFonts)
     Write-Host "Entire PDF saved" $result
     $sheetsresult = StoreIPFS ($destinationsheets)
     Write-Host "Stored sheets on ipfs" $ipfs.Name
    #$mdarray1
 
-    $prefix = $_.BaseName.Split(" ")[0]
-    $prefix = ($prefix+"-").Split("-")[0]
-    Write-Host $prefix
+    $prefixword = $_.BaseName.Split(" ")[0]
+    $prefix = ($prefixword+"-").Split("-")[0]
+    Write-Host $prefix    
 
    $chapter=$_.BaseName.Split(" ")[0].Trim()
    if ($chapter -eq "all") { $chapter="*" }
 
-    $mdarray1 += ,@{ chapter=$chapter;title="Sheets";cid=$sheetsresult.Name;size=$sheetsresult.Size;source=$powerpointname}   
+    $mdarray1 += ,@{ chapter=$chapter;title=$destname;cid=$sheetsresult.Name;size=$sheetsresult.Size;source=$powerpointname}   
      #$mdarray1
 
     $comma=" "
-    $chapter = 0
+    #$chapter = 0
 
     $ipfsarray = @()
     
@@ -113,37 +115,39 @@ if ($string -like '*win*') { }
     foreach ($ipfs in $ipfsarray) {
         $nr = $ipfs.nr
         #Write-Host $nr
- 
-        $topline=0
-        $top=10000
-        $title="$($chapter) $($powerpointname)"  #initial value (bases on previous chapter#)
-        #Write-Host $document.Slides[$nr].Shapes.Count
-        For ($z=1; $z -le $document.Slides[$nr].Shapes.Count; $z++) { # find highest line
-           if (($document.Slides[$nr].Shapes[$z].Top -le $top) -and ($document.Slides[$nr].Shapes[$z].TextFrame.TextRange.Text.length -ge 1)) {
-                $top = $document.Slides[$nr].Shapes[$z].Top
-                $topline = $z
-           }           
+
+        if (-Not $filenamecontainschapter) {                     
+            $topline=0
+            $top=10000
+            $title="$($chapter) $($powerpointname)"  #initial value (bases on previous chapter#)
+            #Write-Host $document.Slides[$nr].Shapes.Count
+            For ($z=1; $z -le $document.Slides[$nr].Shapes.Count; $z++) { # find highest line
+               if (($document.Slides[$nr].Shapes[$z].Top -le $top) -and ($document.Slides[$nr].Shapes[$z].TextFrame.TextRange.Text.length -ge 1)) {
+                    $top = $document.Slides[$nr].Shapes[$z].Top
+                    $topline = $z
+               }           
+            }
+            if ( $topline -ge 1) {
+                $title = $document.Slides[$nr].Shapes[$topline].TextFrame.TextRange.Text
+            }
+
+
+
+            #Write-Host $title
+            $title = $title.Trim()
+            $title = $title -replace '\t', ' '
+            $split = $title.Split(" ")
+            $chapter = $split[0].Trim()
+            $title = $title -replace '\n', ' '
+            $title = $title -replace '\r', ' '
+            $title = $title.replace($split[0],"")  # strip the leading chapter        
+
+            $title = $title -replace '[^0-9a-zA-Z .-_+()&?!#@$]', ' '
+
+            $title = $title.Trim()    # SubString(0,[math]::min(50,$title.length) ) not nessecary, textOverflow="ellipsis" shows only one line
+            $title = $title.Trim(".")
+            $comma=","
         }
-        if ( $topline -ge 1) {
-            $title = $document.Slides[$nr].Shapes[$topline].TextFrame.TextRange.Text
-        }
-
-
-
-        #Write-Host $title
-        $title = $title.Trim()
-        $title = $title -replace '\t', ' '
-        $split = $title.Split(" ")
-        $chapter = $split[0].Trim()
-        $title = $title -replace '\n', ' '
-        $title = $title -replace '\r', ' '
-        $title = $title.replace($split[0],"")  # strip the leading chapter        
-
-        $title = $title -replace '[^0-9a-zA-Z .-_+()&?!#@$]', ' '
-
-        $title = $title.Trim()    # SubString(0,[math]::min(50,$title.length) ) not nessecary, textOverflow="ellipsis" shows only one line
-        $title = $title.Trim(".")
-        $comma=","
 
         $chapterprefixed = $chapter
         if ($chapterprefixed -NotMatch $prefix) {
