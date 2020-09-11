@@ -1,0 +1,17 @@
+/* Koios Dark Mode BETA - WIP */
+
+.dm {
+  filter: invert(.9);
+}
+
+.ndm{
+  filter: invert(1);
+}
+
+.dm .courseicon, .courselistitem img, .progressbar {
+  filter: invert(1);
+}
+
+.info {
+  filter: grayscale(1);
+}
