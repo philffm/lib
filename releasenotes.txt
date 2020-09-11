@@ -10,6 +10,7 @@ Technical updates:
 Layout updates:
 Course content:
 - datascience moved chapter 9 to begining of 9.1
+- datascience added slides
 
 Version 2.05
 Functional updates:
