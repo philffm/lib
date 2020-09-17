@@ -1,7 +1,7 @@
 import { } from "../lib/3box.js"; // from "https://unpkg.com/3box/dist/3box.js"; // prevent rate errors
 import {DomList, subscribe, setElementVal, GetJson, GetImageIPFS, FitOneLine} from '../lib/koiosf_util.mjs';
-import {DisplayMessage} from '../viewer/koiosf_messages.mjs';
-import {getWeb3} from '../viewer/koiosf_login.mjs'
+import {DisplayMessage} from '../viewer_figma/koiosf_messages.mjs';
+import {getWeb3} from '../viewer_figma/koiosf_login.mjs'
 
 var GlobalLeaderboardList = new DomList("leaderboardentry");
 
