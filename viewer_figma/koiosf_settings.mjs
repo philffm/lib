@@ -60,13 +60,14 @@ window.addEventListener('DOMContentLoaded', asyncloaded);  // load
 async function RotateVideoSpeed() {
     console.log("In RotateVideoSpeed");
     globalVideospeed++
-    if (globalVideospeed >=3) globalVideospeed=0;
+    if (globalVideospeed >=4) globalVideospeed=0;
 
     if (globalplayer)
         switch (globalVideospeed) {
           case 0: globalplayer.setPlaybackRate(1);console.log("Speed 1");break;
-          case 1: globalplayer.setPlaybackRate(1.5);console.log("Speed 1.5");break;
-          case 2: globalplayer.setPlaybackRate(2);console.log("Speed 2");break;
+          case 1: globalplayer.setPlaybackRate(1.25);console.log("Speed 1.25");break;
+          case 2: globalplayer.setPlaybackRate(1.5);console.log("Speed 1.5");break;
+          case 3: globalplayer.setPlaybackRate(2);console.log("Speed 2");break;
       }
       await sleep(100); // wait until speed is processed
       setElementVal("__label",globalplayer.getPlaybackRate(),"videospeed")
