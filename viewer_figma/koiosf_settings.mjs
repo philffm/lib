@@ -60,7 +60,7 @@ window.addEventListener('DOMContentLoaded', asyncloaded);  // load
 async function RotateVideoSpeed() {
     console.log("In RotateVideoSpeed");
     globalVideospeed++
-    if (globalVideospeed >=3) globalVideospeed=0;
+    if (globalVideospeed >=4) globalVideospeed=0;
 
     if (globalplayer)
         switch (globalVideospeed) {
