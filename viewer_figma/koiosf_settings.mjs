@@ -168,7 +168,7 @@ function AutoplayOnOff(event) {
   var autoplayOn=GetToggleState(this,"displayactive");
   console.log(autoplayOn);
   localStorage.setItem("autoplaystatus", autoplayOn);
-  console.log("in settings ", localStorage.setItem("autoplaystatus"));
+  console.log("in settings ", localStorage.getItem("autoplaystatus"));
   //autoplaystatus = localStorage.getItem("autoplaystatus");
   //console.log(autoplaystatus);
   /*console.log(autoplaystatus)
