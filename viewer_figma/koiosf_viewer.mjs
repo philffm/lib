@@ -128,7 +128,7 @@ subscribe('videoend',    SeenVideo);
 async function NextVideo() {
     stopVideo();
     
-    if (localStorage.getItem("autoplaystatus")) {
+    if (autoplaystatus) {
 	    await sleep(3000);
         SelectNextLesson(+1);
     }
