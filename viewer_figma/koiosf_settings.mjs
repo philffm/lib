@@ -21,11 +21,6 @@ async function asyncloaded() {
     LinkClickButton("lang_en", setLangEn);
     LinkToggleButton("darkmodeTog", DarkmodeOnOff);
     LinkToggleButton("autoplayToggle", AutoplayOnOff);
-    if(localStorage.getItem("autoplaystatus") != undefined) {
-      autoplaystatus = localStorage.getItem("autoplaystatus");
-    } else {
-      autoplaystatus = false;
-    }
 }
 
 function setLangNl(){
@@ -165,13 +160,17 @@ function disableDarkmode() {
 }
 
 function AutoplayOnOff(event) {
-  if(localStorage.getItem("autoplaystatus") != undefined)
-    SetToggleState(this,"displayactive",localStorage.getItem("autoplaystatus"));
+  if(localStorage.getItem("autoplaystatus") == "true") {
+    SetToggleState(this,"displayactive",true);
+  } else {
+    SetToggleState(this,"displayactive",false);
+  }
   var autoplayOn=GetToggleState(this,"displayactive");
   console.log(autoplayOn);
   localStorage.setItem("autoplaystatus", autoplayOn);
-  autoplaystatus = localStorage.getItem("autoplaystatus");
-  console.log(autoplaystatus);
+  console.log("in settings ", localStorage.setItem("autoplaystatus"));
+  //autoplaystatus = localStorage.getItem("autoplaystatus");
+  //console.log(autoplaystatus);
   /*console.log(autoplaystatus)
   if (!autoplayOn)
       autoplaystatus = false;

@@ -128,7 +128,8 @@ subscribe('videoend',    SeenVideo);
 async function NextVideo() {
     stopVideo();
     
-    if (autoplaystatus) {
+    if (localStorage.getItem("autoplaystatus")=="true") {
+        console.log("in viewer video ", localStorage.getItem("autoplaystatus"));
 	    await sleep(3000);
         SelectNextLesson(+1);
     }
