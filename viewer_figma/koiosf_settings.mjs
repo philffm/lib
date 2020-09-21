@@ -164,9 +164,9 @@ function AutoplayOnOff(event) {
   console.log(autoplayOn);
   localStorage.setItem("autoplaystatus", autoplayOn);
   console.log(`In darkmodeOnOff ${autoplayOn}`);
-  console.log(autoplaystatus)
+  /*console.log(autoplaystatus)
   if (!autoplayOn)
       autoplaystatus = false;
   else
-      autoplaystatus = true;
+      autoplaystatus = true;*/
 }
