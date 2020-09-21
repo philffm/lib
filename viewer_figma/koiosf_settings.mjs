@@ -74,23 +74,23 @@ function FontSize() {
     //player.setOption('captions', 'track', {});
 
     font++;
-    if (font > 3) font= -2;
+    if (font > 3) font= 0;
     switch(font){
-      case -2:
+      case 0:
         ToggleCueVisibility();
-        globalplayer.setOption('captions', 'fontSize', 0);
+        globalplayer.setOption('captions', 'fontSize', font);
         setElementVal("__label","Off","fontsize");
         break;
-      case -1:
+      case 1:
         ToggleCueVisibility();
         console.log(`Setting font to: ${font}`);
         globalplayer.setOption('captions', 'fontSize', font);
-        setElementVal("__label",parseInt(font)+2,"fontsize");
+        setElementVal("__label",parseInt(font),"fontsize");
         break;
       default:
         console.log(`Setting font to: ${font}`);
         globalplayer.setOption('captions', 'fontSize', font);
-        setElementVal("__label",parseInt(font)+2,"fontsize");
+        setElementVal("__label",parseInt(font),"fontsize");
     }
     //console.log(`Setting font to: ${font}`);
     //globalplayer.setOption('captions', 'fontSize', font);
