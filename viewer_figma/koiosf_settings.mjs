@@ -83,6 +83,8 @@ function FontSize() {
         setElementVal("__label",parseInt(font),"fontsize");
         break;
       case 1:
+        currentlang = localStorage.getItem("currentlang");
+        SetglobalplayerSubtitle(currentlang);
         ToggleCueVisibility();
         console.log(`Setting font to: ${font}`);
         globalplayer.setOption('captions', 'fontSize', font);
