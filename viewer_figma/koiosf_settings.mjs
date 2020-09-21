@@ -8,7 +8,7 @@ var globalplayer=0;
 var globalVideospeed=0;
 var globalInjectedCSS;
 export var currentlang;
-export var autoplaystatus = true;
+export var autoplaystatus;
 
 async function asyncloaded() {
     console.log(`In asyncloaded of script: ${import.meta.url}`);
@@ -21,6 +21,11 @@ async function asyncloaded() {
     LinkClickButton("lang_en", setLangEn);
     LinkToggleButton("darkmodeTog", DarkmodeOnOff);
     LinkToggleButton("autoplayToggle", AutoplayOnOff);
+    if(localStorage.getItem("autoplaystatus") != undefined) {
+      autoplaystatus = localStorage.getItem("autoplaystatus");
+    } else {
+      autoplaystatus = false;
+    }
 }
 
 function setLangNl(){
