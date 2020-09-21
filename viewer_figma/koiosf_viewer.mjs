@@ -24,7 +24,7 @@
     import {} from './koiosf_comments.mjs';
     import {} from './koiosf_quiz.mjs';
     import {} from './koiosf_badges.mjs';
-    import {currentlang, setLangEn, setDarkmode, GetAutoplayStatus} from './koiosf_settings.mjs';
+    import {currentlang, setLangEn, setDarkmode, autoplaystatus} from './koiosf_settings.mjs';
     import {} from './koiosf_leaderboard.mjs';
 
 var globalplayer=0;
@@ -127,7 +127,7 @@ subscribe('videoend',    SeenVideo);
 
 async function NextVideo() {
     stopVideo();
-    if (GetAutoplayStatus()) {
+    if (autoplaystatus) {
 	    await sleep(3000);
         SelectNextLesson(+1);
     }

@@ -8,7 +8,7 @@ var globalplayer=0;
 var globalVideospeed=0;
 var globalInjectedCSS;
 export var currentlang;
-var autoplaystatus = true;
+export var autoplaystatus = true;
 
 async function asyncloaded() {
     console.log(`In asyncloaded of script: ${import.meta.url}`);
@@ -161,14 +161,12 @@ function disableDarkmode() {
 
 function AutoplayOnOff(event) {
   var autoplayOn=GetToggleState(this,"displayactive");
+  console.log(autoplayOn);
   localStorage.setItem("autoplaystatus", autoplayOn);
   console.log(`In darkmodeOnOff ${autoplayOn}`);
+  console.log(autoplaystatus)
   if (!autoplayOn)
       autoplaystatus = false;
   else
       autoplaystatus = true;
-}
-
-export function GetAutoplayStatus() {
-  return autoplaystatus;
 }
