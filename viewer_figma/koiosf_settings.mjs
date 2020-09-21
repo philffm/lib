@@ -22,6 +22,8 @@ async function asyncloaded() {
     LinkToggleButton("autoplayToggle", AutoplayOnOff);
     SetToggleState("autoplayToggle", "displayactive", (localStorage.getItem("autoplaystatus") == "true"));
     SetToggleState("darkmodeTog", "displayactive", (localStorage.getItem("darkmodestatus") == "true"));
+    if(localStorage.getItem("autoplaystatus") == "true") console.log("autoplaystatus: ", localStorage.getItem("autoplaystatus"))
+    if(localStorage.getItem("darkmodestatus") == "true") console.log("darkmodestatus: ", localStorage.getItem("darkmodestatus"))
 }
 
 function setLangNl(){
