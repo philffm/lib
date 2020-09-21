@@ -80,7 +80,7 @@ function FontSize() {
       case 0:
         ToggleCueVisibility();
         globalplayer.setOption('captions', 'fontSize', font);
-        setElementVal("__label","Off","fontsize");
+        setElementVal("__label",parseInt(font),"fontsize");
         break;
       case 1:
         ToggleCueVisibility();
