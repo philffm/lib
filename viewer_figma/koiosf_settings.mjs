@@ -88,6 +88,7 @@ function FontSize() {
       setElementVal("__label",parseInt(font)+2,"fontsize");
       break;
     default:
+      SetglobalplayerSubtitle(localStorage.getItem("currentlang"));
       console.log(`Setting font to: ${font}`);
       globalplayer.setOption('captions', 'fontSize', font);
       setElementVal("__label",parseInt(font)+2,"fontsize");
