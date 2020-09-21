@@ -41,6 +41,7 @@ export function setLangEn(){
 }
 
 async function ScrSettingsMadeVisible() {
+  console.log("this: ", this);
   console.log("In ScrSettingsMadeVisible");
   if(localStorage.getItem("autoplaystatus") == "true") {
     autoplaytoggle = true;
