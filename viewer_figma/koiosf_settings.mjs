@@ -78,6 +78,7 @@ function FontSize() {
     switch(font){
       case -2:
         ToggleCueVisibility();
+        globalplayer.setOption('captions', 'fontSize', 0);
         setElementVal("__label","Off","fontsize");
         break;
       case -1:
@@ -90,7 +91,6 @@ function FontSize() {
         console.log(`Setting font to: ${font}`);
         globalplayer.setOption('captions', 'fontSize', font);
         setElementVal("__label",parseInt(font)+2,"fontsize");
-        break;
     }
     //console.log(`Setting font to: ${font}`);
     //globalplayer.setOption('captions', 'fontSize', font);
