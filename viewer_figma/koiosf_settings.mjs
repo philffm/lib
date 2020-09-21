@@ -20,10 +20,10 @@ async function asyncloaded() {
     LinkToggleButton("audioonoff",AudioOnOff);
     LinkClickButton("lang_nl", setLangNl);
     LinkClickButton("lang_en", setLangEn);
-    LinkToggleButton(getElement("darkmodeTog"), DarkmodeOnOff);
-    LinkToggleButton(getElement("autoplayToggle"), AutoplayOnOff);
-    //SetToggleState("autoplayToggle", "displayactive", autoplaytoggle);
-    //SetToggleState("darkmodeTog", "displayactive", darkmodetoggle);
+    LinkToggleButton("darkmodeTog", DarkmodeOnOff);
+    LinkToggleButton("autoplayToggle", AutoplayOnOff);
+    SetToggleState(getElement("autoplayToggle"), "displayactive", autoplaytoggle);
+    SetToggleState(getElement("darkmodeTog"), "displayactive", darkmodetoggle);
 }
 
 function setLangNl(){
