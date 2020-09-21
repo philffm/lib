@@ -1,6 +1,6 @@
 import {loadScriptAsync,DomList,LinkToggleButton,subscribe,getElement,MonitorVisible,ForAllElements,setElementVal,publish,GetJson,LinkClickButton,LinkVisible,sleep} from '../lib/koiosf_util.mjs';
 import {DisplayMessage,SwitchDisplayMessageContinous,DisplayMessageContinous} from './koiosf_messages.mjs';
-import {GetToggleState, SetToggleState} from '../genhtml/startgen.mjs'
+import {GetToggleState} from '../genhtml/startgen.mjs'
 import {ToggleCueVisibility} from '../viewer_figma/koiosf_viewer.mjs'
 import {SetglobalplayerSubtitle} from '../viewer_figma/koiosf_viewer.mjs'
 
@@ -8,8 +8,6 @@ var globalplayer=0;
 var globalVideospeed=0;
 var globalInjectedCSS;
 export var currentlang;
-var autoplaytoggle;
-var darkmodetoggle;
 
 async function asyncloaded() {
     console.log(`In asyncloaded of script: ${import.meta.url}`);
@@ -22,8 +20,6 @@ async function asyncloaded() {
     LinkClickButton("lang_en", setLangEn);
     LinkToggleButton("darkmodeTog", DarkmodeOnOff);
     LinkToggleButton("autoplayToggle", AutoplayOnOff);
-    SetToggleState(getElement("autoplayToggle"), "displayactive", autoplaytoggle);
-    SetToggleState(getElement("darkmodeTog"), "displayactive", darkmodetoggle);
 }
 
 function setLangNl(){
@@ -41,20 +37,7 @@ export function setLangEn(){
 }
 
 async function ScrSettingsMadeVisible() {
-  console.log("this: ", this);
   console.log("In ScrSettingsMadeVisible");
-  if(localStorage.getItem("autoplaystatus") == "true") {
-    autoplaytoggle = true;
-  } else {
-    autoplaytoggle = false;
-  }
-  if(localStorage.getItem("darkmodestatus") == "true") {
-    darkmodetoggle = true;
-  } else {
-    darkmodetoggle = false;
-  }
-  console.log("darkmodestatus: ", darkmodetoggle);
-  console.log("autoplaystatus: ", autoplaytoggle);
 }
 
 async function VideoPlayerReady(playerobject) {
