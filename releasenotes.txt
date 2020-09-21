@@ -7,6 +7,7 @@ Course content:
 Version 2.07
 Functional updates:
 - Added 1.25x playback speed as an option
+- Added a toggle for autoplay (it is off by default)
 Technical updates:
 - support .cmd filetype for literature (for installer for datascience)
 Layout updates:
