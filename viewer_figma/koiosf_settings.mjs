@@ -74,7 +74,7 @@ function FontSize() {
     //player.setOption('captions', 'track', {});
 
     font++;
-    if (font > 1) font= -2;
+    if (font > 3) font= -2;
     switch(font){
       case -2:
         ToggleCueVisibility();
@@ -90,6 +90,7 @@ function FontSize() {
         console.log(`Setting font to: ${font}`);
         globalplayer.setOption('captions', 'fontSize', font);
         setElementVal("__label",parseInt(font)+2,"fontsize");
+        break;
     }
     //console.log(`Setting font to: ${font}`);
     //globalplayer.setOption('captions', 'fontSize', font);
