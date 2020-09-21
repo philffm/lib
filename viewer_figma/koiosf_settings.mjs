@@ -20,6 +20,7 @@ async function asyncloaded() {
     LinkClickButton("lang_en", setLangEn);
     LinkToggleButton("darkmodeTog", DarkmodeOnOff);
     LinkToggleButton("autoplayToggle", AutoplayOnOff);
+    SetglobalplayerSubtitle(localStorage.getItem("currentlang"));
 }
 
 function setLangNl(){
@@ -38,7 +39,6 @@ export function setLangEn(){
 
 async function ScrSettingsMadeVisible() {
   console.log("In ScrSettingsMadeVisible");
-  SetglobalplayerSubtitle(localStorage.getItem("currentlang"));
 }
 
 async function VideoPlayerReady(playerobject) {
