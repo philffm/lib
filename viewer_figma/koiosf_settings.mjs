@@ -22,8 +22,6 @@ async function asyncloaded() {
     LinkToggleButton("autoplayToggle", AutoplayOnOff);
     SetToggleState("autoplayToggle", "displayactive", (localStorage.getItem("autoplaystatus") == "true"));
     SetToggleState("darkmodeTog", "displayactive", (localStorage.getItem("darkmodestatus") == "true"));
-    console.log("autoplaystatus: ", localStorage.getItem("autoplaystatus"))
-    console.log("darkmodestatus: ", localStorage.getItem("darkmodestatus"))
 }
 
 function setLangNl(){
@@ -42,7 +40,8 @@ export function setLangEn(){
 
 async function ScrSettingsMadeVisible() {
   console.log("In ScrSettingsMadeVisible");
-
+  console.log("autoplaystatus: ", localStorage.getItem("autoplaystatus"))
+  console.log("darkmodestatus: ", localStorage.getItem("darkmodestatus"))
 }
 
 async function VideoPlayerReady(playerobject) {
