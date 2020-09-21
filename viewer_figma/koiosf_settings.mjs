@@ -72,7 +72,7 @@ var font=0;
 function FontSize() {
   //player.setOption('captions', 'track', {'languageCode': 'es'});
   //player.setOption('captions', 'track', {});
-
+  SetglobalplayerSubtitle(localStorage.getItem("currentlang"));
   font++;
   if (font > 3) font= -2;
   switch(font){
@@ -88,7 +88,6 @@ function FontSize() {
       setElementVal("__label",parseInt(font)+2,"fontsize");
       break;
     default:
-      SetglobalplayerSubtitle(localStorage.getItem("currentlang"));
       console.log(`Setting font to: ${font}`);
       globalplayer.setOption('captions', 'fontSize', font);
       setElementVal("__label",parseInt(font)+2,"fontsize");
