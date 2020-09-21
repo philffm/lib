@@ -26,7 +26,6 @@
     import {} from './koiosf_badges.mjs';
     import {currentlang, setLangEn, setDarkmode, GetAutoplayStatus} from './koiosf_settings.mjs';
     import {} from './koiosf_leaderboard.mjs';
-import { GetAutoplayStatus } from './koiosf_settings.mjs';
 
 var globalplayer=0;
 //export var currentduration;
