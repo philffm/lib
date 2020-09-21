@@ -75,6 +75,7 @@ function FontSize() {
 
     font++;
     if (font > 3) font= 0;
+    console.log(font);
     switch(font){
       case 0:
         ToggleCueVisibility();
