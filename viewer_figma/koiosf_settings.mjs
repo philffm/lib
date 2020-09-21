@@ -70,33 +70,31 @@ async function RotateVideoSpeed() {
 var font=0;
 
 function FontSize() {
-    //player.setOption('captions', 'track', {'languageCode': 'es'});
-    //player.setOption('captions', 'track', {});
+  //player.setOption('captions', 'track', {'languageCode': 'es'});
+  //player.setOption('captions', 'track', {});
 
-    font++;
-    if (font > 3) font= 0;
-    console.log(font);
-    switch(font){
-      case 0:
-        ToggleCueVisibility();
-        globalplayer.setOption('captions', 'fontSize', font);
-        setElementVal("__label",parseInt(font),"fontsize");
-        currentlang = localStorage.getItem("currentlang");
-        break;
-      case 1:
-        ToggleCueVisibility();
-        console.log(`Setting font to: ${font}`);
-        globalplayer.setOption('captions', 'fontSize', font);
-        setElementVal("__label",parseInt(font),"fontsize");
-        break;
-      default:
-        console.log(`Setting font to: ${font}`);
-        globalplayer.setOption('captions', 'fontSize', font);
-        setElementVal("__label",parseInt(font),"fontsize");
-    }
-    //console.log(`Setting font to: ${font}`);
-    //globalplayer.setOption('captions', 'fontSize', font);
-    //setElementVal("__label",parseInt(font)+2,"fontsize");
+  font++;
+  if (font > 3) font= -2;
+  switch(font){
+    case -2:
+      ToggleCueVisibility();
+      setElementVal("__label","Off","fontsize");
+      break;
+    case -1:
+      ToggleCueVisibility();
+      SetglobalplayerSubtitle(localStorage.getItem("currentlang"));
+      console.log(`Setting font to: ${font}`);
+      globalplayer.setOption('captions', 'fontSize', font);
+      setElementVal("__label",parseInt(font)+2,"fontsize");
+      break;
+    default:
+      console.log(`Setting font to: ${font}`);
+      globalplayer.setOption('captions', 'fontSize', font);
+      setElementVal("__label",parseInt(font)+2,"fontsize");
+  }
+  //console.log(`Setting font to: ${font}`);
+  //globalplayer.setOption('captions', 'fontSize', font);
+  //setElementVal("__label",parseInt(font)+2,"fontsize");
 }
 
 function AudioOnOff(event) {
