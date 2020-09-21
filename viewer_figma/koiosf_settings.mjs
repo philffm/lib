@@ -8,7 +8,7 @@ var globalplayer=0;
 var globalVideospeed=0;
 var globalInjectedCSS;
 export var currentlang;
-
+var autoplaystatus = true;
 
 async function asyncloaded() {
     console.log(`In asyncloaded of script: ${import.meta.url}`);
@@ -20,7 +20,7 @@ async function asyncloaded() {
     LinkClickButton("lang_nl", setLangNl);
     LinkClickButton("lang_en", setLangEn);
     LinkToggleButton("darkmodeTog", DarkmodeOnOff);
-
+    LinkToggleButton("autoplayToggle", AutoplayOnOff);
 }
 
 function setLangNl(){
@@ -42,8 +42,6 @@ async function ScrSettingsMadeVisible() {
 
 }
 
-
-
 async function VideoPlayerReady(playerobject) {
     globalplayer = playerobject;
 
@@ -51,11 +49,7 @@ async function VideoPlayerReady(playerobject) {
     FontSize(); // can use the player object now // to show the initial value
 }
 
-
 window.addEventListener('DOMContentLoaded', asyncloaded);  // load
-
-
-
 
 async function RotateVideoSpeed() {
     console.log("In RotateVideoSpeed");
@@ -102,9 +96,7 @@ function FontSize() {
     //console.log(`Setting font to: ${font}`);
     //globalplayer.setOption('captions', 'fontSize', font);
     //setElementVal("__label",parseInt(font)+2,"fontsize");
-
 }
-
 
 function AudioOnOff(event) {
 
@@ -165,4 +157,18 @@ function LoadCSS(){
 function disableDarkmode() {
   console.log("disableDarkmode");
   globalInjectedCSS.disabled = true;
+}
+
+function AutoplayOnOff(event) {
+  var autoplayOn=GetToggleState(this,"displayactive");
+  localStorage.setItem("autoplaystatus", autoplayOn);
+  console.log(`In darkmodeOnOff ${autoplayOn}`);
+  if (!autoplayOn)
+      autoplaystatus = false;
+  else
+      autoplaystatus = true;
+}
+
+export function GetAutoplayStatus() {
+  return autoplaystatus;
 }
