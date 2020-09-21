@@ -164,11 +164,4 @@ function AutoplayOnOff(event) {
   console.log(autoplayOn);
   localStorage.setItem("autoplaystatus", autoplayOn);
   console.log("in settings ", localStorage.getItem("autoplaystatus"));
-  //autoplaystatus = localStorage.getItem("autoplaystatus");
-  //console.log(autoplaystatus);
-  /*console.log(autoplaystatus)
-  if (!autoplayOn)
-      autoplaystatus = false;
-  else
-      autoplaystatus = true;*/
 }
