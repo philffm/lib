@@ -74,7 +74,7 @@ function FontSize() {
     //player.setOption('captions', 'track', {});
 
     font++;
-    if (font > 0) font= -2;
+    if (font > 1) font= -2;
     switch(font){
       case -2:
         ToggleCueVisibility();
