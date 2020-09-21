@@ -235,7 +235,7 @@ export function GetToggleState(domid,key) {
    return domid.dataset[key]=="true"
 }    
 
-function SetToggleState(domid,key,bool) {
+export function SetToggleState(domid,key,bool) {
    domid.dataset[key]=bool;
    //console.log(`In SetToggleState ${key} ${domid.dataset[key]}`);
 }    

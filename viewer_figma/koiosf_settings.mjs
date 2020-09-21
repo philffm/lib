@@ -1,6 +1,6 @@
 import {loadScriptAsync,DomList,LinkToggleButton,subscribe,getElement,MonitorVisible,ForAllElements,setElementVal,publish,GetJson,LinkClickButton,LinkVisible,sleep} from '../lib/koiosf_util.mjs';
 import {DisplayMessage,SwitchDisplayMessageContinous,DisplayMessageContinous} from './koiosf_messages.mjs';
-import {GetToggleState} from '../genhtml/startgen.mjs'
+import {GetToggleState, SetToggleState} from '../genhtml/startgen.mjs'
 import {ToggleCueVisibility} from '../viewer_figma/koiosf_viewer.mjs'
 import {SetglobalplayerSubtitle} from '../viewer_figma/koiosf_viewer.mjs'
 
@@ -8,7 +8,6 @@ var globalplayer=0;
 var globalVideospeed=0;
 var globalInjectedCSS;
 export var currentlang;
-export var autoplaystatus;
 
 async function asyncloaded() {
     console.log(`In asyncloaded of script: ${import.meta.url}`);
@@ -21,6 +20,8 @@ async function asyncloaded() {
     LinkClickButton("lang_en", setLangEn);
     LinkToggleButton("darkmodeTog", DarkmodeOnOff);
     LinkToggleButton("autoplayToggle", AutoplayOnOff);
+    SetToggleState("autoplayToggle", "displayactive", (localStorage.getItem("autoplaystatus") == "true"));
+    SetToggleState("darkmodeTog", "displayactive", (localStorage.getItem("darkmodestatus") == "true"));
 }
 
 function setLangNl(){

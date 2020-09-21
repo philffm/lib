@@ -24,7 +24,7 @@
     import {} from './koiosf_comments.mjs';
     import {} from './koiosf_quiz.mjs';
     import {} from './koiosf_badges.mjs';
-    import {currentlang, setLangEn, setDarkmode, autoplaystatus} from './koiosf_settings.mjs';
+    import {currentlang, setLangEn, setDarkmode} from './koiosf_settings.mjs';
     import {} from './koiosf_leaderboard.mjs';
 
 var globalplayer=0;
