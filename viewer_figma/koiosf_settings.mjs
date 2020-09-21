@@ -22,8 +22,8 @@ async function asyncloaded() {
     LinkClickButton("lang_en", setLangEn);
     LinkToggleButton("darkmodeTog", DarkmodeOnOff);
     LinkToggleButton("autoplayToggle", AutoplayOnOff);
-    SetToggleState("autoplayToggle", "displayactive", autoplaytoggle);
-    SetToggleState("darkmodeTog", "displayactive", darkmodetoggle);
+    //SetToggleState("autoplayToggle", "displayactive", autoplaytoggle);
+    //SetToggleState("darkmodeTog", "displayactive", darkmodetoggle);
 }
 
 function setLangNl(){
@@ -174,6 +174,7 @@ function disableDarkmode() {
 }
 
 function AutoplayOnOff(event) {
+  console.log(this);
   var autoplayOn=GetToggleState(this,"displayactive");
   console.log(autoplayOn);
   localStorage.setItem("autoplaystatus", autoplayOn);
