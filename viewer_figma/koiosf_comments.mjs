@@ -21,8 +21,6 @@ window.onerror = async function(message, source, lineno, colno, error) {   // es
 
 window.addEventListener('DOMContentLoaded', asyncloaded);
 
-
-
 async function asyncloaded() {  
     LinkVisible("scr_comment" ,ScrCommentMadeVisible)   
     getElement("posttext").addEventListener('animatedclick',PostComment)    
