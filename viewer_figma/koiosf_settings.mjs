@@ -1,6 +1,6 @@
 import {loadScriptAsync,DomList,LinkToggleButton,subscribe,getElement,MonitorVisible,ForAllElements,setElementVal,publish,GetJson,LinkClickButton,LinkVisible,sleep} from '../lib/koiosf_util.mjs';
 import {DisplayMessage,SwitchDisplayMessageContinous,DisplayMessageContinous} from './koiosf_messages.mjs';
-import {GetToggleState, SetToggleState} from '../genhtml/startgen.mjs'
+import {GetToggleState} from '../genhtml/startgen.mjs'
 import {ToggleCueVisibility} from '../viewer_figma/koiosf_viewer.mjs'
 import {SetglobalplayerSubtitle} from '../viewer_figma/koiosf_viewer.mjs'
 
