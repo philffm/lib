@@ -163,7 +163,7 @@ function AutoplayOnOff(event) {
   var autoplayOn=GetToggleState(this,"displayactive");
   console.log(autoplayOn);
   localStorage.setItem("autoplaystatus", autoplayOn);
-  console.log(`In darkmodeOnOff ${autoplayOn}`);
+  console.log(localStorage.getItem("autoplaystatus"));
   /*console.log(autoplaystatus)
   if (!autoplayOn)
       autoplaystatus = false;
