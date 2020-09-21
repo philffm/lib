@@ -103,6 +103,7 @@ class LessonList {
     }
 
     GetCurrentLesson() {
+        SetglobalplayerSubtitle(localStorage.getItem("currentlang"));
         var currentcourse=GlobalCourseList.GetCurrentCourse()
         var currentlesson=localStorage.getItem(`lesson-${currentcourse}`); // could be undefined        
         if (!currentlesson) currentlesson=0; // start at first lesson
@@ -389,7 +390,6 @@ export async function SelectLesson(index) {
 
 export async function SelectNextLesson(delta) {  
 console.log( "SelectNextLesson");
-SetglobalplayerSubtitle(localStorage.getItem("currentlang"));
 var CurrentLesson=await GlobalLessonList.GetCurrentLesson()
     SelectLesson(parseInt(CurrentLesson) + parseInt(delta))
 	
