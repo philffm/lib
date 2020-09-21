@@ -1,7 +1,7 @@
 //console.log(`In ${window.location.href} starting script: ${import.meta.url}`);
 
 import {LinkButton,HideButton,LinkClickButton,subscribe,MonitorDomid,DomList,sleep,SelectTabBasedOnNumber,GetJsonIPFS, getElement,FitOneLine,publish,setElementVal,LinkToggleButton,ConvertDurationToString } from '../lib/koiosf_util.mjs';
-//import {player} from './koiosf_viewer.mjs';
+import {SetglobalplayerSubtitle} from './koiosf_viewer.mjs';
 import {GetCourseInfo,GlobalCourseList} from './koiosf_course.mjs';
 import {GetToggleState} from '../genhtml/startgen.mjs'
 
@@ -389,6 +389,7 @@ export async function SelectLesson(index) {
 
 export async function SelectNextLesson(delta) {  
 console.log( "SelectNextLesson");
+SetglobalplayerSubtitle(localStorage.getItem("currentlang"));
 var CurrentLesson=await GlobalLessonList.GetCurrentLesson()
     SelectLesson(parseInt(CurrentLesson) + parseInt(delta))
 	

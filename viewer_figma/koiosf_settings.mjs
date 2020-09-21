@@ -20,7 +20,6 @@ async function asyncloaded() {
     LinkClickButton("lang_en", setLangEn);
     LinkToggleButton("darkmodeTog", DarkmodeOnOff);
     LinkToggleButton("autoplayToggle", AutoplayOnOff);
-    SetglobalplayerSubtitle(localStorage.getItem("currentlang"));
 }
 
 function setLangNl(){
