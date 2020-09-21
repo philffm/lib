@@ -38,6 +38,7 @@ export function setLangEn(){
 
 async function ScrSettingsMadeVisible() {
   console.log("In ScrSettingsMadeVisible");
+  SetglobalplayerSubtitle(localStorage.getItem("currentlang"));
 }
 
 async function VideoPlayerReady(playerobject) {
@@ -72,7 +73,6 @@ var font=0;
 function FontSize() {
   //player.setOption('captions', 'track', {'languageCode': 'es'});
   //player.setOption('captions', 'track', {});
-  SetglobalplayerSubtitle(localStorage.getItem("currentlang"));
   font++;
   if (font > 3) font= -2;
   switch(font){
