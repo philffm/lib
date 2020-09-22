@@ -159,7 +159,6 @@ function disableDarkmode() {
 
 function AutoplayOnOff(event) {
   var autoplayOn=GetToggleState(this,"displayactive");
-  getElement("autoplayToggle").dispatchEvent( new CustomEvent(!autoplayOn?"displaydefault":"displayactive"));
   console.log(this);
   console.log(autoplayOn);
   localStorage.setItem("autoplaystatus", autoplayOn);
