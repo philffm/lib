@@ -385,7 +385,6 @@ subscribe('popupdisplaynone', x=> { if (fVideoRunning) startVideo(); } ); // if 
 subscribe("loadvideo",LoadVideo);
 
 async function LoadVideo(vidinfo) { // call when first video is loaded or a diffent video is selected
-    SetglobalplayerSubtitle(localStorage.getItem("currentlang"));
      if (!vidinfo) return;
     //console.log(`Loading video ${vidinfo.videoid} ${vidinfo.txt}`);
     //console.log(vidinfo);
@@ -419,7 +418,7 @@ async function LoadVideo(vidinfo) { // call when first video is loaded or a diff
 	console.log(seeninfo)
 
     GlobalCanvasProgressInfo.Update(seeninfo)
-
+    SetglobalplayerSubtitle(localStorage.getItem("currentlang"));
 }
 
 
