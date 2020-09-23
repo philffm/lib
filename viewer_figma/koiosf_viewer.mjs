@@ -418,7 +418,6 @@ async function LoadVideo(vidinfo) { // call when first video is loaded or a diff
 	console.log(seeninfo)
 
     GlobalCanvasProgressInfo.Update(seeninfo)
-    SetglobalplayerSubtitle(localStorage.getItem("currentlang"));
 }
 
 

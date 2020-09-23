@@ -1,5 +1,5 @@
 //console.log(`In ${window.location.href} starting script: ${import.meta.url}`);
-
+import {SetglobalplayerSubtitle} from '../viewer_figma/koiosf_viewer.mjs'
 
 /* General comments
 
@@ -126,7 +126,7 @@ domid.id=id; // youtube player want to have in id
    publish("youtubepluginloaded");
 
    
-   
+   SetglobalplayerSubtitle(localStorage.getItem("currentlang"));
    return player; 
 }
 
