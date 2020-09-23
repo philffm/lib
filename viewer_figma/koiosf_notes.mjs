@@ -34,7 +34,7 @@ class NotesAreaClass {
         this.target=target;        
         this.target.contentEditable="true"; // make div editable
         this.target.style.whiteSpace = "pre-line"; //werkt goed in combi met innerText
-        this.target.style.overflow = "break-word";                
+        this.target.style.wordWrap = "break-word";                
         this.target.innerHTML = "..."
         this.target.addEventListener('input',this.SaveTxt , true); // save the notes    
     }   // this.target.removeEventListener('input',this.SaveTxt , true); // save the notes       
