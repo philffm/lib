@@ -1,6 +1,7 @@
 Version 2.08
 Functional updates:
 - Notes field now starts a new line when at the end of the field.
+- Fixed an issue where video subtitles always revert to default language when loading
 Technical updates:
 Layout updates:
 Course content:
