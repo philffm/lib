@@ -1,5 +1,6 @@
-Version 2.x
+Version 2.08
 Functional updates:
+- Notes field now starts a new line when at the end of the field.
 Technical updates:
 Layout updates:
 Course content:
