@@ -130,8 +130,11 @@ async function NextVideo() {
     
     if (localStorage.getItem("autoplaystatus")=="true") {
         console.log("in viewer video ", localStorage.getItem("autoplaystatus"));
-	    await sleep(3000);
-        SelectNextLesson(+1);
+        var tempvidinfo = currentvidinfo;
+        await sleep(3000);
+        if (currentvidinfo = tempvidinfo) {
+            SelectNextLesson(+1);
+        }
     }
     //await Relax();
 /*
