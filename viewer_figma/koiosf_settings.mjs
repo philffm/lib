@@ -8,7 +8,6 @@ var globalplayer=0;
 var globalVideospeed=0;
 var globalInjectedCSS;
 export var currentlang;
-export var autoplaystatus;
 
 async function asyncloaded() {
     console.log(`In asyncloaded of script: ${import.meta.url}`);
@@ -39,7 +38,6 @@ export function setLangEn(){
 
 async function ScrSettingsMadeVisible() {
   console.log("In ScrSettingsMadeVisible");
-
 }
 
 async function VideoPlayerReady(playerobject) {
@@ -72,30 +70,30 @@ async function RotateVideoSpeed() {
 var font=0;
 
 function FontSize() {
-    //player.setOption('captions', 'track', {'languageCode': 'es'});
-    //player.setOption('captions', 'track', {});
-
-    font++;
-    if (font > 3) font= -2;
-    switch(font){
-      case -2:
-        ToggleCueVisibility();
-        setElementVal("__label","Off","fontsize");
-        break;
-      case -1:
-        ToggleCueVisibility();
-        console.log(`Setting font to: ${font}`);
-        globalplayer.setOption('captions', 'fontSize', font);
-        setElementVal("__label",parseInt(font)+2,"fontsize");
-        break;
-      default:
-        console.log(`Setting font to: ${font}`);
-        globalplayer.setOption('captions', 'fontSize', font);
-        setElementVal("__label",parseInt(font)+2,"fontsize");
-    }
-    //console.log(`Setting font to: ${font}`);
-    //globalplayer.setOption('captions', 'fontSize', font);
-    //setElementVal("__label",parseInt(font)+2,"fontsize");
+  //player.setOption('captions', 'track', {'languageCode': 'es'});
+  //player.setOption('captions', 'track', {});
+  font++;
+  if (font > 3) font= -2;
+  switch(font){
+    case -2:
+      ToggleCueVisibility();
+      setElementVal("__label","Off","fontsize");
+      break;
+    case -1:
+      ToggleCueVisibility();
+      SetglobalplayerSubtitle(localStorage.getItem("currentlang"));
+      console.log(`Setting font to: ${font}`);
+      globalplayer.setOption('captions', 'fontSize', font);
+      setElementVal("__label",parseInt(font)+2,"fontsize");
+      break;
+    default:
+      console.log(`Setting font to: ${font}`);
+      globalplayer.setOption('captions', 'fontSize', font);
+      setElementVal("__label",parseInt(font)+2,"fontsize");
+  }
+  //console.log(`Setting font to: ${font}`);
+  //globalplayer.setOption('captions', 'fontSize', font);
+  //setElementVal("__label",parseInt(font)+2,"fontsize");
 }
 
 function AudioOnOff(event) {
@@ -161,7 +159,6 @@ function disableDarkmode() {
 
 function AutoplayOnOff(event) {
   var autoplayOn=GetToggleState(this,"displayactive");
-  console.log(autoplayOn);
   localStorage.setItem("autoplaystatus", autoplayOn);
   console.log("in settings ", localStorage.getItem("autoplaystatus"));
 }

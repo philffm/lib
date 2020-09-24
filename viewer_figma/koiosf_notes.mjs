@@ -33,7 +33,8 @@ class NotesAreaClass {
         console.log("Constructor of NotesAreaClass");
         this.target=target;        
         this.target.contentEditable="true"; // make div editable
-        this.target.style.whiteSpace = "pre"; //werkt goed in combi met innerText                
+        this.target.style.whiteSpace = "pre-line"; //werkt goed in combi met innerText
+        this.target.style.wordWrap = "break-word";                
         this.target.innerHTML = "..."
         this.target.addEventListener('input',this.SaveTxt , true); // save the notes    
     }   // this.target.removeEventListener('input',this.SaveTxt , true); // save the notes       

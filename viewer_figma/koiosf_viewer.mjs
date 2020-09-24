@@ -24,7 +24,7 @@
     import {} from './koiosf_comments.mjs';
     import {} from './koiosf_quiz.mjs';
     import {} from './koiosf_badges.mjs';
-    import {currentlang, setLangEn, setDarkmode, autoplaystatus} from './koiosf_settings.mjs';
+    import {currentlang, setLangEn, setDarkmode} from './koiosf_settings.mjs';
     import {} from './koiosf_leaderboard.mjs';
 
 var globalplayer=0;
@@ -130,8 +130,11 @@ async function NextVideo() {
     
     if (localStorage.getItem("autoplaystatus")=="true") {
         console.log("in viewer video ", localStorage.getItem("autoplaystatus"));
-	    await sleep(3000);
-        SelectNextLesson(+1);
+        var tempvidinfo = currentvidinfo;
+        await sleep(3000);
+        if (currentvidinfo = tempvidinfo) {
+            SelectNextLesson(+1);
+        }
     }
     //await Relax();
 /*
@@ -418,7 +421,6 @@ async function LoadVideo(vidinfo) { // call when first video is loaded or a diff
 	console.log(seeninfo)
 
     GlobalCanvasProgressInfo.Update(seeninfo)
-
 }
 
 

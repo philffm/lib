@@ -1,5 +1,5 @@
 //console.log(`In ${window.location.href} starting script: ${import.meta.url}`);
-
+import {SetglobalplayerSubtitle} from '../viewer_figma/koiosf_viewer.mjs'
 
 /* General comments
 
@@ -57,6 +57,7 @@ import {LinkButton,loadScriptAsync,publish,LinkClickButton,subscribe,getElement}
 
 async function onStateChange(event) {
     //console.log(`In onStateChange ${event.data}`);
+    SetglobalplayerSubtitle(localStorage.getItem("currentlang"));
   
      switch (event.data) {
          case -1: publish ("videounstarted"); break;
@@ -125,7 +126,6 @@ domid.id=id; // youtube player want to have in id
    
    publish("youtubepluginloaded");
 
-   
    
    return player; 
 }
