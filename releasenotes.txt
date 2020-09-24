@@ -1,8 +1,11 @@
 Version 2.08
 Functional updates:
 - Notes field now starts a new line when at the end of the field.
-- Fixed an issue where video subtitles always revert to default language when loading
+
 Technical updates:
+- Fixed an issue where video subtitles always revert to default settings when loading a new video.
+- Autoplay now checks if the user already selected the next video.
+
 Layout updates:
 Course content:
 
