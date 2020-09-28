@@ -43,9 +43,9 @@ function MakeBlob(html,fjavascript) {
 }   
 
 // var ipfsurl="https://onderzoekjebuurt.nl/ipfs/"
-//var ipfsurl="https://ipfs.io/ipfs/"
-var ipfsurl="https://ipfs.infura.io/ipfs/" //metamask mobile prefers this (otherwise cors error)
-
+// var ipfsurl="https://ipfs.io/ipfs/"
+// var ipfsurl="https://ipfs.infura.io/ipfs/" //metamask mobile prefers this (otherwise cors error) 2020-9-28 ==> change in infura Clear-Site-Data header ==> switch to
+var ipfsurl="https://cloudflare-ipfs.com/ipfs/"
 
 async function start() { 
 	console.log("start");
