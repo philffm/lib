@@ -1,3 +1,17 @@
+Version 2.09
+Functional updates:
+
+
+Technical updates:
+- removed ipfs server of gerard (didn't show images well)
+- removed ipfs server infura (error message Clear-Site-Data header)
+- added  "https://cloudflare-ipfs.com/ipfs" & "https://gateway.ipfs.io/ipfs"
+
+Layout updates:
+
+Course content:
+
+
 Version 2.08
 Functional updates:
 - Notes field now starts a new line when at the end of the field.
