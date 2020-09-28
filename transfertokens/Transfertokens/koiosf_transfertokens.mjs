@@ -90,6 +90,8 @@ async function ShowAddresses(nameslist,addresses,tokenamount) {
                 tokenamountlist.contentEditable="true"; // make div editable
                 tokenamountlist.style.whiteSpace ="pre";
             }
+            if (nameslist[i] == "" || tokenamount[i] == "") console.log("Name and tokenamount can not be empty, element number: ", i);
+            if (addresses[i].length != 42) console.log("Address length must be 42, element number: ", i);
         }
     }
     else {
