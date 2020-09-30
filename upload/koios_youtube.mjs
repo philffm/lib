@@ -20,13 +20,13 @@ loadScriptAsync("https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.
 //import "https://apis.google.com/js/api.js";
 
 
-export async function LoadGapi() {
-  //console.log('gapi load start');
+export async function LoadGapi(apikey) {
+  console.log(`gapi load start ${apikey}`);
   await new Promise(function(resolve, reject) {  gapi.load('client:auth2', resolve); });
-  gapi.client.setApiKey("AIzaSyBPDSeL1rNL9ILyN2rX11FnHeBePld7HOQ");
+  gapi.client.setApiKey(apikey);
   await Promise.all( [ 
         gapi.client.load("https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest"),
-        gapi.client.load("https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"),
+        // gapi.client.load("https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"), // not used
         //   gapi.client.load("https://content.googleapis.com/discovery/v1/apis/slides/v1/rest");  doesn't work because of authorization issues
        ]
     );  
@@ -41,7 +41,15 @@ export async function LoadGapi() {
 
 export async function GetYouTubePlaylists() {
     
-    await LoadGapi();
+    
+    const queryString = window.location.search;       // add an extra playlistid for hidden playlists
+    const urlParams = new URLSearchParams(queryString);	
+	let playlistId = urlParams.get('playlistId') 
+    
+    let apikey = urlParams.get('apikey') 
+    if (!apikey) apikey="AIzaSyBPDSeL1rNL9ILyN2rX11FnHeBePld7HOQ"
+    
+    await LoadGapi(apikey);
     var list=await gapi.client.youtube.playlists.list({
       "part": "snippet", // contentDetails
       "maxResults": 50,
@@ -50,9 +58,7 @@ export async function GetYouTubePlaylists() {
     //console.log(list);
     var resultlist=[]
 	
-	const queryString = window.location.search;       // add an extra playlistid for hidden playlists
-    const urlParams = new URLSearchParams(queryString);	
-	let playlistId = urlParams.get('playlistId') 
+	
 	if (playlistId) {
 		var result={};
 		result.id    = playlistId

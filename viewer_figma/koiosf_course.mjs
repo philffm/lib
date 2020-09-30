@@ -105,7 +105,10 @@ class CourseList {
 
 //export var GlobalCourseList=new CourseList("https://gpersoon.com/koios/lib/viewer_figma/courseinfo.json");
 
-export var GlobalCourseList=new CourseList("https://koiosonline.github.io/lib/viewer_figma/courseinfo.json");
+var courseinfo=GetURLParam("courseinfo")
+if (!courseinfo) courseinfo="https://koiosonline.github.io/lib/viewer_figma/courseinfo.json"
+console.log(`courseinfo ${courseinfo}`)
+export var GlobalCourseList=new CourseList(courseinfo);
 
 
 
