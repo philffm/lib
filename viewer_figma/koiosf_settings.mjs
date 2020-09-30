@@ -19,7 +19,8 @@ async function asyncloaded() {
     LinkClickButton("lang_nl", setLangNl);
     LinkClickButton("lang_en", setLangEn);
     LinkToggleButton("darkmodeTog", DarkmodeOnOff);
-    LinkToggleButton("autoplayToggle", AutoplayOnOff);
+    var autoplaybutton = LinkToggleButton("autoplayToggle", AutoplayOnOff);
+    console.log("button: ", autoplaybutton);
 }
 
 function setLangNl(){
