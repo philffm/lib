@@ -1,0 +1,11 @@
+Version V0.02
+Functional updates:
+
+Technical updates:
+- updated to latest version of html converter
+- put on github
+- linked to koios.online/sync
+
+Layout updates:
+
+

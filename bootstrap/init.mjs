@@ -118,7 +118,7 @@ async function start() {
 start();
 
 
-/* code in webflow:
+/* code in webflow, in the Inside <head> tag:
 <script>
 var save=document.firstChild
 while (document.firstChild) 
@@ -132,4 +132,7 @@ var body=document.createElement("body")
 html.appendChild(body);
 import("https://koiosonline.github.io/lib/bootstrap/init.mjs")
 </script>
+
+for test pages:
+import("https://gpersoon.com/koios/lib/bootstrap/test/init.mjs")
 */
