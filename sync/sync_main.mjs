@@ -194,12 +194,12 @@ var cardlist=new DomList("card");
     
         
 async function Swipe() {
-//console.log("In function Swipe");
+console.log("In function Swipe");
 
        let board = getElement('cardcontainer')
        cardlist.EmptyList()
         
-     //   console.log("domlist")
+        console.log("domlist")
         
         for (var i=0;i<globalmymatches.length;i++) {        
             var card=cardlist.AddListItem()
@@ -218,7 +218,7 @@ async function Swipe() {
        
        await carrouselwait(board)
        //console.log("After carrouselwait")
-       SwitchPage("close");//close the popup
+    //   SwitchPage("close");//close the popup
 //let carousel = new Carousel(board)       
         
 }
