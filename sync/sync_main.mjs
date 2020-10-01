@@ -33,9 +33,8 @@ async function main() {
         //SetupField("question1")
         SetupField("name")               
 
-        await GetChoiceItems("https://gpersoon.com/koios/lib/sync/beroepsproducten.json");
-
-
+        var beroepsproducten=await GetChoiceItems("https://gpersoon.com/koios/lib/sync/beroepsproducten.json");
+        console.log(beroepsproducten);
 
         setElementVal("offering-type",`
             <select id="idoffering-type">
