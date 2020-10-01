@@ -13,3 +13,4 @@ Node_ipfs/
 *.cmd
 courses/.figma
 courses/.figmadocument
+lib/github/*

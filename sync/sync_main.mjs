@@ -129,7 +129,7 @@ async function main() {
             var dbeventsonreplicated=false;
             globaldb.events.on('replicate.progress', (address, hash, entry, progress, have) => {
                     console.log(progress, have)
-                      getElement("loaded").innerHTML=(parseFloat(progress) /  parseFloat(have) * 100).toFixed(2);
+                      getElement("loaded").innerHTML=`loaded: ${(parseFloat(progress) /  parseFloat(have) * 100).toFixed(0)}%`;
                     if (progress >= have) { // then we have the initial batch
                          if (!dbeventsonreplicated) {
                             dbeventsonreplicated=true;
@@ -163,7 +163,7 @@ async function ShowRecords() {
        // console.log(searchfreetext);
         const result = await globaldb.query(() => true); // get all records
         //console.log(result);        
-        getElement("entries").innerHTML=result.length;
+        getElement("entries").innerHTML=`entries: ${result.length}`;
         //log(`Number of entries: ${result.length}`)   
        // str=JSON.stringify(result)
         
