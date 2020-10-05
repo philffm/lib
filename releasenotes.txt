@@ -7,6 +7,8 @@ Technical updates:
 - removed ipfs server infura (error message Clear-Site-Data header)
 - added  "https://cloudflare-ipfs.com/ipfs" & "https://gateway.ipfs.io/ipfs"
 - also update ipfs gateway in init.mjs
+- added courseinfo parameter to newviewer
+
 Layout updates:
 
 Course content:
