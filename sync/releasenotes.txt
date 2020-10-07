@@ -1,3 +1,28 @@
+Version V0.04
+Functional updates:
+- connected to 3box
+- integreted my details (from both student & company)
+
+Technical updates:
+- updated koiosf_login to suppress error message
+
+Layout updates:
+- my details retrieved from 3box
+- added more screen
+
+
+Version V0.03
+Functional updates:
+
+Technical updates:
+
+
+Layout updates:
+- added more fields
+- added more screen
+
+
+
 Version V0.02
 Functional updates:
 

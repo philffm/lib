@@ -2,7 +2,7 @@
  import {getElement,loadScriptAsync,ForAllElements,setElementVal,getElementVal,DomList} from '../lib/koiosf_util.mjs';
  import {carrouselwait} from './sync_swipe.mjs';
  import {SwitchPage} from '../genhtml/startgen.mjs'
- 
+ import {Login,getUserAddress,getProfileName,getProfileImage,getProfile} from '../viewer_figma/koiosf_login.mjs';
  
  
 function log(logstr) {   
@@ -195,6 +195,27 @@ async function SetupMetamask() {
     */
 }    
 
+
+function ShowMyDetails() {
+    var profile=getProfile()
+    console.log(profile);
+    setElementVal("myname",     profile.name,"scr_mydetails")
+    setElementVal("employer",   profile.employer,"scr_mydetails")
+    setElementVal("location",   profile.location,"scr_mydetails")
+    setElementVal("school",     profile.school,"scr_mydetails")
+    setElementVal("website",    profile.website,"scr_mydetails")
+    setElementVal("job",        profile.job,"scr_mydetails")
+    
+    
+    
+    
+  /*
+    proof_did: "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NksifQ.eyJpYXQiOjE1OTgwMTY2MjYsImlzcyI6ImRpZDozOmJhZnlyZWliYWZlbmZwMmR2bWFwb3Z3ZjZ1aXJ1ZndrcWZtamZqeHJmdm5hc3VlaGM0M3kycXY3YzJ1In0.lfUy5R00G0V9TcmRAkVpHSUMoQlvFs7YHSf2Bx_jVxiSveWWxkPiSVySX55ksT9_gK0IPtblH6pvawQN9SDy3g"
+    proof_github: "https://gist.githubusercontent.com/gpersoon/6dc26e70cfe3976e00a6e95e3ac6f9ac/raw/15412530c27fa0c43493a95290a572f95331f4f9/3box"
+    proof_twitter: "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NksifQ.eyJpYXQiOjE2MDIwNjIxNTMsInN1YiI6ImRpZDozOmJhZnlyZWliYWZlbmZwMmR2bWFwb3Z3ZjZ1aXJ1ZndrcWZtamZqeHJmdm5hc3VlaGM0M3kycXY3YzJ1IiwiY2xhaW0iOnsidHdpdHRlcl9oYW5kbGUiOiJncGVyc29vbiIsInR3aXR0ZXJfcHJvb2YiOiJodHRwczovL3R3aXR0ZXIuY29tL2dwZXJzb29uL3N0YXR1cy8xMzEzNzY5OTY0MTg5NDk1Mjk2In0sImlzcyI6ImRpZDpodHRwczp2ZXJpZmljYXRpb25zLjNib3guaW8ifQ.5jf0to4pGS10JkCEeyRJpJ969TI6gSHVSl-fDZjC6rPMFn1XRWXbfi6-zoj9QpNYL-DJwGNOmgqTc0heH6oEPg"
+    */
+}
+
         
 async function main() {
     console.log("Main");           
@@ -206,6 +227,12 @@ async function main() {
     await SetupFields()
     SetupButtons() 
     await SetupOrbitdb()
+    
+    await Login() // should be suffiently initiated
+    
+    ShowMyDetails()
+ 
+    
 }
         
 var globalavailableofferings=[];     
@@ -454,4 +481,5 @@ function SetupField(id) {
         
 window.onload=main()        
    //document.addEventListener("DOMContentLoaded", main)
+
 
