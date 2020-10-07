@@ -1,3 +1,16 @@
+Version 2.10
+
+Functional updates:
+
+Technical updates:
+- updated on koiosf_login for sync
+- added test for koiosf_login (testisolated\testlogin.html)
+Layout updates:
+
+Course content:
+
+
+
 Version 2.09
 Functional updates:
 
