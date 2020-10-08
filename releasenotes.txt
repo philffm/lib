@@ -6,7 +6,7 @@ Technical updates:
 - updated on koiosf_login for sync
 - added test for koiosf_login (testisolated\testlogin.html)
 - html converter => support white space within grids
-
+- ignore error in recorded time in koiosf_lessons.mjs
 Layout updates:
 
 Course content:
