@@ -199,13 +199,14 @@ async function SetupMetamask() {
 function ShowMyDetails() {
     var profile=getProfile()
     console.log(profile);
-    setElementVal("myname",     profile.name,"scr_mydetails")
-    setElementVal("employer",   profile.employer,"scr_mydetails")
-    setElementVal("location",   profile.location,"scr_mydetails")
-    setElementVal("school",     profile.school,"scr_mydetails")
-    setElementVal("website",    profile.website,"scr_mydetails")
-    setElementVal("job",        profile.job,"scr_mydetails")
-    
+    if (profile) {
+        setElementVal("myname",     profile.name,"scr_mydetails")
+        setElementVal("employer",   profile.employer,"scr_mydetails")
+        setElementVal("location",   profile.location,"scr_mydetails")
+        setElementVal("school",     profile.school,"scr_mydetails")
+        setElementVal("website",    profile.website,"scr_mydetails")
+        setElementVal("job",        profile.job,"scr_mydetails")
+    }    
     
     
     

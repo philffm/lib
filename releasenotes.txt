@@ -5,6 +5,8 @@ Functional updates:
 Technical updates:
 - updated on koiosf_login for sync
 - added test for koiosf_login (testisolated\testlogin.html)
+- html converter => support white space within grids
+
 Layout updates:
 
 Course content:

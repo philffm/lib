@@ -1092,6 +1092,29 @@ console.log(dimensions)
                     }
                 }
                 
+         if (fgrid)
+            display="inline-grid"
+        if (gridcols)
+            strstyle +=`grid-template-columns: repeat(${gridcols}, 1fr);`
+        if (gridrows)
+            strstyle +=`grid-template-rows: repeat(${gridrows}, 1fr);`                
+        
+        if (gridcols || gridrows) {
+            dimensions="";
+            fflex=""
+            //dimensions+="flex-direction: column;";
+            // dimensions +="flex-direction: row;";
+            fflex+=`margin-bottom: ${figdata.itemSpacing?figdata.itemSpacing:0}px;`;
+            fflex+=`margin-right: ${figdata.itemSpacing?figdata.itemSpacing:0}px;`;             
+            dimensions +=`padding-top:    ${figdata.verticalPadding?figdata.verticalPadding:0}px; `
+            dimensions +=`padding-bottom: ${(figdata.verticalPadding?figdata.verticalPadding:0)-(figdata.itemSpacing?figdata.itemSpacing:0)}px; `
+            dimensions +=`padding-left:   ${figdata.horizontalPadding?figdata.horizontalPadding:0}px; `
+            dimensions +=`padding-right:  ${(figdata.horizontalPadding?figdata.horizontalPadding:0)-(figdata.itemSpacing?figdata.itemSpacing:0)}px; `
+        }
+  
+        if (gridcol) strstyle +=`grid-column-start: ${gridcol};grid-col-end: span 1;`
+        if (gridrow) strstyle +=`grid-row-start: ${gridrow};grid-row-end: span 1;`
+        
                 
                 if (GetAtParam(figdata,"@width")) width=GetAtParam(figdata,"@width") // allways override if present
                 if (GetAtParam(figdata,"@height")) height=GetAtParam(figdata,"@height")
@@ -1113,16 +1136,7 @@ console.log(dimensions)
             }
         }    
                 
-        if (fgrid)
-            display="grid"
-        if (gridcols)
-            strstyle +=`grid-template-columns: repeat(${gridcols}, 1fr);`
-        if (gridrows)
-            strstyle +=`grid-template-rows: repeat(${gridrows}, 1fr);`                
-  
-        if (gridcol) strstyle +=`grid-column-start: ${gridcol};grid-col-end: span 1;`
-        if (gridrow) strstyle +=`grid-row-start: ${gridrow};grid-row-end: span 1;`
-        
+       
   
         
         if (figdata.clipsContent==true) strstyle +="overflow: hidden;"
