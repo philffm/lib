@@ -35,7 +35,7 @@ async function startprocess() {
     
     var x=await uploadYtDataToIpfs();
   
-   DisplayInfo(x)
+   await DisplayInfo(x)
    /*
    var pre=document.createElement("pre"); // already create to be able to log
     pre.style.width = "100%";
@@ -51,7 +51,7 @@ async function startprocess() {
 	
 }
 
-function DisplayInfo(result) {
+async function DisplayInfo(result) {
 
 	var list=result.list
     for (var z=0;z<list.length;z++) {
@@ -82,16 +82,19 @@ function DisplayInfo(result) {
                 console.log(`vorfound=${vorfound}`);
                 var subtxt="";
                 
-                subtxt +=`<a href=https://studio.youtube.com/video/${id}/edit>edit</a>  `;
-                subtxt +=`<a href=https://studio.youtube.com/video/${id}/translations>menu</a>  `;
-                subtxt +=`<a href=https://www.youtube.com/timedtext_video?v=${id}&lang=vor&action_choose_add_method=1&nv=1>add vor</a>  `;
-                subtxt +=`<a href=https://www.youtube.com/timedtext_editor?v=${id}&lang=vor&contributor_id=0&nv=1>edit vor</a>  `;
-                subtxt +=`<a href=https://video.google.com/timedtext?v=${id}&lang=vor>vor txt</a>  `;                        
-                subtxt +=`<a href=https://i.ytimg.com/vi_webp/${id}/maxresdefault.webp>maxres webp</a>  `;
-                subtxt +=`<a href=https://i.ytimg.com/vi/${id}/maxresdefault.jpg>maxres jpg</a>  `;
-                subtxt +=`<a href=https://i.ytimg.com/vi/${id}/hqdefault.jpg>hq jpg</a>  `;                      
+                subtxt +=`<a target="_blank" href=https://studio.youtube.com/video/${id}/edit>edit</a>  `;
+                subtxt +=`<a target="_blank" href=https://studio.youtube.com/video/${id}/translations>menu</a>  `;
+                subtxt +=`<a target="_blank" href=https://www.youtube.com/timedtext_video?v=${id}&lang=vor&action_choose_add_method=1&nv=1>add vor</a>  `;
+                subtxt +=`<a target="_blank" href=https://www.youtube.com/timedtext_editor?v=${id}&lang=vor&contributor_id=0&nv=1>edit vor</a>  `;
+                subtxt +=`<a target="_blank" href=https://video.google.com/timedtext?v=${id}&lang=vor>vor txt</a>  `;                        
+                subtxt +=`<a target="_blank" href=https://i.ytimg.com/vi_webp/${id}/maxresdefault.webp>maxres webp</a>  `;
+                subtxt +=`<a target="_blank" href=https://i.ytimg.com/vi/${id}/maxresdefault.jpg>maxres jpg</a>  `;
+                subtxt +=`<a target="_blank" href=https://i.ytimg.com/vi/${id}/hqdefault.jpg>hq jpg</a>  `;                      
                 subtxt +=`${title.padEnd(80, '_')}`;                        
                 subtxt +=` #vor: ${subs.length}  `;    
+                
+                
+                
 				if (vorfound >=0) {
                     var slides=pl.videos[i].subtitles[vorfound].subtitle;
                     for (var j=0;j< slides.length;j++) {
@@ -101,7 +104,10 @@ function DisplayInfo(result) {
                     console.log(`#vor subs: ${slides.length} subs: ${subtxt}`);
                 }    
                 
+                
+                
                 log(subtxt)
+                
             }            
        }          
     }
