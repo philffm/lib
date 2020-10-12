@@ -3,7 +3,6 @@ import { } from "../lib/3box.js"; // from "https://unpkg.com/3box/dist/3box.js";
 import { getUserAddress, getWeb3Provider,authorize } from "./koiosf_login.mjs";
 import {DomList,getElement,FitOneLine,LinkVisible,subscribe,GetImageIPFS} from '../lib/koiosf_util.mjs';
 import {log} from '../lib/koiosf_log.mjs'; 
-import {DisplayMessage} from "./koiosf_messages.mjs";
 
 let box;
 let space;
@@ -30,10 +29,7 @@ async function asyncloaded() {
 }
 
 async function ScrCommentMadeVisible() {
-    console.log("In ScrCommentMadeVisible");
-    
     await authorize()
-    console.log(init3boxpromise);
     await init3boxpromise;
     if (space) { // else no connection to 3box
         WriteThread(currentvideo)       
@@ -46,24 +42,13 @@ var init3boxpromise;
 
 async function NextStep() {
     init3boxpromise=Init3box();  
-    console.log(init3boxpromise);
 }     
 
 async function Init3box() {
-    console.log("Init3box");
     var ga=getUserAddress()
     var pr=getWeb3Provider()
-    console.log(ga)
-    console.log(pr);
-    console.log("Start openbox")
-    console.log(Box);
     box = await Box.openBox(ga,pr);    
-    console.log("after openbox");
-   // await box.syncDone
-    console.log("after syncdone");
-    console.log(box);
-    space = await box.openSpace(KoiosSpace);
-    console.log("after openspace");  
+    space = await box.openSpace(KoiosSpace); 
 }
 
 subscribe("loadvideo",NewVideo) 
@@ -71,8 +56,7 @@ subscribe("loadvideo",NewVideo)
 var currentvideo;
 
 async function NewVideo(vidinfo) {
-    if (!vidinfo) return;
-    console.log(`new video ${vidinfo.videoid}`)        
+    if (!vidinfo) return;     
     currentvideo=vidinfo
     if (!space) return; //  no connection to 3box yet; fixed elsewhere
     WriteThread(currentvideo)
@@ -103,9 +87,7 @@ async function ShowPosts(posts) {
 
     for (var i=0;i<posts.length;i++) {        
         if (!document.getElementById(posts[i].postId) ){ // check if post is already shown
-            console.log(posts[i]);
             var did=posts[i].author;           
-            console.log(`${i} ${posts[i].message} ${did}`)
             
             var target = GlobalCommentList.AddListItem() // make new entry
             target.getElementsByClassName("commentmessagetext")[0].innerHTML = posts[i].message            
@@ -154,7 +136,6 @@ async function SetDeleteButton(domid,postid) {
     domid.addEventListener('animatedclick',DeleteForumEntry)
     
     async function DeleteForumEntry() {
-        console.log(currentThread);
         try {
             await currentThread.deletePost(postid);
         } catch (error) {
@@ -169,7 +150,6 @@ async function FindSender (target,did,profilepicture) {
     if (profile.image) {
         var imagecid=profile.image[0].contentUrl
         imagecid=imagecid[`\/`]
-        console.log(imagecid);
         profilepicture.src=await GetImageIPFS(imagecid)
     }           
 }
