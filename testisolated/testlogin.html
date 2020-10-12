@@ -1,0 +1,34 @@
+<!-- http://gpersoon.com/koios/lib//testisolated/testlogin.html -->
+<html>
+
+Testing login
+<div id="name"></div>
+<image id="userphoto" style="width:300px;height:300px"></image>
+
+</html>
+
+<script>
+
+
+async function init() { 
+   console.log("init");
+   var koiosf_util=await import("../lib/koiosf_util.mjs");
+   var koiosf_login=await import("../viewer_figma/koiosf_login.mjs");
+   var event = new Event("DOMContentLoaded",{  bubbles: true,  cancelable: true});   
+   window.document.dispatchEvent(event);
+   
+   
+   await koiosf_util.sleep(3000);
+   await koiosf_login.ClearCachedProvider()
+   await koiosf_login.Login()
+    
+   console.log( koiosf_login.getUserAddress() )
+   console.log( koiosf_login.getProfileName() )
+   console.log( koiosf_login.getProfileImage() )
+    
+}
+
+
+init()
+
+</script>

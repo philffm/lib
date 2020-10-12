@@ -24,6 +24,10 @@ let web3Modal     // Web3modal instance
 var  provider;  // Chosen wallet provider given by the dialog window
 let selectedAccount;     // Address of the selected account
 var web3;
+var globalprofilename
+var globalprofile
+var globalprofileimage
+
 
 var initpromise=init();
 
@@ -55,7 +59,7 @@ if (window.ethereum)
 window.addEventListener('DOMContentLoaded', asyncloaded);  // load  
  
 
-function ClearCachedProvider() {
+export function ClearCachedProvider() {
     web3Modal.clearCachedProvider();
 }
 
@@ -66,17 +70,18 @@ console.log("asyncloaded login")
 //console.log(getElement("login"))
 //console.log(getElement("login_comment"))
 
-    getElement("login","scr_profile").addEventListener('animatedclick',Login)    
-    getElement("login","scr_comment").addEventListener('animatedclick',Login)    
-    getElement("clearcachedprovider").addEventListener('animatedclick',ClearCachedProvider)        
+    var domid
+    domid=getElement("login","scr_profile");if (domid) domid.addEventListener('animatedclick',Login)    
+    domid=getElement("login","scr_comment");if (domid) domid.addEventListener('animatedclick',Login)    
+    domid=getElement("clearcachedprovider");if (domid) domid.addEventListener('animatedclick',ClearCachedProvider)        
 
-
-
-
-console.log("Setting name link to 3box");
-getElement("name").href="http://3box.io/hub"
-getElement("name").target="_blank"
-console.log(getElement("name"));
+    console.log("Setting name link to 3box");
+    domid=getElement("name")
+    if (domid) {
+        domid.href="http://3box.io/hub"
+        domid.target="_blank"
+        console.log(getElement("name"));
+    }
 
     console.log("login");
     await initpromise;
@@ -143,9 +148,18 @@ export function getWeb3() {
 
 export function getUserAddress() {
  return  selectedAccount;
-
 }
 
+export function getProfileName() {
+ return  globalprofilename;
+}
+
+export function getProfile() {
+ return  globalprofile;
+}
+export function getProfileImage() {
+ return  globalprofileimage;
+}
 
 
 
@@ -178,7 +192,7 @@ async function fetchAccountData() {
      chainData = (await EvmChains.getChain(chainId)).name;    
   } catch(err) { console.log(err); } // but still continue
   
-  getElement("chain").textContent = chainData;
+  var domid=getElement("chain");if (domid) domid.textContent = chainData;
   
 
   // Get list of accounts of the connected wallet
@@ -188,19 +202,26 @@ async function fetchAccountData() {
   console.log("Got accounts", accounts);
   selectedAccount = accounts[0];
 
-  getElement("account").textContent = selectedAccount;
+  var domid=getElement("account");if (domid) domid.textContent = selectedAccount;
 
 
 // Read profile data
 const profile = await Box.getProfile(selectedAccount)
 console.log(profile)
+globalprofile=profile
+globalprofilename="No name defined yet on 3box"
+globalprofileimage=undefined;
 if (profile) {
-    getElement("name").textContent = `${profile.name?profile.name:"No name defined yet on 3box"} ${profile.emoji?profile.emoji:""}`
+    if (profile.name) globalprofilename=profile.name
+    if (profile.emoji) globalprofilename+=" "+profile.emoji
+    
+    var domid=getElement("name"); if (domid) domid.textContent = globalprofilename
     if (profile.image) {
         var imagecid=profile.image[0].contentUrl
         imagecid=imagecid[`\/`]
         console.log(imagecid);
-        getElement("userphoto ").src=await GetImageIPFS(imagecid)
+        globalprofileimage=await GetImageIPFS(imagecid)
+        var domid=getElement("userphoto"); if (domid) domid.src=globalprofileimage
     }
 }    
 
@@ -281,15 +302,17 @@ async function onConnect() {
   } catch(e) {
     console.log("Could not get a wallet connection", e);
     setElementVal("status1","Not connected","scr_comment")
-    getElement("login","scr_comment").dispatchEvent(new CustomEvent("show"));
-    getElement("login","scr_profile").dispatchEvent(new CustomEvent("show"));
+    
+    var domid;
+    domid=getElement("login","scr_comment"); if (domid) domid.dispatchEvent(new CustomEvent("show"));
+    domid=getElement("login","scr_profile"); if (domid) domid.dispatchEvent(new CustomEvent("show"));
     if (web3Modal)
         web3Modal.clearCachedProvider(); // clear cached because this didn't work (try again later)
     return;
   }
   setElementVal("status1","Connected","scr_comment")
-  getElement("login","scr_comment").dispatchEvent(new CustomEvent("hide"));
-  getElement("login","scr_profile").dispatchEvent(new CustomEvent("hide"));
+  domid=getElement("login","scr_comment"); if (domid) domid.dispatchEvent(new CustomEvent("hide"));
+  domid=getElement("login","scr_profile"); if (domid) domid.dispatchEvent(new CustomEvent("hide"));
   
   
   

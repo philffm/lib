@@ -1,0 +1,49 @@
+Version V0.05
+Functional updates:
+
+
+Technical updates:
+- html converter updated to support 2d grids better
+
+Layout updates:
+- 2d grid for cards
+- 2d grid for sdgs  (also smaller icons)
+
+
+Version V0.04
+Functional updates:
+- connected to 3box
+- integrated my details (from both student & company)
+
+Technical updates:
+- updated koiosf_login to suppress error message
+
+Layout updates:
+- my details retrieved from 3box
+- added more screen
+
+
+Version V0.03
+Functional updates:
+
+Technical updates:
+
+
+Layout updates:
+- added more fields
+- added more screen
+
+
+
+Version V0.02
+Functional updates:
+
+Technical updates:
+- updated to latest version of html converter
+- put on github
+- linked to koios.online/sync
+- larger list of beroepsproducten
+
+Layout updates:
+
+

@@ -1,3 +1,18 @@
+Version 2.10
+
+Functional updates:
+
+Technical updates:
+- updated on koiosf_login for sync
+- added test for koiosf_login (testisolated\testlogin.html)
+- html converter => support white space within grids
+- ignore error in recorded time in koiosf_lessons.mjs
+Layout updates:
+
+Course content:
+
+
+
 Version 2.09
 Functional updates:
 
@@ -7,6 +22,8 @@ Technical updates:
 - removed ipfs server infura (error message Clear-Site-Data header)
 - added  "https://cloudflare-ipfs.com/ipfs" & "https://gateway.ipfs.io/ipfs"
 - also update ipfs gateway in init.mjs
+- added courseinfo parameter to newviewer
+
 Layout updates:
 
 Course content:

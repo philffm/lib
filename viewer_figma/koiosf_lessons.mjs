@@ -118,10 +118,14 @@ class LessonList {
 		var totaltime=0
         for (var i=0;i<lessons.length;i++)  {      
 			var seeninfo=this.LoadVideoSeen(lessons[i])
-			if (seeninfo.seenend)
-				totaltime += lessons[i].duration
-			else 
-				totaltime += seeninfo.seensum
+            console.log(seeninfo)
+            console.log(totaltime)
+            if (seeninfo) {
+                if (seeninfo.seenend)
+                    totaltime += lessons[i].duration
+                else 
+                    if (seeninfo.seensum) totaltime += seeninfo.seensum
+            }
 		}
 				
 		var currentcourse=GlobalCourseList.GetCurrentCourse()
