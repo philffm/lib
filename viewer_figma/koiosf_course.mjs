@@ -18,7 +18,6 @@ class CourseList {
     }
     
     async GetCourseData(ccid) {
-        console.log("In GetCourseData");
         var listofcourses=await this.GetList(); 
         if (!ccid) return undefined;
         if (!listofcourses) return undefined;
@@ -30,7 +29,6 @@ class CourseList {
     }
     
     UpdateMyList(courseid,fremove) {
-        console.log(`In UpdateMyList ${courseid} ${fremove}`);
         var cl=this.GetMyList();
         if (!cl) cl=[];
         if (fremove) {
@@ -59,7 +57,6 @@ class CourseList {
     }
     
     SetCurrentCourse(courseid) {
-        console.log(`SetCurrentCourse ${courseid}`) //courseid could be undefined
         var prevcourse=this.GetCurrentCourse()
         localStorage.setItem("courseid", courseid);  // this is how the player knows what is selected
         
@@ -89,12 +86,9 @@ class CourseList {
 
 var courseinfo=GetURLParam("courseinfo")
 if (!courseinfo) courseinfo="https://koiosonline.github.io/lib/viewer_figma/courseinfo.json"
-console.log(`courseinfo ${courseinfo}`)
 export var GlobalCourseList=new CourseList(courseinfo);
 
 export async function GetCourseInfo(key,courseid) {
-	
-	console.log(`In GetCourseInfo ${key}`)
     var defaultreturn;
 	var override=GetURLParam(key)
 	if (override) {
@@ -108,8 +102,6 @@ export async function GetCourseInfo(key,courseid) {
     }
     
     if (!courseid) courseid=GlobalCourseList.GetCurrentCourse()
-    
-    console.log(`GetCourseInfo ${key} ${courseid}`)    
     var listofcourses=await GlobalCourseList.GetList();
     
     if (!courseid) return defaultreturn;
@@ -123,7 +115,6 @@ var globaldomlistcoursesother;
 var globaldomlistcoursesmy;
 
 async function asyncloaded() {    
-    console.log(`In asyncloaded of script: ${import.meta.url}`); 
     LinkVisible("scr_other"  ,ScrOtherMadeVisible)    
     LinkVisible("scr_my"     ,ScrMyMadeVisible)        
     LinkVisible("scr_profile",ScrProfileMadeVisible)    
