@@ -1,3 +1,16 @@
+Version V0.06
+Functional updates:
+- improved the addjob/addlisting
+- fields configurable via json file
+
+Technical updates:
+- fix high load on system (by preventing preload, which seemed to go on for ever)
+- updated to ipfs 0.50.2
+
+Layout updates:
+- removed video from card
+
+
 Version V0.05
 Functional updates:
 
