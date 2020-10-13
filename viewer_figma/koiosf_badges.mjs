@@ -13,7 +13,6 @@ var tokenfactoryJson
 var tokenJson
 var contracttokenfactory;
 
-
 /////////////////// NFT //////////////////////////////////////////////////////////////////////////////
 
 async function getBadges() {
@@ -28,8 +27,7 @@ async function getBadges() {
 }
 
 function StudentBadgeName() {
-	 var currentcourse=GlobalCourseList.GetCurrentCourse()
-    console.log(currentcourse);
+	var currentcourse=GlobalCourseList.GetCurrentCourse()
 	return "Student-"+currentcourse
 }
 
@@ -55,8 +53,7 @@ function FindBadge(wantedname) {
 	
 	for (var i=0;i<globallisttemplates.length;i++) {
 	    var name=globallisttemplates[i].name
-        console.log(name);
-       if (name==wantedname) return i;	 
+       	if (name==wantedname) return i;	 
 	}
 	return -1;
 }
