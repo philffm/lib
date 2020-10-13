@@ -10,6 +10,7 @@ var globalInjectedCSS;
 export var currentlang;
 
 async function asyncloaded() {
+	console.log(`In asyncloaded of script: ${import.meta.url}`);
     LinkVisible("scr_settings"  ,ScrSettingsMadeVisible);
     LinkClickButton("videospeed",RotateVideoSpeed);
     subscribe("videoplayerready",VideoPlayerReady);
