@@ -1,5 +1,5 @@
  
- import {getElement,loadScriptAsync,ForAllElements,setElementVal,getElementVal,DomList} from '../lib/koiosf_util.mjs';
+ import {getElement,loadScriptAsync,ForAllElements,setElementVal,getElementVal,DomList,LinkVisible} from '../lib/koiosf_util.mjs';
  import {carrouselwait} from './sync_swipe.mjs';
  import {SwitchPage} from '../genhtml/startgen.mjs'
  import {Login,getUserAddress,getProfileName,getProfileImage,getProfile} from '../viewer_figma/koiosf_login.mjs';
@@ -9,7 +9,7 @@ function log(logstr) {
     getElement("logboxcontent").innerHTML +=logstr+"\n";
 }
 
-console.error=log;
+//console.error=log;
 
 
 var globaldb;
@@ -18,7 +18,7 @@ const globalserverid='QmaXQNNLvMo6vNYuwxD86AxNx757FoUJ3qaDoQ58PY2bxz'
 
 async function GetChoiceItems(source) {            
     var f=await fetch(source)
-    var Items=await f.json();            
+    var Items=await f.json().catch(( e) => console.error(e));            
     //console.log(JSON.stringify(Items))
     return Items;    
 }            
@@ -37,100 +37,98 @@ function Select(e) {
     console.log(ds)
 }    
 
-async function SetupFields() {
+var alloptionsset={}
     
-     
-    
-    SetupField("name")               
-
-    var beroepsproducten=await GetChoiceItems("https://gpersoon.com/koios/lib/sync/beroepsproducten.json");
-    console.log(beroepsproducten);
-    var types=["type","outcome"]; // "description"
-    
-    var buttonlists=new DomList('buttonlist','scr_offerings');
-    
- 
-    var overview={}
-    for (var i=0;i<beroepsproducten.length;i++) {        
-        var description=descriptions.AddListItem()
-        var str=beroepsproducten[i].description
-        for (var j=0;j<types.length;j++) {
-            var currenttype=types[j]
-            var val=beroepsproducten[i][currenttype]
-            if (!overview[types[j]]) overview[currenttype]={};
-            overview[currenttype][val]=true;            // build a list of the different types used
-            description.dataset[currenttype] = val
-            str += " ("+val+") "
+function CreateDropdown(location,list,listname) {    
+    console.log("In CreateDropdown");
+    var select = document.createElement("select");
+    select.size=3
+    select.multiple=true;
+    for (var i=0;i<list.length;i++) {        
+        var option = document.createElement("option");        
+        option.innerHTML=option.value=list[i]
+        select.appendChild(option);     
+    }
+    var domidloc=getElement(location)
+    domidloc.appendChild(select);
+    console.log(domidloc);
+    select.addEventListener("change", function() {   
+        console.log('You selected: ', this.value,listname);
+        console.log(this.options);
+        var value="";
+        for (i=0;i<this.options.length;i++) {
+            console.log(this.options[i].selected)
+            console.log(this.options[i].value)
+            if (this.options[i].selected)
+                value+=(value?", ":"")+this.options[i].value;
         }
+         if (value) 
+            alloptionsset[listname]=value
+        else
+            delete alloptionsset[listname]
         
-        getElement("description",description).innerHTML=str
+        if (listname=="area") {
+            SetupFields(value,selectlist2)
+        }       
+        UpdateCard()
+    });
+}
+
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function UpdateCard() {
+        var str=""
+        for (var i in alloptionsset)
+            str += `<b>${capitalizeFirstLetter(i)}:</b> ${alloptionsset[i]}<br>`
         
-    }   
-    var buttonlist={}
-    for (var j=0;j<types.length;j++) {
-        var thisbuttonlist=buttonlists.AddListItem()
-        buttonlist[types[j]]=new DomList("button",thisbuttonlist);
-        for (var k in overview[types[j]]) {    // create the buttons
-            var button=buttonlist[types[j]].AddListItem()
-            setElementVal("text",k,button);
-            button.addEventListener("click", Select);
-            button.dataset.name=k
-            button.dataset.type=types[j]
-        }        
-   }
-     
-    
-    
-    //descriptions.HideAll()
-    
         
+        var profile=getProfile()        
+        for (var i in profile)
+            str += `<b>${capitalizeFirstLetter(i)}:</b> ${profile[i]}<br>`
+        
+        setElementVal("addjoblog",str);
+        
+        //var line1=profile?.employer
+        //var line2=alloptionsset.activity
+        setElementVal("line1",str,"scr_addjob");
+        setElementVal("line2","","scr_addjob");
+        setElementVal("line3","","scr_addjob");
+        setElementVal("line4","","scr_addjob");
+        setElementVal("line5","","scr_addjob");
+        setElementVal("line6","","scr_addjob");
+        setElementVal("line7","","scr_addjob");
+        setElementVal("line8","","scr_addjob");
+        setElementVal("line9","","scr_addjob");
+        setElementVal("line10","","scr_addjob");
+        
+        
+}   
 
-
-        setElementVal("offering-type",`
-            <select id="idoffering-type" multiple size = "2" onchange="getMultipleSelected(this.id)">
-                    <option value="none">--select--</option> 
-                    <option value="Advies">Advies</option>
-                    <option value="Handeling">Handeling</option>
-                    <option value="Onderzoek">Onderzoek</option>
-                    <option value="Ontwerp">Ontwerp</option>   
-                    </select>
-            `)
-
-        setElementVal("offering-product",`
-        <select id="idoffering-product" multiple>
-                    <option value="none">--select--</option> 
-                    <option value="Bedrijfswaardering">Bedrijfswaardering</option>
-                    <option value="Adviesgesprek">Adviesgesprek</option>
-                    <option value="Benchmarkonderzoek">Benchmarkonderzoek</option>
-                    <option value="Dashboard">Dashboard</option>   
-                    </select>
-        `)
-
-
-        setElementVal("search-type",`
-        <select id="idsearch-type" multiple>
-                    <option value="none">--select--</option> 
-                    <option value="Advies">Advies</option>
-                    <option value="Handeling">Handeling</option>
-                    <option value="Onderzoek">Onderzoek</option>
-                    <option value="Ontwerp">Ontwerp</option>   
-                    </select>
-        `)
-
-        setElementVal("search-product",`
-        <select id="idsearch-product" multiple>
-                    <option value="none">--select--</option> 
-                    <option value="Bedrijfswaardering">Bedrijfswaardering</option>
-                    <option value="Adviesgesprek">Adviesgesprek</option>
-                    <option value="Benchmarkonderzoek">Benchmarkonderzoek</option>
-                    <option value="Dashboard">Dashboard</option>   
-                    </select>
-        `)
-
- getElement("offeringfreetext").contentEditable="true"; // make div editable
- getElement("searchfreetext").contentEditable="true"; // make div editable
+function ScrAddJobMadeVisible() {
+    UpdateCard()
+}    
 
     
+
+var selectlist1=new DomList('selectblock',"selectlist1",'scr_addjob');
+var selectlist2=new DomList('selectblock',"selectlist2",'scr_addjob');
+
+async function SetupFields(filename,selectlist) {
+    SetupField("name")               
+    selectlist.EmptyList()
+
+    var jobinfo=await GetChoiceItems(`https://gpersoon.com/koios/lib/sync/${filename}.json`);
+    console.log(jobinfo);
+    
+    for (var i in jobinfo) {
+        console.log(i);
+        var selectblock=selectlist.AddListItem()
+        setElementVal("selectname",i,selectblock)
+        var selectvalues=getElement("selectvalues",selectblock)
+        CreateDropdown(selectvalues,jobinfo[i],i);
+    }    
 }    
         
 function SetupButtons() {
@@ -146,9 +144,13 @@ function SetupButtons() {
 }
 
 async function SetupOrbitdb() {
-    //window.LOG='Verbose' // 'debug'
+    window.LOG='Verbose' // 'debug'
     var IPFS=Ipfs; // for the browser version    
-    globalipfs = await IPFS.create() //{EXPERIMENTAL: { pubsub: true } } ???
+    globalipfs = await IPFS.create(
+    
+    { preload: { enabled: false} } // otherwise keeps on loading lots of data from node*.preload.ipfs.io // see https://discuss.ipfs.io/t/how-do-i-host-my-own-preload-nodes/8583
+    
+    ) //{EXPERIMENTAL: { pubsub: true } }, only for ipfs < 0.38 ???
     const orbitdb = await OrbitDB.createInstance(globalipfs,{ directory: './access_db_httpclient_diskstation' })   
     var accessController = { write: ["*"] }  
 
@@ -220,19 +222,25 @@ function ShowMyDetails() {
         
 async function main() {
     console.log("Main");           
-    await loadScriptAsync("https://gpersoon.com/koios/lib/lib/ipfs0.46.1.min.js")     // https://unpkg.com/ipfs@0.46.0/dist/index.min.js
-    await loadScriptAsync("https://gpersoon.com/koios/lib/lib/orbitdb0.24.1.min.js"); // https://www.unpkg.com/orbit-db@0.24.1/dist/orbitdb.min.js
-    //     await loadScriptAsync("https://gpersoon.com/koios/lib/lib/orbitdb26.min.js")    // clone from github & npm run build:dist
+   // await loadScriptAsync("https://gpersoon.com/koios/lib/lib/ipfs0.46.1.min.js")     // https://unpkg.com/ipfs@0.46.0/dist/index.min.js
+   
+    await loadScriptAsync("https://gpersoon.com/koios/lib/lib/ipfs0.50.2min.js")     // https://unpkg.com/ipfs@0.50.2/dist/index.min.js
+   
+    //await loadScriptAsync("https://gpersoon.com/koios/lib/lib/orbitdb0.24.1.min.js"); // https://www.unpkg.com/orbit-db@0.24.1/dist/orbitdb.min.js
+         await loadScriptAsync("https://gpersoon.com/koios/lib/lib/orbitdb26.min.js")    // clone from github & npm run build:dist
+
+    LinkVisible("scr_addjob"  ,ScrAddJobMadeVisible)    
     
     SetupMetamask() // runs in parallel
-    await SetupFields()
+    await SetupFields("jobinfo",selectlist1)
+    await SetupFields("financial",selectlist2)
     SetupButtons() 
     await SetupOrbitdb()
     
     await Login() // should be suffiently initiated
     
     ShowMyDetails()
- 
+
     
 }
         
@@ -362,10 +370,10 @@ async function Liked() {
             case "Y":
                     var card=cardlistsync.AddListItem()        
                     setElementVal("Cardheader",`Card #${i+1}`,card)        
-                    setElementVal("field1",item.name,card)
-                    setElementVal("field2",item.freetext,card)
-                    setElementVal("field3",item.productsearch,card)
-                    setElementVal("field4",item.typesearch,card)
+                    setElementVal("line1",item.name,card)
+                    setElementVal("line2",item.freetext,card)
+                    setElementVal("line3",item.productsearch,card)
+                    setElementVal("line4",item.typesearch,card)
                     card.id=item._id;
                     globalliked++
                     break;
