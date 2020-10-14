@@ -10,7 +10,7 @@ var globalInjectedCSS;
 export var currentlang;
 
 async function asyncloaded() {
-	console.log(`In asyncloaded of script: ${import.meta.url}`);
+    console.log(`In asyncloaded of script: ${import.meta.url}`);
     LinkVisible("scr_settings"  ,ScrSettingsMadeVisible);
     LinkClickButton("videospeed",RotateVideoSpeed);
     subscribe("videoplayerready",VideoPlayerReady);
@@ -23,24 +23,26 @@ async function asyncloaded() {
 }
 
 function setLangNl(){
-	currentlang="nl";
-	localStorage.setItem("currentlang", currentlang);
-	SetglobalplayerSubtitle(currentlang);
+  console.log("Set nl");
+  currentlang="nl";
+  localStorage.setItem("currentlang", currentlang);
+  SetglobalplayerSubtitle(currentlang);
 }
 
 export function setLangEn(){
-	currentlang="en";
-	localStorage.setItem("currentlang", currentlang);
-	SetglobalplayerSubtitle(currentlang);
+  console.log("Set en")
+  currentlang="en";
+  localStorage.setItem("currentlang", currentlang);
+  SetglobalplayerSubtitle(currentlang);
 }
 
-//TODO: check usefulness of this function
 async function ScrSettingsMadeVisible() {
-  	console.log("In ScrSettingsMadeVisible");
+  console.log("In ScrSettingsMadeVisible");
 }
 
 async function VideoPlayerReady(playerobject) {
     globalplayer = playerobject;
+
     await sleep(500);
     FontSize(); // can use the player object now // to show the initial value
 }
@@ -48,44 +50,56 @@ async function VideoPlayerReady(playerobject) {
 window.addEventListener('DOMContentLoaded', asyncloaded);  // load
 
 async function RotateVideoSpeed() {
+    console.log("In RotateVideoSpeed");
     globalVideospeed++
     if (globalVideospeed >=4) globalVideospeed=0;
 
     if (globalplayer)
         switch (globalVideospeed) {
-			case 0: globalplayer.setPlaybackRate(1);console.log("Speed 1");break;
-			case 1: globalplayer.setPlaybackRate(1.25);console.log("Speed 1.25");break;
-			case 2: globalplayer.setPlaybackRate(1.5);console.log("Speed 1.5");break;
-			case 3: globalplayer.setPlaybackRate(2);console.log("Speed 2");break;
-     	}
-    await sleep(100); // wait until speed is processed
-    setElementVal("__label",globalplayer.getPlaybackRate(),"videospeed")
+          case 0: globalplayer.setPlaybackRate(1);console.log("Speed 1");break;
+          case 1: globalplayer.setPlaybackRate(1.25);console.log("Speed 1.25");break;
+          case 2: globalplayer.setPlaybackRate(1.5);console.log("Speed 1.5");break;
+          case 3: globalplayer.setPlaybackRate(2);console.log("Speed 2");break;
+      }
+      await sleep(100); // wait until speed is processed
+      setElementVal("__label",globalplayer.getPlaybackRate(),"videospeed")
+      //  DisplayMessage(`Video speed set to ${globalplayer.getPlaybackRate()}x`);
 }
+
 
 var font=0;
 
 function FontSize() {
-	font++;
-	if (font > 3) font= -2;
-	switch(font){
-		case -2:
-			ToggleCueVisibility();
-			setElementVal("__label","Off","fontsize");
-			break;
-		case -1:
-			ToggleCueVisibility();
-			SetglobalplayerSubtitle(localStorage.getItem("currentlang"));
-			globalplayer.setOption('captions', 'fontSize', font);
-			setElementVal("__label",parseInt(font)+2,"fontsize");
-			break;
-		default:
-			globalplayer.setOption('captions', 'fontSize', font);
-			setElementVal("__label",parseInt(font)+2,"fontsize");
-	}
+  //player.setOption('captions', 'track', {'languageCode': 'es'});
+  //player.setOption('captions', 'track', {});
+  font++;
+  if (font > 3) font= -2;
+  switch(font){
+    case -2:
+      ToggleCueVisibility();
+      setElementVal("__label","Off","fontsize");
+      break;
+    case -1:
+      ToggleCueVisibility();
+      SetglobalplayerSubtitle(localStorage.getItem("currentlang"));
+      console.log(`Setting font to: ${font}`);
+      globalplayer.setOption('captions', 'fontSize', font);
+      setElementVal("__label",parseInt(font)+2,"fontsize");
+      break;
+    default:
+      console.log(`Setting font to: ${font}`);
+      globalplayer.setOption('captions', 'fontSize', font);
+      setElementVal("__label",parseInt(font)+2,"fontsize");
+  }
+  //console.log(`Setting font to: ${font}`);
+  //globalplayer.setOption('captions', 'fontSize', font);
+  //setElementVal("__label",parseInt(font)+2,"fontsize");
 }
 
 function AudioOnOff(event) {
+
     var fOn=GetToggleState(this,"displayactive");
+    console.log(`In AudioOnOff ${fOn}`);
     if (!globalplayer) return;
     if (!fOn)
         globalplayer.unMute();
@@ -96,6 +110,7 @@ function AudioOnOff(event) {
 export function DarkmodeOnOff(event) {
     var fOn=GetToggleState(this,"displayactive");
     localStorage.setItem("darkmodestatus", fOn);
+    console.log(`In darkmodeOnOff ${fOn}`);
     if (!fOn)
         disableDarkmode();
     else
@@ -103,38 +118,48 @@ export function DarkmodeOnOff(event) {
 }
 
 export function setDarkmode(temp){    //ran on start
-	LoadCSS().then( function() {
-		if(!temp){
-			disableDarkmode();
-		}
-		else {
-			enableDarkmode();
-		}
-	});
+  LoadCSS().then( function() {
+  if(!temp){
+    disableDarkmode();
+  }
+  else {
+    enableDarkmode();
+  }
+});
 }
 
 function enableDarkmode() {
-  	globalInjectedCSS.disabled = false;
+  console.log("enableDarkmode");
+  globalInjectedCSS.disabled = false;
 }
 
 function LoadCSS(){
-	return new Promise( function( resolve, reject ) {
-		var link = document.createElement('link');
-		link.rel  = 'stylesheet';
-		link.href = "https://koiosonline.github.io/lib/viewer_figma/dm.css";
-		document.body.appendChild(link);
-		link.onload = function() {
-			globalInjectedCSS = link;
-			resolve();
-		};
-	});
+  console.log("In load css");
+  return new Promise( function( resolve, reject ) {
+  var link = document.createElement('link');
+  link.rel  = 'stylesheet';
+  link.href = "https://koiosonline.github.io/lib/viewer_figma/dm.css";
+  document.body.appendChild(link);
+  link.onload = function() {
+            console.log( 'CSS has loaded!' );
+            globalInjectedCSS = link;
+            resolve();
+        };
+    } );
+  //link.transition="all 200 ease-in-out";
+  //link.transitionDelay="2s";
+  //link.disabled == false;
+  //LoadCSS = function (){return globalInjectedCSS;};
 }
 
 function disableDarkmode() {
-  	globalInjectedCSS.disabled = true;
+  console.log("disableDarkmode");
+  globalInjectedCSS.disabled = true;
 }
 
 function AutoplayOnOff(event) {
-	var autoplayOn=GetToggleState(this,"displayactive");
-	localStorage.setItem("autoplaystatus", autoplayOn);
+  console.log(this);
+  var autoplayOn=GetToggleState(this,"displayactive");
+  localStorage.setItem("autoplaystatus", autoplayOn);
+  console.log("in settings ", localStorage.getItem("autoplaystatus"));
 }
