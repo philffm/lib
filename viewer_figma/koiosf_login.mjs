@@ -320,20 +320,20 @@ async function onConnect() {
   // Subscribe to accounts change
   
   try {
-      provider.on("accountsChanged", (accounts) => {
-        fetchAccountData();
+      provider.on("accountsChanged", async (accounts) => {
+        await fetchAccountData();
 		publish("ethereumchanged")
       });
 
       // Subscribe to chainId change
-      provider.on("chainChanged", (chainId) => {
-        fetchAccountData();
+      provider.on("chainChanged", async (chainId) => {
+        await fetchAccountData();
 		publish("ethereumchanged")
       });
 
       // Subscribe to networkId change
-      provider.on("networkChanged", (networkId) => {
-        fetchAccountData();
+      provider.on("networkChanged", async (networkId) => {
+        await fetchAccountData();
 		publish("ethereumchanged")
       });
   } catch(e) {
