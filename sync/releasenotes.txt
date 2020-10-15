@@ -1,3 +1,14 @@
+Version V0.07
+Functional updates:
+- implemented more screens
+
+Technical updates:
+- more complex struct stored on orbitdb
+
+Layout updates:
+- images, colours and
+
+
 Version V0.06
 Functional updates:
 - improved the addjob/addlisting

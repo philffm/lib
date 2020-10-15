@@ -998,10 +998,12 @@ console.log(dimensions)
 				if (fthisisabutton && !fstaticwidth) {
 					width=undefined; // let the button create its width automatically
 				}
+                
+                
 				
                  if (fpartofflex) {
                     // console.log(width,height,left,right,bottom,top,paddingbottom)
-                    if (figdata.type=="TEXT") {
+                    if (figdata.type=="TEXT")  {  // ??&& !fstaticwidth
                         width=undefined; 
                         height=undefined;
                     }                
