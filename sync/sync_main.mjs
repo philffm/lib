@@ -114,7 +114,7 @@ function ShowSettingsInCard(options,screenlocation1) {
             case "sdg": 
                 for (var j in options[i]) { 
                     var goal=j.split(":")[0];
-                    var domid=getElement(goal,"sdg_palette",screenlocation)
+                    var domid=getElement(goal,"sdg_palette",screenlocation1)
                     domid.style.display=options[i][j]?"block":"none"
                 }
                 break;                
