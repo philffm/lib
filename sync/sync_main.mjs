@@ -1,9 +1,27 @@
  
- import {getElement,loadScriptAsync,ForAllElements,setElementVal,getElementVal,DomList,LinkVisible} from '../lib/koiosf_util.mjs';
+ import {getElement,loadScriptAsync,ForAllElements,setElementVal,getElementVal,DomList,LinkVisible,subscribe} from '../lib/koiosf_util.mjs';
  import {carrouselwait} from './sync_swipe.mjs';
  import {SwitchPage} from '../genhtml/startgen.mjs'
  import {Login,getUserAddress,getProfileName,getProfileImage,getProfile} from '../viewer_figma/koiosf_login.mjs';
- 
+
+
+var globaldb;
+var globalipfs;
+var globaladr="unknown"
+const globalserverid='QmaXQNNLvMo6vNYuwxD86AxNx757FoUJ3qaDoQ58PY2bxz' 
+var descriptions=new DomList('descriptioncontainer','scr_offerings');     
+var alloptionsset={}
+var selectlist1=new DomList('selectblock',"selectlist1",'scr_addjob');
+var selectlist2=new DomList('selectblock',"selectlist2",'scr_addjob');
+var globalavailableofferings=[];     
+var globalmyofferings=0   
+var globalsend=0;
+var globalliked=0;
+var globaltoswipe=0;
+var globaldisliked=0;
+var cardlistswipe=new DomList('card','scr_swipe');    
+
+//var cardlistsync=new DomList('card','scr_sync');    
  
 function log(logstr) {   
     getElement("logboxcontent").innerHTML +=logstr+"\n";
@@ -11,20 +29,12 @@ function log(logstr) {
 
 //console.error=log;
 
-
-var globaldb;
-var globalipfs;
-const globalserverid='QmaXQNNLvMo6vNYuwxD86AxNx757FoUJ3qaDoQ58PY2bxz'
-
 async function GetChoiceItems(source) {            
     var f=await fetch(source)
     var Items=await f.json().catch(( e) => console.error(e));            
     //console.log(JSON.stringify(Items))
     return Items;    
 }            
-
-
-var descriptions=new DomList('descriptioncontainer','scr_offerings');     
 
 function Select(e) {
     var ds=e.target.parentNode.dataset
@@ -36,9 +46,7 @@ function Select(e) {
     descriptions.FilterDataset(ds.type,ds.name,!fselected,true)         //toggle
     console.log(ds)
 }    
-
-var alloptionsset={}
-    
+   
 function CreateDropdown(location,list,listname) {    
     console.log("In CreateDropdown");
     var select = document.createElement("select");
@@ -55,22 +63,23 @@ function CreateDropdown(location,list,listname) {
     select.addEventListener("change", function() {   
         console.log('You selected: ', this.value,listname);
         console.log(this.options);
-        var value="";
-        for (i=0;i<this.options.length;i++) {
-            console.log(this.options[i].selected)
-            console.log(this.options[i].value)
-            if (this.options[i].selected)
-                value+=(value?", ":"")+this.options[i].value;
+        if (!alloptionsset[listname]) alloptionsset[listname]={}
+        for (i=0;i<this.options.length;i++) {            
+           // console.log(`${listname} ${this.options[i].value} ${this.options[i].selected}`)
+            alloptionsset[listname][this.options[i].value]=this.options[i].selected
         }
-         if (value) 
-            alloptionsset[listname]=value
-        else
-            delete alloptionsset[listname]
+        
+       //  if (value) 
+         //   alloptionsset[listname]=value
+        //else
+          //  delete alloptionsset[listname]
         
         if (listname=="area") {
-            SetupFields(value,selectlist2)
+            SetupFields(this.value,selectlist2)
         }       
-        UpdateCard()
+  
+        ShowProfile(getProfileInfo(),"line1","card","scr_addjob")
+        ShowSettingsInCard(alloptionsset,"scr_addjob")
     });
 }
 
@@ -78,43 +87,110 @@ function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-function UpdateCard() {
-        var str=""
-        for (var i in alloptionsset)
-            str += `<b>${capitalizeFirstLetter(i)}:</b> ${alloptionsset[i]}<br>`
-        
-        
-        var profile=getProfile()        
-        for (var i in profile)
-            str += `<b>${capitalizeFirstLetter(i)}:</b> ${profile[i]}<br>`
-        
-        setElementVal("addjoblog",str);
-        
-        //var line1=profile?.employer
-        //var line2=alloptionsset.activity
-        setElementVal("line1",str,"scr_addjob");
-        setElementVal("line2","","scr_addjob");
-        setElementVal("line3","","scr_addjob");
-        setElementVal("line4","","scr_addjob");
-        setElementVal("line5","","scr_addjob");
-        setElementVal("line6","","scr_addjob");
-        setElementVal("line7","","scr_addjob");
-        setElementVal("line8","","scr_addjob");
-        setElementVal("line9","","scr_addjob");
-        setElementVal("line10","","scr_addjob");
-        
-        
+function ShowProfile(profile,screenlocation1,screenlocation2,screenlocation3) {    
+    var str1=""    
+    for (var i in profile) {
+        switch (i) {
+            case "employer":
+            case "location":
+            case "name":
+            case "website":
+                str1 += `<b>${capitalizeFirstLetter(i)}:</b> ${profile[i]}<br>`
+                break;
+        }
+    }
+    setElementVal(getElement(screenlocation1,screenlocation2,screenlocation3),str1)
+}
+
+function ShowSettingsInCard(options,screenlocation1) {    
+
+ for (var i=1;i<=17;i++)
+        getElement(`sdg${i}`,"sdg_palette",screenlocation1).style.display="none"
+
+
+    var str2=""
+    for (var i in options) {    
+        switch (i) {
+            case "sdg": 
+                for (var j in options[i]) { 
+                    var goal=j.split(":")[0];
+                    var domid=getElement(goal,"sdg_palette",screenlocation1)
+                    domid.style.display=options[i][j]?"block":"none"
+                }
+                break;                
+            default:
+                var sep="";str2 += `<b>${capitalizeFirstLetter(i)}:</b> `
+                for (var j in options[i]) { 
+                    if (options[i][j]) {
+                        str2 +=`${sep}${j}`;
+                        sep =", ";
+                    }
+                }
+                str2 += "<br>"
+        }
+    }                    
+    setElementVal("line2",str2,"card",screenlocation1);
 }   
 
 function ScrAddJobMadeVisible() {
-    UpdateCard()
+    
+    ShowProfile(getProfileInfo(),"line1","card","scr_addjob")
+    ShowSettingsInCard(alloptionsset,"scr_addjob")
+ 
 }    
 
+function ScrApplyJobMadeVisible() {
+    ShowProfile(getProfileInfo(),"line1","myinfo","scr_applyjob")
+    var show=0
+      for (var i=0;i<globalavailableofferings.length;i++) {
+          if (globalavailableofferings[i].status !="Y") continue; // only show the swiped ones
+        
+              ShowProfile(globalavailableofferings[i].profile,"line1","card","scr_applyjob")
+              ShowSettingsInCard(globalavailableofferings[i].options,"scr_applyjob")
+              
+              SetupField(getElement("line2","motivation","scr_applyjob"))
     
-
-var selectlist1=new DomList('selectblock',"selectlist1",'scr_addjob');
-var selectlist2=new DomList('selectblock',"selectlist2",'scr_addjob');
-
+          show++
+          break; // only show 1
+        
+        }
+        if (!show) {
+           console.log("Ready applying");
+           SwitchPage("close");//close the popup
+        }
+    
+   
+}    
+ 
+ 
+function SetupField(id) {
+    let params = (new URL(document.location)).searchParams;
+    let idvalue= params.get(id); 
+    var target=getElement(id)    
+    target.contentEditable="true"; // make div editable
+    //target.style.whiteSpace = "pre"; //werkt goed in combi met innerText
+    
+    target.style.whiteSpace = "pre-line"; //werkt goed in combi met innerText
+    target.style.wordWrap = "break-word";  
+    
+    if (!idvalue)
+        idvalue=localStorage.getItem(id); 
+    if (!idvalue) 
+            idvalue = target.innerHTML   
+    target.innerHTML=idvalue    
+    target.addEventListener('input',SaveTxt , true); // save the notes    
+    
+    function SaveTxt(txt) { 
+        localStorage.setItem(id, txt.target.innerText);
+        console.log("input");
+        console.log(txt.target.innerText); 
+    }
+}
+        
+ 
+ 
+ 
+ 
 async function SetupFields(filename,selectlist) {
     SetupField("name")               
     selectlist.EmptyList()
@@ -132,8 +208,8 @@ async function SetupFields(filename,selectlist) {
 }    
         
 function SetupButtons() {
-    getElement("SEND").addEventListener("click", Send);
-    getElement("SEARCH").addEventListener("click", ShowRecords);
+    getElement("SENDBUTTON").addEventListener("click", Send);
+    getElement("SEARCH").addEventListener("click", UpdateRecordList);
     getElement("SWIPE").addEventListener("click", Swipe);
     getElement("DELETE").addEventListener("click", Delete);
     getElement("PEERS").addEventListener("click", Peers);
@@ -144,7 +220,7 @@ function SetupButtons() {
 }
 
 async function SetupOrbitdb() {
-    window.LOG='Verbose' // 'debug'
+    //window.LOG='Verbose' // 'debug'
     var IPFS=Ipfs; // for the browser version    
     globalipfs = await IPFS.create(
     
@@ -160,7 +236,7 @@ async function SetupOrbitdb() {
     })    
     const address = globaldb.address;    
     await globaldb.load();
-    ShowRecords()
+    UpdateRecordList()
     var dbeventsonreplicated=false;
     globaldb.events.on('replicate.progress', (address, hash, entry, progress, have) => {
         console.log(progress, have)
@@ -168,38 +244,37 @@ async function SetupOrbitdb() {
         if (progress >= have) { // then we have the initial batch
              if (!dbeventsonreplicated) {
                 dbeventsonreplicated=true;
-        globaldb.events.on('replicated', ShowRecords)
+        globaldb.events.on('replicated', UpdateRecordList)
                }
         }
     } )
-    globaldb.events.on('replicated', ShowRecords)            
+    globaldb.events.on('replicated', UpdateRecordList)            
     globaldb.events.on('write', (address, entry, heads) => {
         console.log('write', address, entry, heads);
-        ShowRecords()
+        UpdateRecordList()
     } )
     Connect();
 }    
 
-async function SetupMetamask() {
-    /*
-    console.log(window.ethereum);    
-    if (window.ethereum) {
-        var accounts=await ethereum.request({ method: 'eth_requestAccounts' })
-        console.log(accounts);
-        
+ 
 
-        var encryptionPublicKey=await ethereum.request({
-            method: 'eth_getEncryptionPublicKey',
-            params: [accounts[0]], // you must have access to the specified account
-        })
-        console.log(encryptionPublicKey);    
+
+function getProfileInfo() {
+    var profile=getProfile()
+    if (!profile) {
+        profile={}
+        profile.name="Fill in via 3box"
+        profile.employer="Fill in via 3box"
+        profile.location="Fill in via 3box"
+        profile.school="Fill in via 3box"
+        profile.website="Fill in via 3box"
+        profile.job="Fill in via 3box"
     }
-    */
+    return profile
 }    
 
-
 function ShowMyDetails() {
-    var profile=getProfile()
+    var profile=getProfileInfo()
     console.log(profile);
     if (profile) {
         setElementVal("myname",     profile.name,"scr_mydetails")
@@ -219,6 +294,12 @@ function ShowMyDetails() {
     */
 }
 
+function EthereumChanged() {
+    console.log("EthereumChanged")
+    globaladr=getUserAddress() 
+    if (!globaladr) globaladr="unknown" 
+    UpdateRecordList()
+}
         
 async function main() {
     console.log("Main");           
@@ -229,72 +310,104 @@ async function main() {
     //await loadScriptAsync("https://gpersoon.com/koios/lib/lib/orbitdb0.24.1.min.js"); // https://www.unpkg.com/orbit-db@0.24.1/dist/orbitdb.min.js
          await loadScriptAsync("https://gpersoon.com/koios/lib/lib/orbitdb26.min.js")    // clone from github & npm run build:dist
 
+    subscribe("ethereumchanged",EthereumChanged)
+
     LinkVisible("scr_addjob"  ,ScrAddJobMadeVisible)    
+    LinkVisible("scr_applyjob"  ,ScrApplyJobMadeVisible)    
     
-    SetupMetamask() // runs in parallel
+    
     await SetupFields("jobinfo",selectlist1)
     await SetupFields("financial",selectlist2)
     SetupButtons() 
     await SetupOrbitdb()
     
     await Login() // should be suffiently initiated
+    globaladr=getUserAddress()         
     
+    if (!globaladr) globaladr="unknown" 
     ShowMyDetails()
 
     
 }
         
-var globalavailableofferings=[];     
-var globalmyofferings=0   
-        
-async function ShowRecords() {
-   //     console.log("In ShowRecords");
-        globalavailableofferings=[];     
-        globalmyofferings=0
-        var name=getElementVal("name")        
-        var allofferings=""
-        var myofferings=""
-        var mymatches=""        
-        var searchfreetext=getElementVal("searchfreetext")
-       // console.log(searchfreetext);
-        const result = await globaldb.query(() => true); // get all records
-        console.log(result);        
-        
-        //log(`Number of entries: ${result.length}`)   
-       // str=JSON.stringify(result)
-        
-        for (var i=0;i<result.length;i++) {
-            var line=""
-            ForAllElements(result[i],undefined,(id,val)=>{ 
-                if (id != "_id")
-                    line +=`${id}: ${val} `
-            } )
-            line +="<br>"
-            if (result[i].name==name) {
-                myofferings+=line;
-                globalmyofferings++;
-                
-            }
-            allofferings+=line; 
-          
-            if (result[i].freetext && result[i].freetext.includes(searchfreetext) && (result[i].name!=name)) { // exclude my own offerings
-                mymatches+=line;
-                globalavailableofferings.push(result[i]);
-            }
-        }
-        getElement("entries").innerHTML=`entries: ${globalavailableofferings.length}`;
-        getElement("SUPPLIED JOBS").innerHTML=`SUPPLIED JOBS: ${globalmyofferings}`;
-        setElementVal("allofferings",allofferings);
-        setElementVal("myofferings",myofferings);
-        setElementVal("mymatches",mymatches);
-      //  console.log(globalavailableofferings)
-        Liked()
-}          
-        
-        
-var cardlistswipe=new DomList('card','scr_swipe');    
 
-var cardlistsync=new DomList('card','scr_sync');    
+
+/*
+function ConvertToText() {
+     var line=""
+            for (var j in result[i]) {
+                if (j=="_id") continue; // ignore
+                if (typeof(result[i][j])=="object") {// has subcategories
+                    line +=`<br>${j}: `;
+                    for (var k in result[i][j]) {                        
+                        if (typeof(result[i][j][k])=="object") {// has subcategories
+                            line +=`<br>${k}: `;
+                            for (var l in result[i][j][k]) {
+                                line +=`${l}, `
+                            }
+                            line +="<br>";
+                        }
+                        else                  
+                            line +=`${k}: ${result[i][j][k]} <br>`
+                    }
+                    line +="<br>";
+                }
+                else                  
+                    line +=`${j}: ${result[i][j]} <br>`
+            }            
+            line +="<br>"
+            
+}
+*/
+
+        
+async function UpdateRecordList() {
+    console.log(`In UpdateRecordList globaladr=${globaladr}`)
+    globalavailableofferings=[];             
+    globalliked=0
+    globaldisliked=0
+    globaltoswipe=0
+    globalsend=0
+    globalmyofferings=0        
+    
+    globalavailableofferings = await globaldb.query(() => true); // get all records
+    console.log(globalavailableofferings);                
+    for (var i=0;i<globalavailableofferings.length;i++) {     
+        var key=`sync-${globaladr}-${globalavailableofferings[i]._id}`    
+        var status=localStorage.getItem(key) // remember status per ethereum user
+
+    console.log(`UpdateRecordList i=${i} key=${key} status=${status}`);
+
+        if ((globalavailableofferings[i]._id).includes(globaladr)) 
+            status="M"                            
+        switch (status) {
+               case "Y": globalliked++  ; break
+               case "N": globaldisliked++;break;
+               case "S": globalsend++;break
+               case "M": globalmyofferings++;break
+               default:
+                    globaltoswipe++; break
+        }
+        
+        globalavailableofferings[i].status=status
+        console.log(globalavailableofferings[i]);
+        
+    }
+    UpdateStatusFields() 
+    
+}          
+      
+function UpdateStatusFields() {
+    getElement("entries").innerHTML=`entries: ${globalavailableofferings.length}`;        
+    getElement("APPLY_JOB").innerHTML=`APPLY JOB: ${globalliked}`;
+    getElement("SWIPE").innerHTML=`SWIPE: ${globaltoswipe}`;  
+    getElement("sendstatus").innerHTML=`send: ${globalsend}`;      
+    getElement("SUPPLIED_JOBS").innerHTML=`SUPPLIED JOBS: ${globalmyofferings}`;    
+    getElement("disliked").innerHTML=`disliked: ${globaldisliked}`;      
+}    
+      
+        
+
     
     
 async function Clear() {
@@ -310,17 +423,17 @@ var keys = Object.keys(localStorage);
                  }   
             }
         } 
-    Liked()
+    UpdateRecordList()
 }  
     
     
 function callbackselected(fselected,domid) {
     console.log(`Selected: ${fselected}`);
     console.log(domid.id)
-    localStorage.setItem(`sync-${domid.id}`, fselected?"Y":"N")
+    localStorage.setItem(`sync-${globaladr}-${domid.id}`, fselected?"Y":"N")
     if (fselected) {
         globalliked++
-        ShowGlobalLiked()
+          UpdateStatusFields() 
     }
     globaltoswipe--;
 }    
@@ -331,99 +444,74 @@ async function Swipe() {
     cardlistswipe.EmptyList()    
     console.log("domlist")
     for (var i=0;i<globalavailableofferings.length;i++) {        
-        var item=globalavailableofferings[i]    
-        var idstatus=localStorage.getItem(`sync-${item._id}`)
-        if (idstatus) // already swiped before
-            continue;
     
-        var card=cardlistswipe.AddListItem()
-        
+        switch (globalavailableofferings[i].status) {
+            case "Y": continue;
+            case "N": continue;
+        }
+    
+        var card=cardlistswipe.AddListItem()        
         setElementVal("Cardheader",`Card #${i+1}`,card)        
-        setElementVal("field1",item.name,card)
-        setElementVal("field2",item.freetext,card)
-        setElementVal("field3",item.productsearch,card)
-        setElementVal("field4",item.typesearch,card)
-        getElement("thumbsup",card).style.display="none"
-        card.id=item._id;
+  
+        
+        ShowProfile(globalavailableofferings[i].profile,"line1",card)
+        ShowSettingsInCard(globalavailableofferings[i].options,card)
+        
+        getElement("thumbsup",card).style.display="none"        
+        card.id=globalavailableofferings[i]._id;
     }
    await carrouselwait(getElement('cardcontainer'),"card",callbackselected)
    console.log("Ready swiping");
    SwitchPage("close");//close the popup
-   Liked()
+   UpdateRecordList()
 }
     
-var globalliked=0;
-var globaltoswipe=0;
     
-async function Liked() {
-    console.log("In function Liked");
-    
-    cardlistsync.EmptyList()    
-    console.log("domlist")
-    globalliked=0
-    globaltoswipe=0
-    for (var i=0;i<globalavailableofferings.length;i++) {        
-        var item=globalavailableofferings[i]    
-        var idstatus=localStorage.getItem(`sync-${item._id}`)
-        
-        switch (idstatus) {
-            case "Y":
-                    var card=cardlistsync.AddListItem()        
-                    setElementVal("Cardheader",`Card #${i+1}`,card)        
-                    setElementVal("line1",item.name,card)
-                    setElementVal("line2",item.freetext,card)
-                    setElementVal("line3",item.productsearch,card)
-                    setElementVal("line4",item.typesearch,card)
-                    card.id=item._id;
-                    globalliked++
-                    break;
-            case "N": break;
-            default: globaltoswipe++
-        }    
-    }  
-    ShowGlobalLiked()
-    
-}
-
-function ShowGlobalLiked() {
-    getElement("liked").innerHTML=`liked: ${globalliked}`;  
-    getElement("SWIPE").innerHTML=`SWIPE: ${globaltoswipe}`;  
-}
-
-
 
      
 async function Send() {
     console.log("In function Send()");
-    var name=getElementVal("name")
     
     
+    var sendprofile={}
+    var profile=getProfileInfo()        
+    for (var i in profile) {
+        switch (i) {
+            case "employer": 
+            case "location":
+            case "name":
+            case "website":
+                sendprofile[i]=profile[i];break;
+                break;
+        }
+    }
+
+
+    var sendoptions={}
+    for (var i in alloptionsset) {            
+        sendoptions[i]=alloptionsset[i];
+        for (var j in sendoptions[i]) 
+            if (!sendoptions[i][j]) 
+                delete sendoptions[i][j] // save space
+        if (sendoptions[i]=={})
+            delete sendoptions[i]
+    }
     
-    var e1 = getElement("idoffering-type")
-    console.log(e1)
-    console.log(e1.selectedIndex)
-    console.log(e1.options)
-    var typesearch = e1.options[e1.selectedIndex].value;
-    console.log(typesearch);
-    
-    
-    var e2 = getElement("idoffering-product");
-    console.log(e2.selectedIndex)
-    console.log(e2.options)
-    var productsearch = e2.options[e2.selectedIndex].value;
-    console.log(productsearch);
-    
-    var offeringfreetext=getElementVal("offeringfreetext");
-        
-    var h1=await globaldb.put({ _id: new Date().getTime(), name:name, typesearch:typesearch, productsearch:productsearch,freetext:offeringfreetext })   
-    
+    var tosend={}
+    tosend._id=`${globaladr}-${new Date().getTime()}`
+    tosend.profile=sendprofile
+    tosend.options=sendoptions
+    console.log("tosend")
+    console.log(tosend)
+    var h1=await globaldb.put(tosend)   
+    UpdateRecordList()
 }        
         
 async function Delete() {
     const result = await globaldb.query(() => true); // get all records
     for (var i=0;i<result.length;i++)
            await globaldb.del(result[i]._id)
-    //ShowRecords();       
+    //UpdateRecordList();       
 }        
 
 async function Peers() {
@@ -466,27 +554,6 @@ async function Pubsubinfo() {
 }
 
 
-function SetupField(id) {
-    let params = (new URL(document.location)).searchParams;
-    let idvalue= params.get(id); 
-    var target=getElement(id)    
-    target.contentEditable="true"; // make div editable
-    target.style.whiteSpace = "pre"; //werkt goed in combi met innerText
-    
-    if (!idvalue)
-        idvalue=localStorage.getItem(id); 
-    if (!idvalue) 
-            idvalue = target.innerHTML   
-    target.innerHTML=idvalue    
-    target.addEventListener('input',SaveTxt , true); // save the notes    
-    
-    function SaveTxt(txt) { 
-        localStorage.setItem(id, txt.target.innerText);
-        console.log("input");
-        console.log(txt.target.innerText); 
-    }
-}
-        
         
 window.onload=main()        
    //document.addEventListener("DOMContentLoaded", main)
