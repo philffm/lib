@@ -44,9 +44,16 @@ class KoiosDB {
   }
 
   async addJson(id, json) {
-    var jsonTest = { _id: 'testid', doc: {energie: 5, voedingswaren:"33", prijs: 700}};
-    var cid = await this.db.put(jsonTest);
-    return cid;
+  // const existingPiece = this.getPieceByHash(hash)
+  //if (existingPiece) {
+   // await this.updatePieceByHash(hash, instrument)
+   //return;
+  //}
+  //var putOBJ = { _id:`${id}`, doc:{json}};
+  var jsonTest = { _id: 'testid', doc: {energie: 5, voedingswaren:"33", prijs: 700}};
+
+  var cid = await this.db.put(jsonTest);
+  return cid;
   }
 
   async getJsonById(id) {
@@ -69,6 +76,18 @@ class KoiosDB {
       }, 10000);
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 //ISOMORPHIC
 try {

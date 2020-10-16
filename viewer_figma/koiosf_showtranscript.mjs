@@ -2,15 +2,13 @@ import {LinkButton,getElement} from '../lib/koiosf_util.mjs';
 import {SetSpeechLang} from './koiosf_speech.mjs';
 import {SetglobalplayerSubtitle} from '../viewer_figma/koiosf_viewer.mjs'
 
-//Unused variables
-/*
 var langbtns; // array of all language buttons;
 var langbtns_index=0;
 var setofsheets;
+
 var currenttrack=0;
-var currentSubtitle=0;
-*/
 export var currentlang=0;
+var currentSubtitle=0;
 var SecondsArray=[];
 var previous_span=0;
 var previous_color=0
@@ -21,12 +19,25 @@ var TranscriptShownCB;
 
 export function SelectLanguage(language) {
     SelectTranscriptLanguage(language);
+    //SetSpeechLang(language);
 }
 
+
+
 function SelectTranscriptLanguage(language) {
+    console.log(`In SelectTranscriptLanguage ${language} old lang: ${currentlang}`);
+    //if (currentlang)
+        //getElement(`language-span-${currentlang}`).style.display = "none";
     currentlang=language;
     SetglobalplayerSubtitle(currentlang);
+    //PrepLanguage(currentlang);
+    //var el=getElement(`language-span-${currentlang}`)
+    //if (el)
+        //el.style.display = "block";
 }
+
+
+
 
 export function SetVideoTranscriptCallbacks(_SetVideoSeconds,_TranscriptShownCB) {
     SetVideoSeconds = _SetVideoSeconds;
@@ -36,21 +47,24 @@ export function SetVideoTranscriptCallbacks(_SetVideoSeconds,_TranscriptShownCB)
 function SubtitleToSeconds(subtitle) {
     var Seconds=[];
     for (var j=0;j < subtitle.length;j++) {
-        var subline=subtitle[j];
-        var s=parseInt(subline.start);
-        var e=parseInt(parseFloat(subline.start)+parseFloat(subline.dur));
-        for (var k=s; k< e;k++)
-            Seconds[k]=j;
-    }
-    return Seconds;
+         var subline=subtitle[j];
+         var s=parseInt(subline.start);
+         var e=parseInt(parseFloat(subline.start)+parseFloat(subline.dur));
+         for (var k=s; k< e;k++)
+             Seconds[k]=j;
+     }
+     return Seconds;
 }
 
 function AddTranscripts(domid, subtitle,language) {
+   // console.log(`In AddTranscripts ${language}`);
     while (domid.firstChild)
         domid.removeChild(domid.lastChild); // first remove previous children
 
     for (var j=0;j < subtitle.length;j++) {
+
         var spanprefix=document.createElement("span");spanprefix.innerHTML=`Start: ${Math.round(parseFloat(subtitle[j].start))} `;domid.appendChild(spanprefix);
+
         var span=document.createElement("span");
         let txtstr=subtitle[j].text;
         txtstr = txtstr.replace(/\.[\.]+/, ''); // replace multiple dots with empty string
@@ -60,6 +74,7 @@ function AddTranscripts(domid, subtitle,language) {
         span.startsecond=parseInt(subtitle[j].start);
         domid.appendChild(span);
         span.addEventListener("click",SubTitleClicked);
+
         var spansuffix=document.createElement("span");spansuffix.innerHTML="<br>";domid.appendChild(spansuffix);
     }
 }
@@ -77,7 +92,6 @@ function HighlightTransscript(id) {
         TranscriptShownCB(sub_span.innerHTML);
     }
 }
-
 export function UpdateTranscript(CurrentPos) {   // called frequently
     if (SecondsArray.length > 0 &&  SecondsArray[currentlang]) {
         var res=SecondsArray[currentlang][ parseInt(CurrentPos)]
@@ -85,14 +99,21 @@ export function UpdateTranscript(CurrentPos) {   // called frequently
     }
 }
 
+
+
+
+
+
 function SubTitleClicked(event) {
     var newpos=event.target.startsecond;
+    console.log(`SubTitleClicked ${newpos} ${event.target.id}`);
     HighlightTransscript(event.target.id);
     if (SetVideoSeconds)
         SetVideoSeconds(newpos);
 }
 
 function PrepareLanguageButtons() {
+    console.log("In PrepareLanguageButtons");
     var list = getElement("langbtn");
     if (list && list[0]) {
         PrepareLanguageButtonsTemplate = list[0];
@@ -112,12 +133,16 @@ function PrepLanguage(language) {
     if (!transcripts) return undefined;
     var languagespan=document.createElement("div");
     languagespan.style.display = "none";
+    //languagespan.style.overflowY = "scroll";
     languagespan.id=`language-span-${language}`;
     transcripts.appendChild(languagespan);
     var cln = PrepareLanguageButtonsTemplate.cloneNode(true);
     PrepareLanguageButtonsParent.appendChild(cln);
     cln.id=`language-button-${language}`; // assign id's
     cln.innerHTML=language; // lang_translated;
+    //console.log(cln);
+    //    LinkButton(cln.id,x => SelectLanguage(language));
+
     return languagespan;
 }
 

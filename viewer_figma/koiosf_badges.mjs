@@ -13,64 +13,87 @@ var tokenfactoryJson
 var tokenJson
 var contracttokenfactory;
 
+
 /////////////////// NFT //////////////////////////////////////////////////////////////////////////////
 
+ 
 async function getBadges() {
-	GlobalBadgeList.EmptyList()    
+    console.log("In getBadges");
+     GlobalBadgeList.EmptyList()    
+
 
     var totalBadges =   await nft_contract.methods.balanceOf(globalaccounts[0]).call();
+    console.log(`totalBadges=${totalBadges}`)
+    // await nft_contract.methods.nonce().call();
     
+ //   tokenOfOwnerByIndex
+    
+
     for (var i = 0; i < totalBadges; i++) {
         var urltarget = GlobalBadgeList.AddListItem() 
-        globalbadgeinfo[i]=await GetBadgeDetails(urltarget,i)
+         globalbadgeinfo[i]=await GetBadgeDetails(urltarget,i)
     }
+	console.log("End getBadges");
 }
 
 function StudentBadgeName() {
-	var currentcourse=GlobalCourseList.GetCurrentCourse()
+	 var currentcourse=GlobalCourseList.GetCurrentCourse()
+    console.log(currentcourse);
 	return "Student-"+currentcourse
 }
 
 var globallisttemplates=[]
 var fglobalTemplatesLoaded=false;
 
-// images are loaded from https://cloudflare-ipfs.com/ipfs/..  (svg doesn't allways work)
+ // images are loaded from https://cloudflare-ipfs.com/ipfs/..  (svg doesn't allways work)
 async function GetTemplates() {	
 	globallisttemplates=[]	
 	var nrTemplates=await nft_contract.methods.nrTemplates().call()
-
+	console.log(`nrTemplates=${nrTemplates}`);
+    console.log(nrTemplates);
     var currentcourse=GlobalCourseList.GetCurrentCourse()
+    console.log(currentcourse);
     
-	for (var i=0;i<nrTemplates;i++) {
-		var info=await nft_contract.methods.GetTemplateInfo(i).call()		
-		globallisttemplates.push(info)
-	}
-	fglobalTemplatesLoaded=true;
+     for (var i=0;i<nrTemplates;i++) {
+         var info=await nft_contract.methods.GetTemplateInfo(i).call()		
+		 globallisttemplates.push(info)
+	 }
+	 fglobalTemplatesLoaded=true;
+	 console.log("GetTemplates : fglobalTemplatesLoaded");
 }	
 
+
+
 function FindBadge(wantedname) {
+	console.log(`In FindBadge ${fglobalTemplatesLoaded}`)
 	if (!fglobalTemplatesLoaded) return undefined;
 	
 	for (var i=0;i<globallisttemplates.length;i++) {
 	    var name=globallisttemplates[i].name
-       	if (name==wantedname) return i;	 
+        console.log(name);
+       if (name==wantedname) return i;	 
 	}
 	return -1;
 }
 
 function HasBadge(wantedname) {
 	for (var i=0;i<globalbadgeinfo.length;i++) {
+		console.log(i);
+		console.log(globalbadgeinfo[i])
 		if (!globalbadgeinfo[i]) continue;
 		if (!globalbadgeinfo[i].templateinfo) continue;
-		
-		var name=globalbadgeinfo[i].templateinfo.name
-		if (name==wantedname) return true;	 
+	    var name=globalbadgeinfo[i].templateinfo.name
+        console.log(name);
+         if (name==wantedname) return true;	 
 	}
 	return false;
 }	
 
+
 function GetBadgeInfo(wantedid) {
 	for (var i=0;i<globalbadgeinfo.length;i++) {
+		console.log(i);
+		console.log(globalbadgeinfo[i])
 		if (!globalbadgeinfo[i]) continue;
 		if (globalbadgeinfo[i].tokenid != wantedid) continue;
 		return globalbadgeinfo[i]
@@ -78,34 +101,50 @@ function GetBadgeInfo(wantedid) {
 	return undefined;
 }	
 
+
 var globalbadgeinfo=[]
 
 async function GetBadgeDetails(urltarget,i) { // put in function to be able to run in parallel
-	var tokenid = await nft_contract.methods.tokenOfOwnerByIndex(globalaccounts[0],i).call(); // ownedTokens
-	var tostore={}	  
-	urltarget.id=tokenid;
-	var template = await nft_contract.methods.GetTemplateId(tokenid).call();			
-	var templateinfo = await nft_contract.methods.GetTemplateInfo(template).call();
-	
-	tostore.tokenid=tokenid
-	tostore.template=template
-	tostore.templateinfo=templateinfo
-	
-	var uri = await nft_contract.methods.tokenURI(tokenid).call();      
-	
-	tostore.uri=uri;
-	
-	var badgecontent=await GetJsonIPFS(uri)
-	
-	tostore.badgecontent=badgecontent;
-	if (badgecontent) {
-		if (badgecontent.image) {
-			var imageobject=await GetImageIPFS(badgecontent.image)
-			setElementVal("__icon",imageobject,urltarget)
-		}        
-		setElementVal("__label",badgecontent.name+" "+badgecontent.description,urltarget)
-	}
-	return tostore		
+        var tokenid = await nft_contract.methods.tokenOfOwnerByIndex(globalaccounts[0],i).call(); // ownedTokens
+      //  console.log(`tokenid=${tokenid}`)	
+		var tostore={}	  
+		urltarget.id=tokenid;
+		var template = await nft_contract.methods.GetTemplateId(tokenid).call();			
+		var templateinfo = await nft_contract.methods.GetTemplateInfo(template).call();
+		//console.log(template)
+		//console.log(templateinfo);
+		
+		tostore.tokenid=tokenid
+		tostore.template=template
+		tostore.templateinfo=templateinfo
+		
+        var uri = await nft_contract.methods.tokenURI(tokenid).call();
+       // console.log(uri)        
+		
+		tostore.uri=uri;
+		
+        var badgecontent=await GetJsonIPFS(uri)
+        //console.log(badgecontent);
+		
+		tostore.badgecontent=badgecontent;
+        if (badgecontent) {
+        //getBadgeContent(uri, i);
+            if (badgecontent.image) {
+                 var imageobject=await GetImageIPFS(badgecontent.image)
+                 setElementVal("__icon",imageobject,urltarget)
+            }        
+            setElementVal("__label",badgecontent.name+" "+badgecontent.description,urltarget)
+			
+			//urltarget.dataset.name        =badgecontent.name
+			//urltarget.dataset.description =badgecontent.description
+			
+			
+           // console.log(urltarget);
+        }
+		
+		return tostore
+		
+		
 }        
 
 /// FT /////////////////////////////////////////////////////////
@@ -114,63 +153,84 @@ async function getTokens() {
 	GlobalTokenList.EmptyList()    
 	
 	var totalTokens =   await contracttokenfactory.methods.NrTokens().call();
+	console.log(`In getTokens: totalTokens=${totalTokens}`);
 	for (var i=0;i<totalTokens;i++) {
 		var address=await contracttokenfactory.methods.tokens(i).call();
+		//console.log(address);
+		
 		var tokencode=await web3.eth.getCode(address)
-
-		if (tokencode.length <=2) {       
+		// console.log(tokencode);
+		 if (tokencode.length <=2) {       
 			console.error("No contract code");   
-			continue;
-		} 
+		    continue;
+		 } 
 		 
-		var contracttoken = await new web3.eth.Contract(tokenJson.abi, address);
-		var name=await contracttoken.methods.name().call();
-		var symbol=await contracttoken.methods.symbol().call();
-		var decimals=await contracttoken.methods.decimals().call();
-		var balance=await contracttoken.methods.balanceOf(globalaccounts[0]).call();
-		
-		balance = (balance / (10 ** decimals)).toFixed(0)
-		
-		if (balance > 0) {
-			var urltarget = GlobalTokenList.AddListItem() 			
+		 var contracttoken = await new web3.eth.Contract(tokenJson.abi, address);
+		// console.log(contracttoken);
+		 var name=await contracttoken.methods.name().call();
+		 var symbol=await contracttoken.methods.symbol().call();
+		 var decimals=await contracttoken.methods.decimals().call();
+		 
+		 var balance=await contracttoken.methods.balanceOf(globalaccounts[0]).call();
+		 
+		 balance = (balance / (10 ** decimals)).toFixed(0)
+		 
+		 console.log(`Name=${name} Balance=${balance} address=${address}`)
+		 if (balance > 0) {
+		 
+			var urltarget = GlobalTokenList.AddListItem() 
+			//urltarget.id=
+			 
 			var tokenImage=await GetTokenDetails(urltarget,contracttoken,balance)
 			tokenImage=GetResolvableIPFS(tokenImage);
 			SetLinkMetamask(urltarget,address,symbol,decimals,tokenImage)
-		}
+		 }
 	}
 }
-
 function SetLinkMetamask(urltarget,address,symbol,decimals,tokenImage) { // seperate function to remember state
+	console.log(`In SetLinkMetamask tokenImage=${tokenImage}`);
 	if (!tokenImage)
 		return;
 	var param={
-		type: 'ERC20', 
-		options: {
-			address: address, 
-			symbol: symbol, 
-			decimals: decimals, 
-			image: tokenImage
-			}
-	}		 
+			   type: 'ERC20', 
+			   options: {
+					address: address, 
+					symbol: symbol, 
+					decimals: decimals, 
+					image: tokenImage
+				  }
+			}		 
 	LinkClickButton(urltarget,x=> getWeb3Provider().request({method: 'wallet_watchAsset',params: param }) );
 }
-
 async function GetTokenDetails(urltarget,contracttoken,balance) { 
-	var uri = await contracttoken.methods.tokenURI().call();     
-	var tokencontent=await GetJsonIPFS(uri)
-	if (!tokencontent) 
-		return undefined;		
-	setElementVal("__label",tokencontent.name+"<br>"+balance,urltarget)
-	if (!tokencontent.image) 
-		return undefined
-		var imageobject=await GetImageIPFS(tokencontent.image)
-		setElementVal("__icon",imageobject,urltarget)
-	return tokencontent.image; // tokencontent.image
+
+        var uri = await contracttoken.methods.tokenURI().call();
+     //   console.log(uri)        
+        var tokencontent=await GetJsonIPFS(uri)
+      //  console.log(tokencontent);
+        if (!tokencontent) 
+			return undefined;		
+		setElementVal("__label",tokencontent.name+"<br>"+balance,urltarget)
+	//	console.log(urltarget);
+		if (!tokencontent.image) 
+			return undefined
+		 var imageobject=await GetImageIPFS(tokencontent.image)
+		 setElementVal("__icon",imageobject,urltarget)
+		return tokencontent.image; // tokencontent.image
 }   
-   
+
+
+
+
+     
 async function Joincourse() {
+	console.log("In Joincourse")
 	function show(str) { appendElementVal("jointext",str+"<br>","ov_join")	}	
 	setElementVal("jointext","","ov_join") // clean the text
+	
+	console.log(globallisttemplates);
+	console.log(globalbadgeinfo);
+	
 	var sbn=StudentBadgeName()
 	
 	show(`Looking for badge ${sbn}`)
@@ -194,6 +254,8 @@ async function Joincourse() {
 		return;
 	}
 		
+
+	
 	var mybalance=await web3.eth.getBalance(globalaccounts[0]);
 	show(`Trying to get badgetemplate ${wantedid}`)
 	show(`mybalance ${web3.utils.fromWei(mybalance, 'ether')} ether`)
@@ -202,53 +264,85 @@ async function Joincourse() {
 	var addressFaucet = web3.eth.accounts.privateKeyToAccount(privateKey).address; 
 	web3.eth.accounts.wallet.add(privateKey);
 	var value=web3.utils.toWei('10', 'milli');
+	console.log(`Sending value ${value}`)
+	// 1 eth: "1000000000000000000"
+//           '1000000000000000
+
 	
 	result = await  web3.eth.sendTransaction({from: addressFaucet,to: globalaccounts[0],gas: 200000,value: value}).catch(x => show(`Error: ${x.code} ${x.message}`));    
+	console.log(`Transaction hash: ${result.transactionHash}`);
 
- 	var etherscan=`https://rinkeby.etherscan.io/tx/${result.transactionHash}`
-		show(`<a href="${etherscan}" target="_blank">etherscan</a>`)
+ var etherscan=`https://rinkeby.etherscan.io/tx/${result.transactionHash}`
+		   show(`<a href="${etherscan}" target="_blank">etherscan</a>`)
+
+
+
+
 
 	mybalance=await web3.eth.getBalance(globalaccounts[0]);
 	show(`mybalance ${web3.utils.fromWei(mybalance, 'ether')} ether`)
+	
+
 	show("Joining course, getting badge")
+	
+	
 	show(`Getting badge now`) 
     show("Confirm metamask popup and wait 20 seconds");
 	var result=await nft_contract.methods.createToken(globalaccounts[0],wantedid).send({from: globalaccounts[0]})
-	var etherscan=`https://rinkeby.etherscan.io/tx/${result.blockHash}`
+	console.log(result)
+	
+	 var etherscan=`https://rinkeby.etherscan.io/tx/${result.blockHash}`
 	   show(`<a href="${etherscan}" target="_blank">etherscan</a>`)
 
+	
+	//setElementVal("jointext",`result ${JSON.stringify(result)}`,"ov_join")
 	show("Badge received")
 	getBadges() // run asynchronous
 	await sleep(10000)
-	ShowJoinButtons()       
+	ShowJoinButtons()
+       
 }
-
 async function OvBadgeMadeVisible(event) {
 	
 	function show(str) {		
 		appendElementVal("badgetext",str,"ov_badge")	
 	}
- 
+	
+    console.log("In OvBadgeMadeVisible")    
 	setElementVal("badgetext","","ov_badge")	 // empty first
+    console.log(event)   
     if (!event) return; // triggered via another then via click (back event)
 
     var target=FindDomidWithId(event);
 	if (!target) return;
-
+	console.log(target)
 	var id=target.id
-	var info=GetBadgeInfo(id)	
+	console.log(id);
+	var info=GetBadgeInfo(id)
+	console.log(info);
+	
 	var templateid=info.template
 	var manager=info.templateinfo.managedBy;
 	
+	
+			
     show(`Details about this badge...<br>`)
 	show(`id:${id}<br>`)
 	var opensea=`https://rinkeby.opensea.io/assets/${nft_address}/${target.id}`
 	show(`<a href="${opensea}" target="_blank">opensea</a><br>`)
 	show(`name:${info.templateinfo.name}<br>`)
 	show(`this badge templateid:${templateid}<br>`)
-	show(`manager templateid:${manager}<br>`)	
+	show(`manager templateid:${manager}<br>`)
+	//str +=`description:${target.dataset.description}<br>`
 	
+	
+	
+	console.log(`manager templateid=${manager}`)
 	var managerinfo=globallisttemplates[manager]
+	console.log(managerinfo);
+	
+	
+	console.log(globallisttemplates);
 	
 	var studentbadge=undefined;
 	for (var k=0;k<globallisttemplates.length;k++) {
@@ -259,16 +353,23 @@ async function OvBadgeMadeVisible(event) {
 		}
 	}
 	
+	console.log(studentbadge); // already a templateid
+	
 	if (studentbadge) {
-		show(`Also check everyone with badge with the same template as:${studentbadge}<br>`)
-		var nr = await nft_contract.methods.tokensOfType(studentbadge).call();
-		
-		show(`With number of them: ${nr}<br>`)
-		for (var i=0;i<nr;i++) {
-			var studenttokenid = await nft_contract.methods.tokenOfTypeByIndex(studentbadge,i).call();
-			await ShowGetBadgeInfo(studenttokenid,show)
-		}     
+		// var templatestudentbadge = await nft_contract.methods.GetTemplateId(studentbadge).call();
+	   show(`Also check everyone with badge with the same template as:${studentbadge}<br>`)
+       //show(`which is ${templatestudentbadge}<br>`)
+	   
+	   var nr = await nft_contract.methods.tokensOfType(studentbadge).call();
+	   
+	   show(`With number of them: ${nr}<br>`)
+	   for (var i=0;i<nr;i++) {
+		   var studenttokenid = await nft_contract.methods.tokenOfTypeByIndex(studentbadge,i).call();
+		   await ShowGetBadgeInfo(studenttokenid,show)
+	   }   
+		   
     } 	
+	
 }	
 
 
@@ -276,6 +377,7 @@ async function ShowGetBadgeInfo(tokenid,show) {
 	show(`Badge with id=${tokenid}`)
 	var owneraddress = await nft_contract.methods.ownerOf(tokenid).call();		   		   
 	var opensea=`https://rinkeby.opensea.io/assets/${nft_address}/${tokenid}`		   
+	
 
 	show(`<a href="${opensea}" target="_blank">opensea</a> `)
 	var box3=`https://3box.io/${owneraddress}`;
@@ -286,8 +388,14 @@ async function ShowGetBadgeInfo(tokenid,show) {
 
 	show(`<br>`)
 	show(`address:${owneraddress}<br>`)
+		   
+	
 }	
 
+
+
+
+//&nft_jsonurl=https://gpersoon.com/koios/lib/smartcontracts/build/contracts/KOIOSNFT.json
 async function init() {	 
     LinkVisible("ov_join",Joincourse,"scr_profile")    
 	LinkVisible("ov_join",Joincourse,"scr_added_course" )    
@@ -296,23 +404,34 @@ async function init() {
 	
 	subscribe("setcurrentcourse",NewCourseSelected)
 	
+	console.log("Init in badges");
+	console.log(getElement("joincourse"))	
     let nft_jsonurl_parameter= GetURLParam("nft_jsonurl"); 
     
     var nft_jsonurl="https://koiosonline.github.io/lib/smartcontracts/build/contracts/KOIOSNFT.json"
     if (nft_jsonurl_parameter)
         nft_jsonurl=nft_jsonurl_parameter;
     nft_jsonobject=await GetJson(nft_jsonurl)    
-
+	
+    console.log(nft_jsonobject);
     subscribe("web3providerfound",NextStep)    
     GlobalBadgeList = new DomList("badge")
 	GlobalTokenList = new DomList("token")    	
 	var tokenfactoryinfo="https://koiosonline.github.io/lib/koiosft/build/contracts/ERC20TokenFactory.json"
 	tokenfactoryJson=await GetJson(tokenfactoryinfo)
+	console.log(tokenfactoryinfo);
+	console.log(tokenfactoryJson)	
 	var tokensinfo="https://koiosonline.github.io/lib/koiosft/build/contracts/ERC20Token.json"
 	tokenJson=await GetJson(tokensinfo)
+	console.log(tokensinfo);
+	console.log(tokenJson)	
 }
 
+
+//var globalwantedCourseStudentId=0 // different value than undefined to see badges aren't loaded yet
+
 async function NextStep() {
+    console.log("In NextStep");
     web3=getWeb3()
     var nid=(await web3.eth.net.getId());
     if (nid !=4) {
@@ -320,25 +439,35 @@ async function NextStep() {
     }    
     globalaccounts = await web3.eth.getAccounts();
 	
+	
+	
+	
     nft_address=nft_jsonobject.networks[nid].address		
     var nft_code=await web3.eth.getCode(nft_address)
-
+    //console.log(code);
+    
     if (nft_code.length <=2) {       
         console.error("No contract code");        
     } else {
 		nft_contract = await new web3.eth.Contract(nft_jsonobject.abi, nft_jsonobject.networks[nid].address);
+		//console.log(contract);
 		await GetTemplates(); 
 		await getBadges(); 
 		ShowJoinButtons()
 	}
-	var tokenfactorycode=await web3.eth.getCode(tokenfactoryJson.networks[nid].address)
-	if (tokenfactorycode.length <=2) {       
-		console.error("No contract code");        
-	} else {
-		contracttokenfactory = await new web3.eth.Contract(tokenfactoryJson.abi, tokenfactoryJson.networks[nid].address);
-		getTokens();
-	}
+      
+	  
+     var tokenfactorycode=await web3.eth.getCode(tokenfactoryJson.networks[nid].address)
+	 //console.log(tokenfactorycode);
+	     if (tokenfactorycode.length <=2) {       
+        console.error("No contract code");        
+     } else {
+		 contracttokenfactory = await new web3.eth.Contract(tokenfactoryJson.abi, tokenfactoryJson.networks[nid].address);
+		 console.log(contracttokenfactory);
+		 getTokens();
+	 }
 }    
+
 
 subscribe("ethereumchanged",EthereumChanged)
 
@@ -347,13 +476,18 @@ function NewCourseSelected() {
 }	
 
 function ShowJoinButtons() {
+	console.log("ShowJoinButtons");
 	var sbn=StudentBadgeName()
+	console.log(sbn)
+	console.log(HasBadge(sbn))
+	console.log(FindBadge(sbn))
 	var showjoin=(fglobalTemplatesLoaded && (!HasBadge(sbn)) && (FindBadge(sbn) >=0))
 	getElement("joincourse","scr_profile").dispatchEvent(new CustomEvent(showjoin?"show":"hide")); 
 	getElement("joincourse","scr_added_course").dispatchEvent(new CustomEvent(showjoin?"show":"hide")); 
 }
 
 async function EthereumChanged() {
+	console.log("ethereumchanged");
 	globalaccounts = await web3.eth.getAccounts();	
 	getBadges(); 
 	getTokens(); // note parallel

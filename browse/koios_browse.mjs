@@ -1,4 +1,14 @@
+// https://www.koios.online/browse-links?slides=QmQ9WwsBNSZGTAiFdDPn47PfMvN3nyfMrk93tkVXp6dvW7&match=BC-3.0
+
 import {loadScriptAsync,ipfsgetjson,subscribe,publish,DomList,GetCidViaIpfsProvider,GetCourseInfo } from '../lib/koios_util.mjs';
+
+
+//import {} from './koios_getslides.mjs';
+//import {} from './koios_notes.mjs';
+
+
+
+
 
 window.addEventListener('DOMContentLoaded', asyncloaded);  // load  
     
@@ -37,7 +47,8 @@ async function asyncloaded() {
     }
     
     slideindex.sort(sortfunction);
-       
+    
+    
     for (var i=0;i<slideindex.length;i++) {
         if (match && slideindex[i].chapter !== match) 
             continue; // ignore
@@ -57,9 +68,9 @@ async function asyncloaded() {
         }
     }          
     
-    //SetExtLink(str)  don't show the entire external tab
+ //   SetExtLink(str)  don't show the entire external tab
 
-    var prevurl=undefined
+var prevurl=undefined
     function SetInfo(url,txt,target,fDocument) { 
         if (url == prevurl) return "";  // filter out duplicates (already sorted)
         prevurl = url;
@@ -80,6 +91,8 @@ async function asyncloaded() {
         link_int.target=target
         
         link_int.title = txt; // hoover text to see entire link
+        //urltarget.style.overflow="hidden"
+        //urltarget.style.textOverflow="ellipsis"  
         link_int.style.overflow="hidden"
         link_int.style.textOverflow="ellipsis"  
         link_int.style.whiteSpace="nowrap"
@@ -92,6 +105,7 @@ async function asyncloaded() {
         return str;
     }    
 
+
     function SetExtLink(html) {
         var blob = new Blob([html], {type: 'text/html'});
         var url = URL.createObjectURL(blob);      
@@ -99,3 +113,40 @@ async function asyncloaded() {
     }    
 
 }
+
+
+// <a href="https://www.thesitewizard.com/" rel="noopener noreferrer" target="_blank">thesitewizard.com</a>
+/*
+    function notifyparent() {    
+        console.log(`notifyparent ${url}`)    
+        window.parent.postMessage(url,"*")       
+    }
+
+    domid.onclick=notifyparent;
+
+window.addEventListener("message", receiveMessage, false);
+function receiveMessage(event)
+{  if (event.origin != "https://www.koios.online")
+      return; // ignore other events
+    console.log(event);
+    var logtext=document.getElementById("notes");
+ 
+ 
+     if (logtext)
+        logtext.innerHTML +=event.data+"\r";
+    
+    logtext.scrollTop = logtext.scrollHeight; // keep the windows "scrolled down"
+}
+
+
+  if (slidesinfo.content)  {            
+            var ifrm=document.createElement("iframe");       
+            ifrm.width = "100%";
+            ifrm.height = "100%";   
+            ifrm.style.width = "100%";
+            ifrm.style.height = "100%";   
+                      
+            target.appendChild(ifrm);
+        }
+
+*/

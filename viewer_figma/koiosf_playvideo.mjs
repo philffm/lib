@@ -1,3 +1,4 @@
+//console.log(`In ${window.location.href} starting script: ${import.meta.url}`);
 import {SetglobalplayerSubtitle} from '../viewer_figma/koiosf_viewer.mjs'
 
 /* General comments
@@ -43,35 +44,62 @@ layer.getOption('captions', 'translationLanguages')
 
 player.setOption('captions', 'track', {'languageCode': 'nl'});
 player.setOption('captions', 'track', {});
-player.setOption("captions", "displaySettings", {"background": "#fff"}); // doesnt work
+
+
+
+ player.setOption("captions", "displaySettings", {"background": "#fff"}); // doesnt work
+
+
+
 */  
 
 import {LinkButton,loadScriptAsync,publish,LinkClickButton,subscribe,getElement} from '../lib/koiosf_util.mjs';
 
 async function onStateChange(event) {
+    //console.log(`In onStateChange ${event.data}`);
     SetglobalplayerSubtitle(localStorage.getItem("currentlang"));
   
-    switch (event.data) {
-        case -1: publish ("videounstarted"); break;
-        case  0: publish ("videoend");       break;
-        case  1: publish ("videostart");     break;
-        case  2: publish ("videopause");     break;
-        case  3: publish ("videobuffering"); break;
-        case  5: publish ("videocued");      break;  
-    }
-}    
+     switch (event.data) {
+         case -1: publish ("videounstarted"); break;
+         case  0: publish ("videoend");       break;
+         case  1: publish ("videostart");     break;
+         case  2: publish ("videopause");     break;
+         case  3: publish ("videobuffering"); break;
+         case  5: publish ("videocued");      break;
+         
+     }
+}    // YT.PlayerState.PLAYING
+//-1 – unstarted
+//0 – ended
+//1 – playing
+//2 – paused
+//3 – buffering
+//5 – video cued
+    //;A("YT.PlayerState.UNSTARTED", -1);
+    //A("YT.PlayerState.ENDED", 0);
+    //A("YT.PlayerState.PLAYING", 1);
+    //A("YT.PlayerState.PAUSED", 2);
+    //A("YT.PlayerState.BUFFERING", 3);
+    //A("YT.PlayerState.CUED", 5);
+   
    
 export async function SetupVideoWindowYouTube(id) { 
-    var domid=getElement(id)
-    domid.id=id; // youtube player want to have in id
+console.log("In SetupVideoWindowYouTube");
+
+var domid=getElement(id)
+domid.id=id; // youtube player want to have in id
+
+
+
     var player;
     await new Promise(async function(resolve, reject) {        // promise to be able to wait until ready
         window.onYouTubeIframeAPIReady = resolve;              // resolve the promise when iframe is ready    
         loadScriptAsync("https://www.youtube.com/iframe_api"); // load this way to prevent a cors message   
     });
     
+    console.log("Load youtube");
     await new Promise(async function(resolve, reject) {
-        player = new YT.Player(id, {      // store in a div below the grid, otherwise IOS/safari makes is full heigth
+       player = new YT.Player(id, {      // store in a div below the grid, otherwise IOS/safari makes is full heigth
             playerVars: { 
                 noCookie: true,  // testje
                 modestbranding: true, 
@@ -94,11 +122,18 @@ export async function SetupVideoWindowYouTube(id) {
             }          
         });  
     });
-    publish("youtubepluginloaded");
-    return player; 
+   console.log("In SetupVideoWindowYouTube, video is loaded");  
+   
+   publish("youtubepluginloaded");
+
+   
+   return player; 
 }
 
-// ** IPFS version // check   
+
+// ** IPFS version // check
+
+   
 async function SetupVideoWindowIPFS(ipfs,windowid,hash) {       
     var vp=getElement(windowid);
     video=document.createElement("video");
@@ -108,9 +143,10 @@ async function SetupVideoWindowIPFS(ipfs,windowid,hash) {
     video.addEventListener('error', videoerror, true);   
     vp.appendChild(video);
     video.addEventListener('timeupdate', (event) => {  // about 4x/second
-        VideoLocation();
+      VideoLocation();
     });    
     LoadHlsVideo(video,ipfs,hash);
+
 }
 
 function LoadHlsVideo(video,node,hash) {
@@ -126,22 +162,114 @@ function LoadHlsVideo(video,node,hash) {
     }
 }
 
+
+       //loadScriptAsync("https://unpkg.com/hlsjs-ipfs-loader@0.1.4/dist/index.js"),  // not needed now
+       //loadScriptAsync("https://cdn.jsdelivr.net/npm/hls.js@latest"),
+       //loadScriptAsync("https://cdnjs.cloudflare.com/ajax/libs/bignumber.js/9.0.0/bignumber.min.js")
+       
+       
+/*   get stream info, only for video
+    const stream = ipfs.stats.bwReadableStream({ poll: true })
+    var prevtotin=0;
+    stream.on('data', (data) => {
+        var totin=data.totalIn.dividedBy(1000000).toFixed(1);
+        if (totin !=prevtotin) {
+            console.log(`IPFS Total in: ${totin} mb`);
+            prevtotin = totin;
+        }          
+    });
+*/ 
+
 function videoerror(event){ 
   let error = event;
     if (event.path && event.path[0]) {     // Chrome v60
-        error = event.path[0].error;
+      error = event.path[0].error;
     }    
-
     if (event.originalTarget) { // Firefox v55
-        error = error.originalTarget.error;
+      error = error.originalTarget.error;
     }
     alert(`Video error: ${error.message}`);     // Here comes the error message
 }
+
+/*
+
+    if (video) {
+        console.log(video);
+        let track = video.addTextTrack('subtitles',  lang_translated,  lang_code);    
+        track.mode = "disabled"; // default disabled           
+        track.oncuechange= ( x => { // every change of subtitles    // checkout GetCueAsHTML      
+            if (x.currentTarget.activeCues.length != 0) {                
+                HighlightTransscript(x.currentTarget.activeCues[0].id)                                
+            } 
+        }); 
+    }
+    
+      if (video) {
+            var cue = new VTTCue(subtitle[j].start, parseFloat(subtitle[j].start)+parseFloat(subtitle[j].dur), subtitle[j].text);
+            cue.id=`sub-${lang_code}-${j}`;
+            track.addCue(cue);
+        }
+    
+    
+    function CueVisible(on) {
+        if (video)
+        currenttrack.mode=on?"showing":"hidden"; // while hidden, events are still triggered
+    
+    
+    
+    function selectLanguage(lang_code)
+       if (video) { // only if we control the video object
+        let ttList=video.textTracks;
+        let wanted=0;
+        for (let i=0;i<ttList.length;i++) {
+            if (ttList[i].language == lang_code) {
+                wanted=ttList[i];
+                break;
+            }    
+        }
+        if (wanted) {
+            if (currenttrack) currenttrack.mode="disabled"; // disable previous
+            currenttrack = wanted;    
+            wanted.mode="showing";
+        }
+    }
+    
+    VideoLocation() 
+     if (video) {
+        CurrentPos=video.currentTime
+        for (let i=0;i< video.played.length;i++) { // check amount of really played
+           ReallyPlayed += video.played.end(i) - video.played.start(i);
+        } 
+        PlaybackRate = video.playbackRate;
+
+    }
+  /*
+function StyleCues() {
+    let s = document.createElement("style");
+    s.type = "text/css";
+    s.id="cuestyle";
+    document.body.appendChild(s);
+    CueVisible(ToggleCueVisibilityStatus);
+}
+
+SetVideoSeconds
+    if (video) {
+        video.currentTime=seconds;
+        //video.play();
+    }
+    
+        var vid_url='QmXVnrbjf4xGGhUpAJp6LTj3fDoWo9VqtpepkWGPCWotq8';
+   console.log(`Video url=${vid_url}`); 
+    // SetupVideoWindowIPFS("videoplayer",vid_url)
+    
+*/ 
   
-async function asyncloaded() {     
+  async function asyncloaded() {    
+    console.log(`In asyncloaded of script: ${import.meta.url}`); 
     var player = await SetupVideoWindowYouTube("realvideoplayer");   
     publish("videoplayerready",player)
 }
   
-window.addEventListener('DOMContentLoaded', asyncloaded);  // load      
+  
+    window.addEventListener('DOMContentLoaded', asyncloaded);  // load      
 

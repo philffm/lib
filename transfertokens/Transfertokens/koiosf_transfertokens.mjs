@@ -1,6 +1,6 @@
 import {DomList, getElement, subscribe, setElementVal, LinkClickButton, getElementVal, GetJson} from '../../lib/koiosf_util.mjs';
 import {DisplayMessage} from '../../viewer_figma/koiosf_messages.mjs';
-import {getWeb3} from '../../viewer_figma/koiosf_login.mjs'
+import {getUserAddress,getWeb3} from '../../viewer_figma/koiosf_login.mjs'
 
 let useraddresses = new Array;
 let tokenamount = new Array;
@@ -37,8 +37,12 @@ async function initContractInformation() {
     subscribe("web3providerfound",NextStep)   
     var tokenfactoryinfo="https://koiosonline.github.io/lib/koiosft/build/contracts/ERC20TokenFactory.json"
 	tokenfactoryJson=await GetJson(tokenfactoryinfo)
+	console.log(tokenfactoryinfo);
+	console.log(tokenfactoryJson)	
 	var tokensinfo="https://koiosonline.github.io/lib/koiosft/build/contracts/ERC20Token.json"
 	tokenJson=await GetJson(tokensinfo)
+	console.log(tokensinfo);
+	console.log(tokenJson)	
 }
 
 async function NextStep() {
@@ -56,6 +60,7 @@ async function NextStep() {
         console.error("No contract code");        
     } else {
         contracttokenfactory = await new web3.eth.Contract(tokenfactoryJson.abi, tokenfactoryJson.networks[nid].address);
+        console.log(contracttokenfactory);
     }
 }
 
@@ -114,6 +119,7 @@ async function SendTransaction() {
             var decimals = await contracttoken.methods.decimals().call();   
             for (var i=0;i<tokenamount.length;i++) {      
                 tokenamount[i] = BigInt(parseInt(tokenamount[i]) * (10**decimals));
+                console.log(tokenamount[i]);  
             }
             contracttoken.methods.transferBulk(useraddresses, tokenamount).send({from: globalaccounts[0]});
         }
@@ -122,6 +128,8 @@ async function SendTransaction() {
 
 async function GetAddressInformation() {
     var entries=document.getElementsByClassName("transfertokensentry");
+    console.log(entries)
+    console.log(entries.length)
     for (var i=0;i<entries.length;i++) {
         tokenamount[i] = getElementVal("transfertokencounttext",entries[i])
         useraddresses[i] = getElementVal("transferuseraddresstext",entries[i])
