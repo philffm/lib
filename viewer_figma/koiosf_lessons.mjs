@@ -1,36 +1,19 @@
-import {subscribe,DomList,GetJsonIPFS, getElement,FitOneLine,publish,setElementVal,LinkToggleButton,ConvertDurationToString } from '../lib/koiosf_util.mjs';
-//import {SetglobalplayerSubtitle} from './koiosf_viewer.mjs';
+import {subscribe,DomList,GetJsonIPFS, getElement,FitOneLine,publish,setElementVal,ConvertDurationToString } from '../lib/koiosf_util.mjs';
 import {GetCourseInfo,GlobalCourseList} from './koiosf_course.mjs';
 import {GetToggleState} from '../genhtml/startgen.mjs'
 
-// var CurrentLesson=0; // dont export any more
-//var LastLesson=0;
 export var CurrentCourseTitle="";
 export var maxduration=0;
-
-var buttonBack;
-var buttonForward;
-
-
-// format vidinfo
-// title   
-// chapter   (boolean)
-// description  
-// thumbnail
-// videoid
-
 
 subscribe("setcurrentcourse",NewCourseSelected)
 
 class LessonList {    
     constructor (source) {
-        console.log(`LessonList constructor ${source}`);
         this.chapters=[]
         this.lessons=[];
         if (source) {// otherwise no lessonlist yet
             this.LessonListPromise=GetJsonIPFS(source).then(items=>{ // so we can wait for it later            
-                console.log(items)
-				if (!items) return;
+			    if (!items) return;
                 this.CurrentCourseTitle=items.title;
                 var currentchapter=""
                 for (var i=0;i<items.videos.length;i++) 
@@ -41,14 +24,9 @@ class LessonList {
                     else {
                         items.videos[i].chapter=currentchapter;
                         this.lessons.push(items.videos[i]);
-                    }
-                console.log(this.chapters)
-                console.log(this.lessons);                    
+                    }                
 				this.literature=items.literature; // literature combined with videoinfo (e.g. from youtube)
-				console.log("literature from youtube");
-				console.log(this.literature);
             })
-            console.log(this.LessonListPromise);
         } else this.LessonListPromise=undefined;
     }
         
@@ -74,30 +52,22 @@ class LessonList {
         var lessons=await this.GetLessonsList()
         return lessons[lesson]
     }
+
     async GetLessonData(lesson) {       
-        
         var lessons=await this.GetLessonsList()
         return lessons[lesson]
     }
-
-      
-
-    UpdateMyList(courseid,fremove) {
-        
-    }
     
     async SetCurrentLesson(lessonid) {
-         var currentcourse=GlobalCourseList.GetCurrentCourse()
-         console.log(`Storing lesson nr lesson-${currentcourse} ${lessonid}`);
-         if (lessonid <0) lessonid=0
-         if (lessonid >= this.lessons.length) lessonid = this.lessons.length-1;
+        var currentcourse=GlobalCourseList.GetCurrentCourse()
+        if (lessonid <0) lessonid=0
+        if (lessonid >= this.lessons.length) lessonid = this.lessons.length-1;
          
-         localStorage.setItem(`lesson-${currentcourse}`, lessonid);  
+        localStorage.setItem(`lesson-${currentcourse}`, lessonid);  
          
-         var lessons=await this.GetLessonsList()
-		 console.log(lessons[lessonid]);
-         publish("loadvideo",lessons[lessonid])
-         return lessonid;
+        var lessons=await this.GetLessonsList()
+        publish("loadvideo",lessons[lessonid])
+        return lessonid;
     }
 
     GetCurrentLesson() {
@@ -106,18 +76,12 @@ class LessonList {
         if (!currentlesson) currentlesson=0; // start at first lesson
         return currentlesson;
     }
-    
-    LoadCurrentLesson() {
-        
-    }
 
 	async SaveCourseSeen() {
 	    var lessons=await this.GetLessonsList()   
 		var totaltime=0
         for (var i=0;i<lessons.length;i++)  {      
 			var seeninfo=this.LoadVideoSeen(lessons[i])
-            console.log(seeninfo)
-            console.log(totaltime)
             if (seeninfo) {
                 if (seeninfo.seenend)
                     totaltime += lessons[i].duration
@@ -128,66 +92,46 @@ class LessonList {
 				
 		var currentcourse=GlobalCourseList.GetCurrentCourse()
 		var storageid=`course-${currentcourse}-totaltime`;    
-		console.log(`SaveCourseSeen ${currentcourse} ${totaltime}`)
 		localStorage.setItem(storageid,totaltime)  
 		publish("courseseenupdated")
-	}	
+    }	
+    
 	GetCourseSeen(courseid) {
 		var storageid=`course-${courseid}-totaltime`;    		
 		var get=localStorage.getItem(storageid);
-		console.log(`GetCourseSeen ${courseid} ${get}`)
 		return get;
 	}	
 
-  LoadVideoSeen(vidinfo) {
-	if (!vidinfo) return;
-    var storageid=`video-${vidinfo.videoid}`;
-    var get=localStorage.getItem(storageid);
-    var jsonparsed={}
-    
-    if (get) { // previous info about this video        
-        jsonparsed=JSON.parse(get)
-        jsonparsed.seensum=0
-        for (var i=0;i<vidinfo.duration;i++)
-            jsonparsed.seensum += jsonparsed.seensec[i];
+    LoadVideoSeen(vidinfo) {
+        if (!vidinfo) return;
+        var storageid=`video-${vidinfo.videoid}`;
+        var get=localStorage.getItem(storageid);
+        var jsonparsed={}
         
-    } else {
-        jsonparsed.seensum=0;
-        jsonparsed.seensec=[]
-        for (var i=0;i<vidinfo.duration;i++)
-            jsonparsed.seensec[i]=0;
-        jsonparsed.seenend=false;
-    }
-	//console.log(jsonparsed);
-	
-	console.log(`LoadVideoSeen id ${vidinfo.videoid} seenend ${jsonparsed.seenend}`);
-    return jsonparsed;
+        if (get) { // previous info about this video        
+            jsonparsed=JSON.parse(get)
+            jsonparsed.seensum=0
+            for (var i=0;i<vidinfo.duration;i++)
+                jsonparsed.seensum += jsonparsed.seensec[i];
+            
+        } else {
+            jsonparsed.seensum=0;
+            jsonparsed.seensec=[]
+            for (var i=0;i<vidinfo.duration;i++)
+                jsonparsed.seensec[i]=0;
+            jsonparsed.seenend=false;
+        }
+        return jsonparsed;
+    }    
+
+    async SaveVideoSeen(seeninfo,vidinfo) {
+        var storageid=`video-${vidinfo.videoid}`;
+        //var seenperc=parseFloat(seeninfo.seensum / vidinfo.duration).toFixed(3) - unused
+        var obj = { seensec: seeninfo.seensec, seenperc: seeninfo.seenperc, seenend: seeninfo.seenend };
+        var myJSON = JSON.stringify(obj);    
+        localStorage.setItem(storageid,myJSON)  
+    }    
 }    
-
-  async SaveVideoSeen(seeninfo,vidinfo) {
-	  //console.log(`SaveVideoSeen id ${vidinfo.videoid} seenend ${seeninfo.seenend}`);
-	   //var currentcourse=GlobalCourseList.GetCurrentCourse()
-	  //var lessons=await this.GetLessonsList()
-	  //var vidinfo=lessons[currentcourse]
-    var storageid=`video-${vidinfo.videoid}`;
-    var seenperc=parseFloat(seeninfo.seensum / vidinfo.duration).toFixed(3)
-    var obj = { seensec: seeninfo.seensec, seenperc: seeninfo.seenperc, seenend: seeninfo.seenend };
-    //console.log(obj)
-    var myJSON = JSON.stringify(obj);    
-    localStorage.setItem(storageid,myJSON)  
-}    
-
-
-// see chrome dev console / tab application / left column: Local storage
-
-
-
-
-}    
-
-
-
-    
 
 var PrepareLessonsList;
 var PrepareChapterList;
