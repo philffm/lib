@@ -135,22 +135,16 @@ class LessonList {
 
 var PrepareLessonsList;
 var PrepareChapterList;
-
 export var GlobalLessonList;
 
 async function NewCourseSelected() {   
-    console.log("In NewCourseSelected");
 	prefindex=undefined;
     PrepareLessonsList.EmptyList()
     PrepareChapterList.EmptyList()    
-    var videocid=await GetCourseInfo("videoinfo") 
-    console.log("videocid");
-    console.log(videocid);        
+    var videocid=await GetCourseInfo("videoinfo")     
     GlobalLessonList=new LessonList(videocid)    
     var lessons=await GlobalLessonList.GetLessonsList()
     if (lessons) {
-		console.log("Have lesson info:")
-		console.log(lessons);
 		var seentotal=0
         for (var i=0;i<lessons.length;i++)
                seentotal +=await AddLessonsItem(lessons[i],i)    
@@ -166,9 +160,7 @@ async function NewCourseSelected() {
 
 function AddChapter(vidinfo) {    
     var txt=vidinfo.title;    
-    console.log(`AddChapter ${txt}`)
     var cln=PrepareChapterList.AddListItem()
-    //cln.getElementsByClassName("chapter-name")[0].innerHTML=txt;	
     var sp=txt.split(" ")
     var chapter=sp[0]    
 	cln.id=`chapter-${chapter}`;   	
@@ -181,41 +173,29 @@ function AddChapter(vidinfo) {
 
 var oldindexchapter;
 
-function SetClickFilter(domid,mask) {
-  console.log(`SetClickFilter ${mask}`);
- 	
-     domid.addEventListener('click', e=> {
-        console.log("Click event in SetClickFilter");
-        console.log(e);    
-        console.log(mask);       
-		
+function SetClickFilter(domid,mask) { 	
+    domid.addEventListener('click', e=> {
 		var prevdomid=getElement(`chapter-${oldindexchapter}`);
 		if (prevdomid) {        
 			prevdomid.style.borderColor=""; // reset to original
 			prevdomid.style.borderStyle="";
 		}
-		console.log(domid)
 		domid.style.borderColor="#FF206E";//"red";
 		domid.style.borderStyle="solid";
 		oldindexchapter=mask
-
-		
         PrepareLessonsList.ShowDataset("chapter",mask,true)
-        }
-     );
+    });
 }    
-
 
 subscribe("videoseen",VideoSeen)
 	
 async function VideoSeen(currentvidinfo) {
 	var index=await GlobalLessonList.GetCurrentLesson()
 	var  el=getElement(`lesson-${index}`)
-	 // could also use cln.dataset.videoid	 
-	 getElement("seenvideo",el).dispatchEvent(new CustomEvent("displayactive"))    	 
-	 await GlobalLessonList.SaveCourseSeen()
+    // could also use cln.dataset.videoid	 
+    getElement("seenvideo",el).dispatchEvent(new CustomEvent("displayactive"))    	 
+    await GlobalLessonList.SaveCourseSeen()
 }	
-
 
 function SimplifyName(name) {
 	var left=name.split(" ")[0];
@@ -227,8 +207,7 @@ function SimplifyName(name) {
 
 
 
-async function AddLessonsItem(vidinfo,index) { // txt,thumbnail,description,videoid,duration) {
-    console.log(`AddLessonsItem ${vidinfo.title} ${vidinfo.chapter}`);   
+async function AddLessonsItem(vidinfo,index) { // txt,thumbnail,description,videoid,duration) {   
     vidinfo.txt=vidinfo.title; /// refactor
     var cln = PrepareLessonsList.AddListItem() //Template.cloneNode(true);
     getElement("lesson-name",cln).innerHTML=SimplifyName(vidinfo.txt);
@@ -244,118 +223,89 @@ async function AddLessonsItem(vidinfo,index) { // txt,thumbnail,description,vide
     cln.dataset.videoid=vidinfo.videoid; // to store & retrieve data about the video       
     SetClickPlay(cln,index)    
     var seeninfothisvideo=await GlobalLessonList.LoadVideoSeen(vidinfo)        
-    console.log(seeninfothisvideo);
     var disp=seeninfothisvideo.seenend?"displayactive":"displaydefault"
     getElement("seenvideo",cln).dispatchEvent(new CustomEvent(disp))    	
 	return seeninfothisvideo.seensum;
 } 
-
 
 async function SetClickPlay(cln,index) { // seperate function to remember state
     cln.addEventListener('click', e=> {  SelectLesson(index) }  );
 	var seenvideo=getElement("seenvideo",cln) 
 	cln.addEventListener('click', async e=> {          
         SelectLesson(index)
-		console.log(this)
-	    var fOn=GetToggleState(seenvideo,"displayactive")
-		console.log(fOn)        
+	    var fOn=GetToggleState(seenvideo,"displayactive")      
 		var vidinfo=await GlobalLessonList.GetCurrentLessonData()
-		console.log(vidinfo)
 		var seeninfo=GlobalLessonList.LoadVideoSeen(vidinfo)
-		seeninfo.seenend=fOn;
-		console.log(seeninfo);		
+		seeninfo.seenend=fOn;		
 		await GlobalLessonList.SaveVideoSeen(seeninfo,vidinfo)
-	  }
-     );
+	});
 	 
 	var playbutton=getElement("playbuttonfromlist",cln) 
-    playbutton.addEventListener('click', async e=> {
-        //console.log("Click event in SetClickPlay");
-       // console.log(e);    
-       // console.log(index);       
+    playbutton.addEventListener('click', async e=> {      
 	    autoplay=true;
         await SelectLesson(index)
 		if (videocued) { // already cued by previousaction
 			publish("videostart")
 			videocued=false;
-		} 
-			
-	}
-     );
-	 
-	 
+		} 		
+	});	 
 }   
+
 var videocued=false;
 var autoplay=false;
+
 function VideoCued() {
-	console.log(`In VideoCued autoplay${autoplay} videocued${videocued}`)
-  if (autoplay) 
-	  publish("videostart") // start the video
-  else
-	  videocued=true;
+    if (autoplay) 
+	    publish("videostart") // start the video
+    else
+	    videocued=true;
   
-  autoplay=false;  
+    autoplay=false;  
 }
 
-subscribe('videocued',   VideoCued ); 
-
-
-subscribe('videostopped',   VideoStopped ); 
+subscribe('videocued',    VideoCued); 
+subscribe('videostopped', VideoStopped); 
 
   
 async function VideoStopped() {
-   await GlobalLessonList.SaveCourseSeen()
+    await GlobalLessonList.SaveCourseSeen()
 }
 	
-  
 var prefindex=undefined;
 
 export async function SelectLesson(index) {   
-    console.log(`In SelectLesson !! index=${index}`);
     await GlobalLessonList.SaveCourseSeen()
-	 	 
-	if (prefindex == index) return; // already set
+    if (prefindex == index) return; // already set
+    
 	prefindex=index;	
     var oldindex=await GlobalLessonList.GetCurrentLesson()	
     var newindex=await GlobalLessonList.SetCurrentLesson(index)       
     
     var prevdomid=getElement(`lesson-${oldindex}`);
     if (prevdomid) {        
-       prevdomid.style.borderColor=""; // reset to original
-       prevdomid.style.borderStyle="";
+        prevdomid.style.borderColor=""; // reset to original
+        prevdomid.style.borderStyle="";
     }
     var domid=getElement(`lesson-${newindex}`);
     if (domid) {
-       domid.style.borderColor="#FF206E";//"red";
-       domid.style.borderStyle="solid";
+        domid.style.borderColor="#FF206E";//"red";
+        domid.style.borderStyle="solid";
 	}
     
 }
 
 
 export async function SelectNextLesson(delta) {  
-console.log( "SelectNextLesson");
-var CurrentLesson=await GlobalLessonList.GetCurrentLesson()
+    var CurrentLesson=await GlobalLessonList.GetCurrentLesson()
     SelectLesson(parseInt(CurrentLesson) + parseInt(delta))
-	
 	autoplay=true;
-	
 }
 
- 
-//async function asyncloadedles() { 
-    console.log("In asyncloaded PrepareLessonsList");
-    PrepareLessonsList = new DomList("list-lessons")
-    if (!PrepareLessonsList)
-        console.error("list-lessons not found");
-    PrepareChapterList = new DomList("list-chapter")
-    if (!PrepareChapterList)
-        console.error("list-chapter not found");   
-    
-//}    
 
+PrepareLessonsList = new DomList("list-lessons")
+if (!PrepareLessonsList)
+    console.error("list-lessons not found");
 
-
-
-//window.addEventListener('DOMContentLoaded', asyncloadedles);  // load  
-
+PrepareChapterList = new DomList("list-chapter")
+if (!PrepareChapterList)
+    console.error("list-chapter not found");   
