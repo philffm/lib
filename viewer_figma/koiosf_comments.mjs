@@ -1,12 +1,11 @@
 import { } from "../lib/3box.js"; // from "https://unpkg.com/3box/dist/3box.js"; // prevent rate errors
 
-import { getUserAddress, getWeb3Provider,authorize } from "./koiosf_login.mjs";
+import { getUserAddress, getWeb3Provider,authorize, getBox,getProfileForDid} from "./koiosf_login.mjs";
 import {DomList,getElement,FitOneLine,LinkVisible,subscribe,GetImageIPFS} from '../lib/koiosf_util.mjs';
 import {log} from '../lib/koiosf_log.mjs'; 
 import {DisplayMessage} from "./koiosf_messages.mjs";
 
-let box;
-let space;
+let space=undefined;
 let currentThread;
 var GlobalCommentList = new DomList("commententry");
 const FirstModerator="0x88E5d3CCdA6b8C8dE104E2bfA138AaB34D49c48c"; //For making the initial thread 
@@ -30,41 +29,25 @@ async function asyncloaded() {
 }
 
 async function ScrCommentMadeVisible() {
-    console.log("In ScrCommentMadeVisible");
-    
-    await authorize()
-    console.log(init3boxpromise);
-    await init3boxpromise;
+    console.log("In ScrCommentMadeVisible");    
+    space=await getSpace();
+   
     if (space) { // else no connection to 3box
         WriteThread(currentvideo)       
     }
 }    
 
-subscribe("web3providerfound",NextStep)
-
-var init3boxpromise;
-
-async function NextStep() {
-    init3boxpromise=Init3box();  
-    console.log(init3boxpromise);
-}     
-
-async function Init3box() {
-    console.log("Init3box");
-    var ga=getUserAddress()
-    var pr=getWeb3Provider()
-    console.log(ga)
-    console.log(pr);
-    console.log("Start openbox")
-    console.log(Box);
-    box = await Box.openBox(ga,pr);    
-    console.log("after openbox");
-   // await box.syncDone
-    console.log("after syncdone");
-    console.log(box);
+async function getSpace() {
+     await authorize()
+     var box=await getBox()
+    
     space = await box.openSpace(KoiosSpace);
     console.log("after openspace");  
+    return space
 }
+
+
+
 
 subscribe("loadvideo",NewVideo) 
 
@@ -164,7 +147,7 @@ async function SetDeleteButton(domid,postid) {
 }
 
 async function FindSender (target,did,profilepicture) {
-    var profile = await Box.getProfile(did);
+    var profile = await getProfileForDid(did);
     target.innerHTML = profile.name ? profile.name : did
     if (profile.image) {
         var imagecid=profile.image[0].contentUrl

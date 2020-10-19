@@ -2,9 +2,9 @@
  import {getElement,loadScriptAsync,ForAllElements,setElementVal,getElementVal,DomList,LinkVisible,subscribe} from '../lib/koiosf_util.mjs';
  import {carrouselwait} from './sync_swipe.mjs';
  import {SwitchPage} from '../genhtml/startgen.mjs'
- import {Login,getUserAddress,getProfileName,getProfileImage,getProfile} from '../viewer_figma/koiosf_login.mjs';
+ import {Login,getUserAddress,getProfileName,getProfileImage,getProfile,getBox} from '../viewer_figma/koiosf_login.mjs';
 
-
+var globalbox;
 var globaldb;
 var globalipfs;
 var globaladr="unknown"
@@ -48,7 +48,7 @@ function Select(e) {
 }    
    
 function CreateDropdown(location,list,listname) {    
-    console.log("In CreateDropdown");
+    //console.log("In CreateDropdown");
     var select = document.createElement("select");
     select.size=3
     select.multiple=true;
@@ -59,7 +59,7 @@ function CreateDropdown(location,list,listname) {
     }
     var domidloc=getElement(location)
     domidloc.appendChild(select);
-    console.log(domidloc);
+    //console.log(domidloc);
     select.addEventListener("change", function() {   
         console.log('You selected: ', this.value,listname);
         console.log(this.options);
@@ -89,47 +89,53 @@ function capitalizeFirstLetter(string) {
 
 function ShowProfile(profile,screenlocation1,screenlocation2,screenlocation3) {    
     var str1=""    
+    var strnohtml=""
     for (var i in profile) {
-        switch (i) {
-            case "employer":
-            case "location":
-            case "name":
-            case "website":
-                str1 += `<b>${capitalizeFirstLetter(i)}:</b> ${profile[i]}<br>`
-                break;
-        }
+        str1 += `<b>${capitalizeFirstLetter(i)}:</b> ${profile[i]}<br>`  
+        strnohtml +=`${capitalizeFirstLetter(i)}: ${profile[i]}`
+        strnohtml +="%0D%0A"
     }
-    setElementVal(getElement(screenlocation1,screenlocation2,screenlocation3),str1)
+    if (screenlocation1)
+        setElementVal(getElement(screenlocation1,screenlocation2,screenlocation3),str1)
+    return strnohtml;
 }
 
 function ShowSettingsInCard(options,screenlocation1) {    
-
- for (var i=1;i<=17;i++)
-        getElement(`sdg${i}`,"sdg_palette",screenlocation1).style.display="none"
-
-
+    var sep=""
     var str2=""
-    for (var i in options) {    
-        switch (i) {
-            case "sdg": 
-                for (var j in options[i]) { 
-                    var goal=j.split(":")[0];
-                    var domid=getElement(goal,"sdg_palette",screenlocation1)
-                    domid.style.display=options[i][j]?"block":"none"
-                }
-                break;                
-            default:
-                var sep="";str2 += `<b>${capitalizeFirstLetter(i)}:</b> `
-                for (var j in options[i]) { 
-                    if (options[i][j]) {
-                        str2 +=`${sep}${j}`;
-                        sep =", ";
-                    }
-                }
-                str2 += "<br>"
+   var strnohtml=""
+    for (var i=1;i<=17;i++) {
+          if (screenlocation1)
+                getElement(`sdg${i}`,"sdg_palette",screenlocation1).style.display="none"
+    }
+    var sdg=options["sdg"]
+    console.log(sdg)
+    if (sdg)
+        for (var j in sdg) { 
+            var goal=j.split(":")[0];
+            var domid=getElement(goal,"sdg_palette",screenlocation1)
+            domid.style.display=sdg[j]?"block":"none"
         }
-    }                    
-    setElementVal("line2",str2,"card",screenlocation1);
+    
+    for (var i in options) {
+        sep="";
+        str2 += `<b>${capitalizeFirstLetter(i)}:</b> `
+        strnohtml += `${capitalizeFirstLetter(i)}: `
+        
+        for (var j in options[i]) { 
+            if (options[i][j]) {
+                str2      +=`${sep}${j}`;
+                strnohtml +=`${sep}${j}`;
+                sep =", ";
+            }
+        }
+        str2 += "<br>"
+        strnohtml +="%0D%0A"
+    }
+
+    if (screenlocation1)              
+        setElementVal("line2",str2,screenlocation1);
+    return strnohtml;
 }   
 
 function ScrAddJobMadeVisible() {
@@ -139,17 +145,20 @@ function ScrAddJobMadeVisible() {
  
 }    
 
+
 function ScrApplyJobMadeVisible() {
     ShowProfile(getProfileInfo(),"line1","myinfo","scr_applyjob")
-    var show=0
-      for (var i=0;i<globalavailableofferings.length;i++) {
-          if (globalavailableofferings[i].status !="Y") continue; // only show the swiped ones
-        
-              ShowProfile(globalavailableofferings[i].profile,"line1","card","scr_applyjob")
-              ShowSettingsInCard(globalavailableofferings[i].options,"scr_applyjob")
-              
-              SetupField(getElement("line2","motivation","scr_applyjob"))
     
+    SetupEditField(`sync-${globaladr}-motivation`,"line3","motivation","scr_applyjob")
+    getElement("left","scr_applyjob").addEventListener('click',CardLeft)  
+    getElement("right","scr_applyjob").addEventListener('click',CardRight)     
+    
+    
+    var show=0
+    
+    globalcurrentcard=0
+    
+   /* 
           show++
           break; // only show 1
         
@@ -158,30 +167,129 @@ function ScrApplyJobMadeVisible() {
            console.log("Ready applying");
            SwitchPage("close");//close the popup
         }
-    
-   
+        */
+        
+        ShowCard()
 }    
+
+function ShowCard() {
+    if (globalavailableofferings[globalcurrentcard]) {
+        ShowProfile(globalavailableofferings[globalcurrentcard].profile,"line1","card","scr_applyjob")
+        ShowSettingsInCard(globalavailableofferings[globalcurrentcard].options,"scr_applyjob")
+    }
+}
+
+var globalcurrentcard=0
+ function MoveCard(fForward) {
+        if (fForward) { globalcurrentcard++;if (globalcurrentcard >=globalavailableofferings.length) globalcurrentcard =globalavailableofferings.length-1;}
+        else          { globalcurrentcard--;if (globalcurrentcard <0) this.globalcurrentcard =0;}
+        
+    }
+   
+function isFirst() { return globalcurrentcard<=0 }
+function isLast()  { return globalcurrentcard>=globalavailableofferings.length-1 }
+
+function UpdateButtons() {
+	getElement("left","scr_applyjob").style.display=isFirst()?"none":"block";
+	getElement("right","scr_applyjob").style.display=isLast()?"none":"block";
+}	
+
+
+function CardLeft() {  
+    MoveCard(false);
+    ShowCard()
+	UpdateButtons()
+}
+
+function CardRight() {
+    MoveCard(true);
+    ShowCard()
+	UpdateButtons()
+}    
+    
+
+
+       
+function MailApplication() {
+    console.log("MailApplication");
+    console.log(globalavailableofferings[globalcurrentcard])
+
+    var str=""
+    str +=ShowProfile(globalavailableofferings[globalcurrentcard].profile)
+    str +="%0D%0A"
+    str +=ShowSettingsInCard(globalavailableofferings[globalcurrentcard].options)
+    str +="%0D%0A"
+    str +=ShowProfile(getProfileInfo())
+    str +="%0D%0A"
+    console.log(str)
+     var href = "mailto:";
+     href +=globalavailableofferings[globalcurrentcard].profile.mail    
+     href += "?SUBJECT=Job application";
+     href += "&BODY="+str
+     console.log(href);
+    window.open(href,"_blank"); 
+}
+
  
  
-function SetupField(id) {
+ async function ScrMyDetailsMadeVisible() {    
+    var profileimage=getProfileImage()
+    var domid=getElement("profileimage","scr_mydetails"); if (domid && profileimage) domid.src=profileimage
+ 
+    var profile=getProfileInfo()
+    console.log(profile);
+    if (profile) {
+        setElementVal("text",    profile.name,      "myname",   "scr_mydetails")
+        setElementVal("text",    profile.employer,  "employer", "scr_mydetails")
+        setElementVal("text",    profile.location,  "location", "scr_mydetails")
+        setElementVal("text",    profile.school,    "school",   "scr_mydetails")
+        setElementVal("text",    profile.website,   "website",  "scr_mydetails")
+        setElementVal("text",    profile.job,       "job",      "scr_mydetails")
+    }    
+ 
+    //var lal=await globalbox.listAddressLinks()
+    //console.log(lal)   
+    
+    
+    //const spaceData = await globalbox.public.all()
+    //console.log(spaceData);
+    
+  /*
+    proof_did: "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NksifQ.eyJpYXQiOjE1OTgwMTY2MjYsImlzcyI6ImRpZDozOmJhZnlyZWliYWZlbmZwMmR2bWFwb3Z3ZjZ1aXJ1ZndrcWZtamZqeHJmdm5hc3VlaGM0M3kycXY3YzJ1In0.lfUy5R00G0V9TcmRAkVpHSUMoQlvFs7YHSf2Bx_jVxiSveWWxkPiSVySX55ksT9_gK0IPtblH6pvawQN9SDy3g"
+    proof_github: "https://gist.githubusercontent.com/gpersoon/6dc26e70cfe3976e00a6e95e3ac6f9ac/raw/15412530c27fa0c43493a95290a572f95331f4f9/3box"
+    proof_twitter: "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NksifQ.eyJpYXQiOjE2MDIwNjIxNTMsInN1YiI6ImRpZDozOmJhZnlyZWliYWZlbmZwMmR2bWFwb3Z3ZjZ1aXJ1ZndrcWZtamZqeHJmdm5hc3VlaGM0M3kycXY3YzJ1IiwiY2xhaW0iOnsidHdpdHRlcl9oYW5kbGUiOiJncGVyc29vbiIsInR3aXR0ZXJfcHJvb2YiOiJodHRwczovL3R3aXR0ZXIuY29tL2dwZXJzb29uL3N0YXR1cy8xMzEzNzY5OTY0MTg5NDk1Mjk2In0sImlzcyI6ImRpZDpodHRwczp2ZXJpZmljYXRpb25zLjNib3guaW8ifQ.5jf0to4pGS10JkCEeyRJpJ969TI6gSHVSl-fDZjC6rPMFn1XRWXbfi6-zoj9QpNYL-DJwGNOmgqTc0heH6oEPg"
+    */
+  
+ SetupEditField(`sync-${globaladr}-mail`,"text","mail","scr_mydetails")
+ SetupEditField(`sync-${globaladr}-phone`,"text","phone","scr_mydetails")
+}   
+ 
+ 
+function SetupEditField(key,id,loc1,loc2) {
     let params = (new URL(document.location)).searchParams;
     let idvalue= params.get(id); 
-    var target=getElement(id)    
+    var target=getElement(id,loc1,loc2)    
     target.contentEditable="true"; // make div editable
     //target.style.whiteSpace = "pre"; //werkt goed in combi met innerText
     
     target.style.whiteSpace = "pre-line"; //werkt goed in combi met innerText
     target.style.wordWrap = "break-word";  
     
+    
+    target.style.outline="gray solid 1px"
+    //target.style.outlineOffset="2px"
+    
+    
+    
     if (!idvalue)
-        idvalue=localStorage.getItem(id); 
+        idvalue=localStorage.getItem(key); 
     if (!idvalue) 
             idvalue = target.innerHTML   
     target.innerHTML=idvalue    
     target.addEventListener('input',SaveTxt , true); // save the notes    
     
     function SaveTxt(txt) { 
-        localStorage.setItem(id, txt.target.innerText);
+        localStorage.setItem(key, txt.target.innerText);
         console.log("input");
         console.log(txt.target.innerText); 
     }
@@ -192,31 +300,38 @@ function SetupField(id) {
  
  
 async function SetupFields(filename,selectlist) {
-    SetupField("name")               
+    
     selectlist.EmptyList()
 
     var jobinfo=await GetChoiceItems(`https://gpersoon.com/koios/lib/sync/${filename}.json`);
     console.log(jobinfo);
     
     for (var i in jobinfo) {
-        console.log(i);
+        //console.log(i);
         var selectblock=selectlist.AddListItem()
         setElementVal("selectname",i,selectblock)
         var selectvalues=getElement("selectvalues",selectblock)
         CreateDropdown(selectvalues,jobinfo[i],i);
     }    
 }    
+ 
+          
+        
         
 function SetupButtons() {
     getElement("SENDBUTTON").addEventListener("click", Send);
     getElement("SEARCH").addEventListener("click", UpdateRecordList);
     getElement("SWIPE").addEventListener("click", Swipe);
     getElement("DELETE").addEventListener("click", Delete);
+    getElement("DBDELETE").addEventListener("click", DbDelete);
     getElement("PEERS").addEventListener("click", Peers);
     getElement("CONNECT").addEventListener("click", Connect);
     getElement("DISCONNECT").addEventListener("click", Disconnect);
     getElement("INFO").addEventListener("click", Pubsubinfo);
     getElement("CLEAR").addEventListener("click", Clear);
+    
+    getElement("MAILBUTTON").addEventListener("click", MailApplication);
+    
 }
 
 async function SetupOrbitdb() {
@@ -270,29 +385,31 @@ function getProfileInfo() {
         profile.website="Fill in via 3box"
         profile.job="Fill in via 3box"
     }
+
+    
+    profile.mail=localStorage.getItem(`sync-${globaladr}-mail`)
+    profile.phone=localStorage.getItem(`sync-${globaladr}-phone`)
+     
+   // const email = await globalbox.private.get('email') // doesn't work
+
+    for (var i in profile) {
+        switch (i) {
+            case "name":
+            case "employer": 
+            case "location":
+            case "school":
+            case "website":
+            case "job":
+            case "mail":
+            case "phone":
+                break;
+            default: delete profile[i] // delete all unwanted
+        }
+    }
+    
     return profile
 }    
 
-function ShowMyDetails() {
-    var profile=getProfileInfo()
-    console.log(profile);
-    if (profile) {
-        setElementVal("myname",     profile.name,"scr_mydetails")
-        setElementVal("employer",   profile.employer,"scr_mydetails")
-        setElementVal("location",   profile.location,"scr_mydetails")
-        setElementVal("school",     profile.school,"scr_mydetails")
-        setElementVal("website",    profile.website,"scr_mydetails")
-        setElementVal("job",        profile.job,"scr_mydetails")
-    }    
-    
-    
-    
-  /*
-    proof_did: "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NksifQ.eyJpYXQiOjE1OTgwMTY2MjYsImlzcyI6ImRpZDozOmJhZnlyZWliYWZlbmZwMmR2bWFwb3Z3ZjZ1aXJ1ZndrcWZtamZqeHJmdm5hc3VlaGM0M3kycXY3YzJ1In0.lfUy5R00G0V9TcmRAkVpHSUMoQlvFs7YHSf2Bx_jVxiSveWWxkPiSVySX55ksT9_gK0IPtblH6pvawQN9SDy3g"
-    proof_github: "https://gist.githubusercontent.com/gpersoon/6dc26e70cfe3976e00a6e95e3ac6f9ac/raw/15412530c27fa0c43493a95290a572f95331f4f9/3box"
-    proof_twitter: "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NksifQ.eyJpYXQiOjE2MDIwNjIxNTMsInN1YiI6ImRpZDozOmJhZnlyZWliYWZlbmZwMmR2bWFwb3Z3ZjZ1aXJ1ZndrcWZtamZqeHJmdm5hc3VlaGM0M3kycXY3YzJ1IiwiY2xhaW0iOnsidHdpdHRlcl9oYW5kbGUiOiJncGVyc29vbiIsInR3aXR0ZXJfcHJvb2YiOiJodHRwczovL3R3aXR0ZXIuY29tL2dwZXJzb29uL3N0YXR1cy8xMzEzNzY5OTY0MTg5NDk1Mjk2In0sImlzcyI6ImRpZDpodHRwczp2ZXJpZmljYXRpb25zLjNib3guaW8ifQ.5jf0to4pGS10JkCEeyRJpJ969TI6gSHVSl-fDZjC6rPMFn1XRWXbfi6-zoj9QpNYL-DJwGNOmgqTc0heH6oEPg"
-    */
-}
 
 function EthereumChanged() {
     console.log("EthereumChanged")
@@ -314,6 +431,7 @@ async function main() {
 
     LinkVisible("scr_addjob"  ,ScrAddJobMadeVisible)    
     LinkVisible("scr_applyjob"  ,ScrApplyJobMadeVisible)    
+    LinkVisible("scr_mydetails", ScrMyDetailsMadeVisible)
     
     
     await SetupFields("jobinfo",selectlist1)
@@ -325,9 +443,18 @@ async function main() {
     globaladr=getUserAddress()         
     
     if (!globaladr) globaladr="unknown" 
-    ShowMyDetails()
-
     
+
+    globalbox = await getBox()
+    console.log(globalbox)
+    if (globalbox)
+        await globalbox.syncDone
+
+    //const profile = await globalbox.public.all()
+//console.log(profile)
+//const secretProfile = await globalbox.private.all()
+//console.log(secretProfile);
+
 }
         
 
@@ -376,9 +503,10 @@ async function UpdateRecordList() {
         var key=`sync-${globaladr}-${globalavailableofferings[i]._id}`    
         var status=localStorage.getItem(key) // remember status per ethereum user
 
-    console.log(`UpdateRecordList i=${i} key=${key} status=${status}`);
-
-        if ((globalavailableofferings[i]._id).includes(globaladr)) 
+        console.log(`UpdateRecordList i=${i} key=${key} status=${status}`);
+        var id=globalavailableofferings[i]._id
+    
+        if (id && id.includes(globaladr)) 
             status="M"                            
         switch (status) {
                case "Y": globalliked++  ; break
@@ -424,6 +552,10 @@ var keys = Object.keys(localStorage);
             }
         } 
     UpdateRecordList()
+    
+    
+
+    
 }  
     
     
@@ -473,20 +605,6 @@ async function Send() {
     console.log("In function Send()");
     
     
-    var sendprofile={}
-    var profile=getProfileInfo()        
-    for (var i in profile) {
-        switch (i) {
-            case "employer": 
-            case "location":
-            case "name":
-            case "website":
-                sendprofile[i]=profile[i];break;
-                break;
-        }
-    }
-
-
     var sendoptions={}
     for (var i in alloptionsset) {            
         sendoptions[i]=alloptionsset[i];
@@ -499,13 +617,26 @@ async function Send() {
     
     var tosend={}
     tosend._id=`${globaladr}-${new Date().getTime()}`
-    tosend.profile=sendprofile
+    tosend.profile=getProfileInfo()   
     tosend.options=sendoptions
     console.log("tosend")
     console.log(tosend)
     var h1=await globaldb.put(tosend)   
     UpdateRecordList()
 }        
+        
+async function DbDelete() {     
+        
+    var dbs=await indexedDB.databases()
+    console.log(dbs)        
+    for (var i=0;i<dbs.length;i++) {
+        console.log(dbs[i].name)
+        if (dbs[i].name.includes("ipfs") || dbs[i].name.includes("orbit") || dbs[i].name.includes("level-js-access_db_httpclient")) {
+            console.log(`Deleting ${dbs[i].name}`);
+            indexedDB.deleteDatabase(dbs[i].name);       
+        }
+    }
+}    
         
 async function Delete() {
     const result = await globaldb.query(() => true); // get all records
