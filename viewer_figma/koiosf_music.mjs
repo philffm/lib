@@ -1,5 +1,6 @@
 import {loadScriptAsync,getElement} from '../lib/koiosf_util.mjs';
 
+//nothing seems to really be used here
 async function InitMusic() {
     await loadScriptAsync("https://w.soundcloud.com/player/api.js");
     var url=`https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/222896338`
