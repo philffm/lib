@@ -1,5 +1,9 @@
 Version 2.10
 
+
+
+Update 2020-10-19: (no version nr upgrade)
+
 Functional updates:
 
 Technical updates:
@@ -11,7 +15,7 @@ Technical updates:
 Layout updates:
 
 Course content:
-
+- 2020-10-19: updated video's of security essentials
 
 
 Version 2.09

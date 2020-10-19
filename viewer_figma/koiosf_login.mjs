@@ -1,7 +1,7 @@
 
 
 
-import {loadScriptAsync,getElement,GetImageIPFS,publish,setElementVal} from '../lib/koiosf_util.mjs';
+import {loadScriptAsync,getElement,GetImageIPFS,publish,setElementVal,subscribe} from '../lib/koiosf_util.mjs';
 import { } from "../lib/3box.js"; // from "https://unpkg.com/3box/dist/3box.js"; // prevent rate errors
 
 /*
@@ -119,7 +119,7 @@ console.log("asyncloaded login")
       };
       
       
-console.log("web3Modal");      
+    console.log("web3Modal");      
 
       web3Modal = new Web3Modal({
         cacheProvider: true, // remember previousely selected
@@ -127,11 +127,11 @@ console.log("web3Modal");
       });
 
 
-console.log(web3Modal);
+    console.log(web3Modal);
 
-if (web3Modal.cachedProvider) { // continue directly to save time later
-  await onConnect();   
-}
+    if (web3Modal.cachedProvider) { // continue directly to save time later
+      await onConnect();   
+    }
 
 
 }
@@ -154,9 +154,14 @@ export function getProfileName() {
  return  globalprofilename;
 }
 
-export function getProfile() {
- return  globalprofile;
+export async function getProfileForDid(did) {        
+    return  await Box.getProfile(did);
 }
+
+export function getProfile(did) {
+        return  globalprofile;
+}
+
 export function getProfileImage() {
  return  globalprofileimage;
 }
@@ -224,6 +229,8 @@ if (profile) {
         var domid=getElement("userphoto"); if (domid) domid.src=globalprofileimage
     }
 }    
+
+
 
   // Get a handl
  //const template = document.querySelector("#template-balance");
@@ -353,6 +360,48 @@ async function onConnect() {
 console.log(provider);
   
 }
+
+
+let box;
+
+
+subscribe("web3providerfound",NextStep)
+
+var init3boxpromise;
+
+async function NextStep() {
+    init3boxpromise=Init3box();  
+    console.log(init3boxpromise);
+}     
+
+async function Init3box() {
+    console.log("Init3box");
+    var ga=getUserAddress()
+    var pr=getWeb3Provider()
+    console.log(ga)
+    console.log(pr);
+    console.log("Start openbox")
+    console.log(Box);
+    box = await Box.openBox(ga,pr);    
+    console.log("after openbox");
+   // await box.syncDone
+    console.log("after syncdone");
+    console.log(box);
+    
+}
+
+export async function getBox() {
+    console.log('In getBox');
+     await authorize()
+    console.log(init3boxpromise);
+    await init3boxpromise;
+    
+    const verifiedAccounts = await Box.getVerifiedAccounts(getUserAddress())
+console.log(verifiedAccounts)
+    
+    return box;
+}    
+
 
 /**
  * Disconnect wallet button pressed.
