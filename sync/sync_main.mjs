@@ -14,13 +14,13 @@ var alloptionsset={}
 var selectlist1=new DomList('selectblock',"selectlist1",'scr_addjob');
 var selectlist2=new DomList('selectblock',"selectlist2",'scr_addjob');
 var globalavailableofferings=[];     
-var globalmyofferings=0   
-var globalsend=0;
+var globalsupplied=0   
+
 var globalliked=0;
 var globaltoswipe=0;
 var globaldisliked=0;
 var cardlistswipe=new DomList('card','scr_swipe');    
-
+const CRLF="%0D%0A"
 //var cardlistsync=new DomList('card','scr_sync');    
  
 function log(logstr) {   
@@ -93,7 +93,7 @@ function ShowProfile(profile,screenlocation1,screenlocation2,screenlocation3) {
     for (var i in profile) {
         str1 += `<b>${capitalizeFirstLetter(i)}:</b> ${profile[i]}<br>`  
         strnohtml +=`${capitalizeFirstLetter(i)}: ${profile[i]}`
-        strnohtml +="%0D%0A"
+        strnohtml +=CRLF
     }
     if (screenlocation1)
         setElementVal(getElement(screenlocation1,screenlocation2,screenlocation3),str1)
@@ -130,7 +130,7 @@ function ShowSettingsInCard(options,screenlocation1) {
             }
         }
         str2 += "<br>"
-        strnohtml +="%0D%0A"
+        strnohtml +=CRLF
     }
 
     if (screenlocation1)              
@@ -146,43 +146,34 @@ function ScrAddJobMadeVisible() {
 }    
 
 
-function ScrApplyJobMadeVisible() {
-    ShowProfile(getProfileInfo(),"line1","myinfo","scr_applyjob")
+function ScrBrowseCardsMadeVisible() {
+    ShowProfile(getProfileInfo(),"line1","myinfo","scr_browsecards")
     
-    SetupEditField(`sync-${globaladr}-motivation`,"line3","motivation","scr_applyjob")
-    getElement("left","scr_applyjob").addEventListener('click',CardLeft)  
-    getElement("right","scr_applyjob").addEventListener('click',CardRight)     
-    
-    
-    var show=0
-    
+    SetupEditField(`sync-${globaladr}-motivation`,"line3","motivation","scr_browsecards")
+    getElement("left","scr_browsecards").addEventListener('click',CardLeft)  
+    getElement("right","scr_browsecards").addEventListener('click',CardRight)        
     globalcurrentcard=0
-    
-   /* 
-          show++
-          break; // only show 1
-        
-        }
-        if (!show) {
-           console.log("Ready applying");
-           SwitchPage("close");//close the popup
-        }
-        */
-        
-        ShowCard()
+    ShowCard()
+    UpdateButtons()
 }    
 
 function ShowCard() {
-    if (globalavailableofferings[globalcurrentcard]) {
-        ShowProfile(globalavailableofferings[globalcurrentcard].profile,"line1","card","scr_applyjob")
-        ShowSettingsInCard(globalavailableofferings[globalcurrentcard].options,"scr_applyjob")
+    console.log(`In ShowCard ${globalavailableofferings.length} ${globalcurrentcard}`)
+    console.log(globalavailableofferings[globalcurrentcard]);
+    if (globalavailableofferings.length >0 && globalavailableofferings[globalcurrentcard]) {
+        console.log(`In ShowCard ${globalcurrentcard}`)
+        ShowProfile(globalavailableofferings[globalcurrentcard].profile,"line1","card","scr_browsecards")
+        ShowSettingsInCard(globalavailableofferings[globalcurrentcard].options,"scr_browsecards")
+    } else {
+        console.log("No cards left")
+        SwitchPage("close");//close the popup
     }
 }
 
 var globalcurrentcard=0
  function MoveCard(fForward) {
         if (fForward) { globalcurrentcard++;if (globalcurrentcard >=globalavailableofferings.length) globalcurrentcard =globalavailableofferings.length-1;}
-        else          { globalcurrentcard--;if (globalcurrentcard <0) this.globalcurrentcard =0;}
+        else          { globalcurrentcard--;if (globalcurrentcard <0) globalcurrentcard =0;}
         
     }
    
@@ -190,8 +181,29 @@ function isFirst() { return globalcurrentcard<=0 }
 function isLast()  { return globalcurrentcard>=globalavailableofferings.length-1 }
 
 function UpdateButtons() {
-	getElement("left","scr_applyjob").style.display=isFirst()?"none":"block";
-	getElement("right","scr_applyjob").style.display=isLast()?"none":"block";
+	getElement("left","scr_browsecards").style.display=isFirst()?"none":"block";
+	getElement("right","scr_browsecards").style.display=isLast()?"none":"block";
+    
+    
+        var statustext=""    
+        if (globalavailableofferings.length >0) {
+            switch (globalavailableofferings[globalcurrentcard].status) {
+                   case "Y": statustext="Liked"; break
+                   case "N": statustext="Disliked";break;
+                   case "S": statustext="Supplied";break
+                   case "A": statustext="Applied";break
+                   case "O": statustext="Out of scope";break
+                   default:
+                        statustext="To swipe"; break
+            }    
+            setElementVal("card_header",`Card #${globalcurrentcard+1} Status: ${statustext}`)
+            
+            
+            var status=globalavailableofferings[globalcurrentcard].status
+            getElement("DELETEBUTTON").style.display=status=="S"?"block":"none" // can only delete if owner
+            getElement("APPLYBUTTON").style.display=(status=="S" || status=="A")?"none":"block" // cannot apply when owner, and also not when already applied
+        }
+    
 }	
 
 
@@ -207,7 +219,30 @@ function CardRight() {
 	UpdateButtons()
 }    
     
+    
+function UpdateStatusFields() {
+    setElementVal("SWIPE",         `START SWIPING: ${globaltoswipe}`);
+    setElementVal("to_swipe",       `to swipe: ${globaltoswipe}`);
+    setElementVal("to_apply",       `to apply: ${globalliked}`);    
+    setElementVal("applied_for",     `applied for: ${globalapplied}`);
+    setElementVal("supplied",       `supplied: ${globalsupplied}`);
+    setElementVal("disliked",       `disliked: ${globaldisliked}`);    
+    setElementVal("out_of_scope",   `out of scope: ${globaloutofscope}`);
+    setElementVal("total_cards",    `total cards: ${globalavailableofferings.length}`);         
+}    
+      
 
+
+async function DeleteCurrentCard() {
+    console.log("In DeleteCurrentCard")
+    if (globalavailableofferings[globalcurrentcard].status=="S") {// only if I supplied the card
+        await Delete(globalavailableofferings[globalcurrentcard]._id)
+        console.log("Deleted")         
+        CardLeft()
+        UpdateRecordList()
+    }
+
+}
 
        
 function MailApplication() {
@@ -215,12 +250,26 @@ function MailApplication() {
     console.log(globalavailableofferings[globalcurrentcard])
 
     var str=""
-    str +=ShowProfile(globalavailableofferings[globalcurrentcard].profile)
-    str +="%0D%0A"
+    var motivation=getElementVal("motivation")
+    
+ motivation=motivation.replace(/\n\r/g, CRLF)
+ motivation=motivation.replace(/\r\n/g, CRLF)
+ motivation=motivation.replace(/\r/g, CRLF)
+ motivation=motivation.replace(/\n/g, CRLF)
+    
+    str +="I want to apply for the function:"+CRLF
     str +=ShowSettingsInCard(globalavailableofferings[globalcurrentcard].options)
-    str +="%0D%0A"
+    str +="_________________________________________________________________"+CRLF
+    str +="Registered by:"+CRLF
+    str +=ShowProfile(globalavailableofferings[globalcurrentcard].profile)
+    str +="_________________________________________________________________"+CRLF    
+    str +="My motivation is:"+CRLF
+    str +=motivation+CRLF
+    str +="_________________________________________________________________"+CRLF    
+    str +="My details:"+CRLF
     str +=ShowProfile(getProfileInfo())
-    str +="%0D%0A"
+    str +="_________________________________________________________________"+CRLF    
+    str +="Hoping for a quick answer"+CRLF    
     console.log(str)
      var href = "mailto:";
      href +=globalavailableofferings[globalcurrentcard].profile.mail    
@@ -228,7 +277,26 @@ function MailApplication() {
      href += "&BODY="+str
      console.log(href);
     window.open(href,"_blank"); 
+    
+    console.log(globalavailableofferings[globalcurrentcard].status)
+    switch (globalavailableofferings[globalcurrentcard].status) {
+        case "Y":globalliked--;break;
+        case null: globaltoswipe--;break;
+    }
+    
+    CurrentCardSetStatus("A");
+    globalapplied++
+    ShowCard()
+	UpdateButtons()
+    UpdateStatusFields()       
 }
+
+
+function CurrentCardSetStatus(status) {
+    globalavailableofferings[globalcurrentcard].status=status  
+    SetStatus(globalavailableofferings[globalcurrentcard]._id,status)
+}
+  
 
  
  
@@ -330,7 +398,9 @@ function SetupButtons() {
     getElement("INFO").addEventListener("click", Pubsubinfo);
     getElement("CLEAR").addEventListener("click", Clear);
     
-    getElement("MAILBUTTON").addEventListener("click", MailApplication);
+    getElement("APPLYBUTTON").addEventListener("click", MailApplication);
+    getElement("DELETEBUTTON").addEventListener("click", DeleteCurrentCard);
+    
     
 }
 
@@ -388,7 +458,10 @@ function getProfileInfo() {
 
     
     profile.mail=localStorage.getItem(`sync-${globaladr}-mail`)
+    console.log(profile.mail);
+    if (!profile.mail) profile.mail="Fill in via my details"
     profile.phone=localStorage.getItem(`sync-${globaladr}-phone`)
+    if (!profile.phone) profile.phone="Fill in via my details"
      
    // const email = await globalbox.private.get('email') // doesn't work
 
@@ -406,7 +479,7 @@ function getProfileInfo() {
             default: delete profile[i] // delete all unwanted
         }
     }
-    
+    console.log(profile)
     return profile
 }    
 
@@ -416,6 +489,7 @@ function EthereumChanged() {
     globaladr=getUserAddress() 
     if (!globaladr) globaladr="unknown" 
     UpdateRecordList()
+    SwitchPage("scr_sync");//close the popup
 }
         
 async function main() {
@@ -428,9 +502,10 @@ async function main() {
          await loadScriptAsync("https://gpersoon.com/koios/lib/lib/orbitdb26.min.js")    // clone from github & npm run build:dist
 
     subscribe("ethereumchanged",EthereumChanged)
+    subscribe("web3providerfound",EthereumChanged) // update the records once address is known
 
     LinkVisible("scr_addjob"  ,ScrAddJobMadeVisible)    
-    LinkVisible("scr_applyjob"  ,ScrApplyJobMadeVisible)    
+    LinkVisible("scr_browsecards"  ,ScrBrowseCardsMadeVisible)    
     LinkVisible("scr_mydetails", ScrMyDetailsMadeVisible)
     
     
@@ -487,6 +562,14 @@ function ConvertToText() {
 }
 */
 
+var globalapplied=0
+var globaloutofscope=0
+        
+        
+function MyOwn(id) {
+    if (!id) return false;
+    return id.includes(globaladr)
+}    
         
 async function UpdateRecordList() {
     console.log(`In UpdateRecordList globaladr=${globaladr}`)
@@ -494,25 +577,26 @@ async function UpdateRecordList() {
     globalliked=0
     globaldisliked=0
     globaltoswipe=0
-    globalsend=0
-    globalmyofferings=0        
+    
+    globalsupplied=0  
+    globalapplied=0
+    globaloutofscope=0
     
     globalavailableofferings = await globaldb.query(() => true); // get all records
     console.log(globalavailableofferings);                
     for (var i=0;i<globalavailableofferings.length;i++) {     
-        var key=`sync-${globaladr}-${globalavailableofferings[i]._id}`    
-        var status=localStorage.getItem(key) // remember status per ethereum user
+        var status=GetStatus(globalavailableofferings[i]._id)
 
-        console.log(`UpdateRecordList i=${i} key=${key} status=${status}`);
-        var id=globalavailableofferings[i]._id
-    
-        if (id && id.includes(globaladr)) 
-            status="M"                            
+        console.log(`UpdateRecordList i=${i} status=${status}`);
+        if (MyOwn(globalavailableofferings[i]._id) )        
+            status="S"    
+        console.log(status)
         switch (status) {
                case "Y": globalliked++  ; break
                case "N": globaldisliked++;break;
-               case "S": globalsend++;break
-               case "M": globalmyofferings++;break
+               case "S": globalsupplied++;break
+               case "A": globalapplied++;break
+               case "O": globaloutofscope++;break
                default:
                     globaltoswipe++; break
         }
@@ -522,19 +606,18 @@ async function UpdateRecordList() {
         
     }
     UpdateStatusFields() 
-    
+    console.log(globalavailableofferings)
 }          
-      
-function UpdateStatusFields() {
-    getElement("entries").innerHTML=`entries: ${globalavailableofferings.length}`;        
-    getElement("APPLY_JOB").innerHTML=`APPLY JOB: ${globalliked}`;
-    getElement("SWIPE").innerHTML=`SWIPE: ${globaltoswipe}`;  
-    getElement("sendstatus").innerHTML=`send: ${globalsend}`;      
-    getElement("SUPPLIED_JOBS").innerHTML=`SUPPLIED JOBS: ${globalmyofferings}`;    
-    getElement("disliked").innerHTML=`disliked: ${globaldisliked}`;      
+  
+  
+
+  
+function SetStatus(id,status) {         // remember status per ethereum user
+    localStorage.setItem(`sync-${globaladr}-${id}`, status)        
 }    
-      
-        
+function GetStatus(id) {        
+    return localStorage.getItem(`sync-${globaladr}-${id}`, status)        
+}          
 
     
     
@@ -551,23 +634,25 @@ var keys = Object.keys(localStorage);
                  }   
             }
         } 
-    UpdateRecordList()
-    
-    
-
-    
+    UpdateRecordList()    
 }  
     
     
 function callbackselected(fselected,domid) {
     console.log(`Selected: ${fselected}`);
     console.log(domid.id)
-    localStorage.setItem(`sync-${globaladr}-${domid.id}`, fselected?"Y":"N")
-    if (fselected) {
-        globalliked++
-          UpdateStatusFields() 
+    if (MyOwn(domid.id)) {
+        console.log("My own job, ignore swiping")
+        return 
     }
+    SetStatus(domid.id,fselected?"Y":"N")
+    
+    if (fselected) {
+        globalliked++          
+    } else
+        globaldisliked++
     globaltoswipe--;
+    UpdateStatusFields() 
 }    
         
 async function Swipe() {
@@ -589,7 +674,7 @@ async function Swipe() {
         ShowProfile(globalavailableofferings[i].profile,"line1",card)
         ShowSettingsInCard(globalavailableofferings[i].options,card)
         
-        getElement("thumbsup",card).style.display="none"        
+        
         card.id=globalavailableofferings[i]._id;
     }
    await carrouselwait(getElement('cardcontainer'),"card",callbackselected)
@@ -623,6 +708,8 @@ async function Send() {
     console.log(tosend)
     var h1=await globaldb.put(tosend)   
     UpdateRecordList()
+    SwitchPage("close");//close the popup
+    
 }        
         
 async function DbDelete() {     
@@ -638,10 +725,16 @@ async function DbDelete() {
     }
 }    
         
-async function Delete() {
-    const result = await globaldb.query(() => true); // get all records
-    for (var i=0;i<result.length;i++)
-           await globaldb.del(result[i]._id)
+async function Delete(delete_id) {
+    if (delete_id) {
+       await globaldb.del(delete_id)
+    }
+    else // delete all
+    {
+        const result = await globaldb.query(() => true); // get all records
+        for (var i=0;i<result.length;i++)
+               await globaldb.del(result[i]._id)
+    }
     //UpdateRecordList();       
 }        
 
