@@ -1,11 +1,8 @@
 
-
-
 import {loadScriptAsync,getElement,GetImageIPFS,publish,setElementVal,subscribe} from '../lib/koiosf_util.mjs';
 import { } from "../lib/3box.js"; // from "https://unpkg.com/3box/dist/3box.js"; // prevent rate errors
 
 /*
-
 const infuraKey = "37a4c5643fe0470c944325f1e9e12d50";
 var providerOptions = {
 /*    walletconnect: {
@@ -16,7 +13,6 @@ var providerOptions = {
     }
     
 };
-
 */
 
 
@@ -428,9 +424,3 @@ async function onDisconnect() {
  // document.querySelector("#prepare").style.display = "block";
   //document.querySelector("#connected").style.display = "none";
 }
-
-
-    
- 
-
- 

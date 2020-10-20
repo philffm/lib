@@ -1,107 +1,80 @@
-import {loadScriptAsync,GetJsonIPFS,subscribe,publish,DomList,GetCidViaIpfsProvider,sortfunction,LinkToggleButton,FitOneLine,ForceButton,FetchIPFS,setElementVal,getElement } from '../lib/koiosf_util.mjs';
-import {GetCourseInfo,GlobalCourseList} from './koiosf_course.mjs';
+import {GetJsonIPFS,subscribe,DomList,GetCidViaIpfsProvider,sortfunction,LinkToggleButton,FitOneLine,ForceButton,FetchIPFS,setElementVal,getElement } from '../lib/koiosf_util.mjs';
+import {GetCourseInfo} from './koiosf_course.mjs';
 import {GlobalLessonList} from './koiosf_lessons.mjs';
 import {GetToggleState} from '../genhtml/startgen.mjs'
 
 var globalslideindex
 
 async function NewCourseSelected (courseid) {
-    console.log(`In NewCourseSelected ${courseid}`);
     let cid =  await GetCourseInfo("slides") 
-    console.log(`In NewCourseSelected cid=${cid}`);
     globalslideindex = await GetJsonIPFS(cid);        
-	console.log(globalslideindex)
     if (globalslideindex) {
         globalslideindex.sort(sortfunction);
         await GetLiteratureForVideo()
     }
 }    
    
-
 window.addEventListener('DOMContentLoaded', asyncloaded);  // load  
 
 subscribe("setcurrentcourse",NewCourseSelected)
     
 async function asyncloaded() {  
-    //publish("playerloading"); // to init notes done twice
-   
     var domid=getElement("browse-window");
     var iframe=document.createElement("iframe");
     iframe.width="100%"
     iframe.height="100%"
     iframe.name="browse-window-frame"
     domid.appendChild(iframe);
-    console.log("Prepare for setcurrentcourse");
     GlobalUrlList = new DomList("browser-url") // before real-slides (because is child)  
     
-    
-     LinkToggleButton("topicweb",TopicOnOff) 
-     LinkToggleButton("topiclit",TopicOnOff) 
-     LinkToggleButton("topicpod",TopicOnOff) 
+    LinkToggleButton("topicweb",TopicOnOff) 
+    LinkToggleButton("topiclit",TopicOnOff) 
+    LinkToggleButton("topicpod",TopicOnOff) 
      
-      ForceButton("topicweb",true);
-       ForceButton("topiclit",true);
-        ForceButton("topicpod",true);
+    ForceButton("topicweb",true);
+    ForceButton("topiclit",true);
+    ForceButton("topicpod",true);
 }
  
- 
 function  TopicOnOff(event) {
-    
     var mask=this.classList[1]
     var fOn=GetToggleState(this,"displayactive"); 
-    
-    console.log(`TopicOnOff ${mask} ${fOn}`);
     ShowItems(mask,fOn);
- 
 }
  
 function ShowItems(tag,fOn) {
-  GlobalUrlList.FilterDataset("type",tag,fOn,true);
-
+  	GlobalUrlList.FilterDataset("type",tag,fOn,true);
 }
 
-    
-
 subscribe("loadvideo",GetLiteratureForVideo);
-
 
 var GlobalUrlList 
 
 async function GetLiteratureForVideo() {   
-    var vidinfo=await GlobalLessonList.GetCurrentLessonData()
-    
+    var vidinfo=await GlobalLessonList.GetCurrentLessonData() 
 	prevdomid=undefined;
 	
 	window.open("about:blank", "browse-window-frame")
 	
-	var lit=await GlobalLessonList.GetLiterature()
-	console.log("Literature from youtube in GetLiteratureForVideo")
-	console.log(lit)
-	
-    console.log(vidinfo);
-        
+	var lit=await GlobalLessonList.GetLiterature()        
     if (!vidinfo) return;
     
     var match=(vidinfo.title).split(" ")[0]
-    console.log(`In GetLiteratureForVideo match=${match}`);
     GlobalUrlList.EmptyList()    
     
     if (!globalslideindex) return; // not loaded yet
     var slideindex=globalslideindex
-prevurl=undefined; // reset again
+	prevurl=undefined; // reset again
 	await SearchArray(slideindex,match)
 	await SearchArray(lit,match)
- 
 }
 
 async function SearchArray(slideindex,match) {
 	if (!slideindex) return;
     var str="";
-       for (var i=0;i<slideindex.length;i++) {
-		  // console.log(slideindex[i]);
+    for (var i=0;i<slideindex.length;i++) {
         if (match && slideindex[i].chapter !== match && slideindex[i].chapter!="*") // * means a match with all chapters
-            continue; // ignore
-  //     console.log(slideindex[i]);
+        	continue; // ignore
         var type="";
         var urlcid=undefined;
 		var pdf=""
@@ -115,11 +88,11 @@ async function SearchArray(slideindex,match) {
 		
         if (!url && slideindex[i].cid) {
             type="topiclit"            
-			console.log(`Not found ${slideindex[i].cid}`)
 			urlcid=slideindex[i].cid
 			var cid = GetCidViaIpfsProvider(slideindex[i].cid,0)			
             url = `https://docs.google.com/viewerng/viewer?url=${cid}&embedded=true`;
-        }
+		}
+		
         if (!url && slideindex[i].pdf) {      
             type="topiclit"
             pdf = slideindex[i].pdf
@@ -128,17 +101,13 @@ async function SearchArray(slideindex,match) {
 				pdf = GetCidViaIpfsProvider(pdf,0)				
 			}
             url = `https://docs.google.com/viewerng/viewer?url=${pdf}&embedded=true`;
-        }    
+		} 
+		  
         if (url) {     
-//console.log(		slideindex[i])
             str +=SetInfo(url,slideindex[i].title,type,urlcid)+"<br>"
         }
-		
     }          
 }
-
-
-    
 
 var prevurl=undefined
 
@@ -159,50 +128,44 @@ function SetInfo(url,title,type,urlcid) {
 	return "";
 }    
 
-
-
 function SetClickShow(cln,url,urlcid,title) { // seperate function to remember state
 	
     cln.addEventListener('click', e=> {    // link_int / connect to entire gray bar
 			Highlight(cln)
 			window.open(url, "browse-window-frame")
-        }
-     );	 
-	 var link_ext=getElement("link_ext",cln)    
-	 link_ext.addEventListener('click', e=> {         
-			e.stopPropagation();
-			window.open(url, "_blank")
+	});	
+	 
+	var link_ext=getElement("link_ext",cln)    
+	
+	link_ext.addEventListener('click', e=> {         
+		e.stopPropagation();
+		window.open(url, "_blank")
+		Highlight(cln)
+    });
+	 
+	var link_down=getElement("link_down",cln)    
+	 
+	if (urlcid) {// different from url	 
+		link_down.addEventListener('click', e=> {   
+			e.stopPropagation();		 
+			DownloadLink(urlcid,title)
+			//window.open(urlcid, 'Download') // just open in a different window
 			Highlight(cln)
-        }
-     );
-	 
-	 var link_down=getElement("link_down",cln)    
-	 
-	 if (urlcid) {// different from url	 
-		 link_down.addEventListener('click', e=> {   
-				e.stopPropagation();		 
-				DownloadLink(urlcid,title)
-				//window.open(urlcid, 'Download') // just open in a different window
-				Highlight(cln)
-			}
-		 );
-	 } else {
-		 link_down.style.display="none" // not relevant, so hide
-	 }
+		});
+	} else {
+		link_down.style.display="none" // not relevant, so hide
+	}
 }   
 
 
 
 async function DownloadLink(cid,title) { 
-console.log(`DownloadLink ${cid} ${title}`);
-
     if (!title) title=cid;  // cid could/should contain a filename
 	if (title.includes("/"))
 		title=title.split("/")[1]
 	
 	var fileparts=title.split(".")
 	var fileext=fileparts[fileparts.length-1]
-	console.log(`fileext=${fileext}`)
 	var mime="application/pdf" // default type
 	switch (fileext) {
 		case "ipynb": mime='application/x-ipynb+json';break;
@@ -214,7 +177,6 @@ console.log(`DownloadLink ${cid} ${title}`);
 	
 	var data=await FetchIPFS(cid)
 	var datablob = await data.blob();
-	console.log(data)
 	
 	var blob = new Blob([datablob], {type: mime});
 	var url = URL.createObjectURL(blob);     
@@ -227,10 +189,6 @@ console.log(`DownloadLink ${cid} ${title}`);
 	URL.revokeObjectURL(url) 
 }
 
-
-
-
-
 function CleanUrl(url) {
 	if (url.includes("localhost"))    // sometimes localhost http for jupyter
 		return url
@@ -241,9 +199,7 @@ function CleanUrl(url) {
 	url = url.replace("youtube.com/watch?v=","youtube.com/embed/");
 	url = url.replace("youtu.be/","youtube.com/embed/");
 	if (url.includes("youtube.com")) {
-		console.log(url);
 		url=url.split("&")[0]
-		console.log(url);
 	}
 	if (url.includes("wikipedia") && !url.includes("m.wikipedia"))
 		url = url.replace("wikipedia","m.wikipedia");
@@ -262,22 +218,16 @@ function GetTxt(url,txt) {
 	return txt;
 }
 
+var prevdomid=undefined;
 
-
-
-  var prevdomid=undefined;
-
-    
 function Highlight(domid) {
     if (prevdomid) {        
-       prevdomid.style.borderColor=""; // reset to original
-       prevdomid.style.borderStyle="";
+       	prevdomid.style.borderColor=""; // reset to original
+       	prevdomid.style.borderStyle="";
     }
 	prevdomid=domid;
     if (domid) {
-       domid.style.borderColor="#FF206E";//"red";
-       domid.style.borderStyle="solid";
+       	domid.style.borderColor="#FF206E";//"red";
+       	domid.style.borderStyle="solid";
 	}
 }
-
-
