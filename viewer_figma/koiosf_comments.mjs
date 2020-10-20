@@ -1,9 +1,7 @@
 import { } from "../lib/3box.js"; // from "https://unpkg.com/3box/dist/3box.js"; // prevent rate errors
-
-import { getUserAddress, getWeb3Provider,authorize, getBox,getProfileForDid} from "./koiosf_login.mjs";
+import { getUserAddress,authorize, getBox,getProfileForDid} from "./koiosf_login.mjs";
 import {DomList,getElement,FitOneLine,LinkVisible,subscribe,GetImageIPFS} from '../lib/koiosf_util.mjs';
 import {log} from '../lib/koiosf_log.mjs'; 
-import {DisplayMessage} from "./koiosf_messages.mjs";
 
 let space=undefined;
 let currentThread;
@@ -12,7 +10,6 @@ const FirstModerator="0x88E5d3CCdA6b8C8dE104E2bfA138AaB34D49c48c"; //For making 
 const KoiosSpace = "koiostestspace2";
 
 window.onerror = async function(message, source, lineno, colno, error) {   // especially for ios
-    console.log("In onerror");
     var str=`Error: ${message} ${source}, ${lineno}, ${colno}  `;
     if (error && error.stack) str = str.concat('\n').concat(error.stack);
     log(str);    
@@ -28,8 +25,7 @@ async function asyncloaded() {
     target.style.whiteSpace ="pre";  
 }
 
-async function ScrCommentMadeVisible() {
-    console.log("In ScrCommentMadeVisible");    
+async function ScrCommentMadeVisible() {  
     space=await getSpace();
    
     if (space) { // else no connection to 3box
@@ -38,24 +34,18 @@ async function ScrCommentMadeVisible() {
 }    
 
 async function getSpace() {
-     await authorize()
-     var box=await getBox()
+    await authorize()
+    var box=await getBox()
     
     space = await box.openSpace(KoiosSpace);
-    console.log("after openspace");  
     return space
 }
 
-
-
-
 subscribe("loadvideo",NewVideo) 
-
 var currentvideo;
 
 async function NewVideo(vidinfo) {
-    if (!vidinfo) return;
-    console.log(`new video ${vidinfo.videoid}`)        
+    if (!vidinfo) return;        
     currentvideo=vidinfo
     if (!space) return; //  no connection to 3box yet; fixed elsewhere
     WriteThread(currentvideo)
@@ -64,7 +54,7 @@ async function NewVideo(vidinfo) {
 async function WriteThread(vidinfo) {
     getElement("titletext").innerHTML=vidinfo.txt
     
-   // remove previous onUpdate & onNewCapabilities ??   
+    // remove previous onUpdate & onNewCapabilities ??   
     currentThread = await space.joinThread(vidinfo.videoid, {
         firstModerator: FirstModerator
     });
@@ -75,7 +65,6 @@ async function WriteThread(vidinfo) {
     })
     currentThread.onNewCapabilities((event, did) => console.log(did, event, ' the chat'))
     const posts = await currentThread.getPosts()
-    console.log("posts: ", posts);
     await ShowPosts(posts);
 }
 
@@ -86,9 +75,7 @@ async function ShowPosts(posts) {
 
     for (var i=0;i<posts.length;i++) {        
         if (!document.getElementById(posts[i].postId) ){ // check if post is already shown
-            console.log(posts[i]);
             var did=posts[i].author;           
-            console.log(`${i} ${posts[i].message} ${did}`)
             
             var target = GlobalCommentList.AddListItem() // make new entry
             target.getElementsByClassName("commentmessagetext")[0].innerHTML = posts[i].message            
@@ -137,7 +124,6 @@ async function SetDeleteButton(domid,postid) {
     domid.addEventListener('animatedclick',DeleteForumEntry)
     
     async function DeleteForumEntry() {
-        console.log(currentThread);
         try {
             await currentThread.deletePost(postid);
         } catch (error) {
@@ -152,7 +138,6 @@ async function FindSender (target,did,profilepicture) {
     if (profile.image) {
         var imagecid=profile.image[0].contentUrl
         imagecid=imagecid[`\/`]
-        console.log(imagecid);
         profilepicture.src=await GetImageIPFS(imagecid)
     }           
 }
