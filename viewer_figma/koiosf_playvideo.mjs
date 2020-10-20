@@ -1,5 +1,5 @@
-//console.log(`In ${window.location.href} starting script: ${import.meta.url}`);
 import {SetglobalplayerSubtitle} from '../viewer_figma/koiosf_viewer.mjs'
+import {loadScriptAsync,publish,getElement} from '../lib/koiosf_util.mjs';
 
 /* General comments
 
@@ -44,31 +44,23 @@ layer.getOption('captions', 'translationLanguages')
 
 player.setOption('captions', 'track', {'languageCode': 'nl'});
 player.setOption('captions', 'track', {});
-
-
-
- player.setOption("captions", "displaySettings", {"background": "#fff"}); // doesnt work
-
-
-
+player.setOption("captions", "displaySettings", {"background": "#fff"}); // doesnt work
 */  
-
-import {LinkButton,loadScriptAsync,publish,LinkClickButton,subscribe,getElement} from '../lib/koiosf_util.mjs';
 
 async function onStateChange(event) {
     //console.log(`In onStateChange ${event.data}`);
     SetglobalplayerSubtitle(localStorage.getItem("currentlang"));
   
-     switch (event.data) {
-         case -1: publish ("videounstarted"); break;
-         case  0: publish ("videoend");       break;
-         case  1: publish ("videostart");     break;
-         case  2: publish ("videopause");     break;
-         case  3: publish ("videobuffering"); break;
-         case  5: publish ("videocued");      break;
-         
-     }
-}    // YT.PlayerState.PLAYING
+    switch (event.data) {
+        case -1: publish ("videounstarted"); break;
+        case  0: publish ("videoend");       break;
+        case  1: publish ("videostart");     break;
+        case  2: publish ("videopause");     break;
+        case  3: publish ("videobuffering"); break;
+        case  5: publish ("videocued");      break;
+    }
+}    
+// YT.PlayerState.PLAYING
 //-1 – unstarted
 //0 – ended
 //1 – playing
@@ -84,20 +76,15 @@ async function onStateChange(event) {
    
    
 export async function SetupVideoWindowYouTube(id) { 
-console.log("In SetupVideoWindowYouTube");
-
-var domid=getElement(id)
-domid.id=id; // youtube player want to have in id
-
-
-
+    var domid=getElement(id)
+    domid.id=id; // youtube player want to have in id
     var player;
+        
     await new Promise(async function(resolve, reject) {        // promise to be able to wait until ready
         window.onYouTubeIframeAPIReady = resolve;              // resolve the promise when iframe is ready    
         loadScriptAsync("https://www.youtube.com/iframe_api"); // load this way to prevent a cors message   
     });
     
-    console.log("Load youtube");
     await new Promise(async function(resolve, reject) {
        player = new YT.Player(id, {      // store in a div below the grid, otherwise IOS/safari makes is full heigth
             playerVars: { 
@@ -121,19 +108,12 @@ domid.id=id; // youtube player want to have in id
                 'onStateChange': onStateChange  // callback                   
             }          
         });  
-    });
-   console.log("In SetupVideoWindowYouTube, video is loaded");  
-   
-   publish("youtubepluginloaded");
-
-   
-   return player; 
+    });  
+    publish("youtubepluginloaded");
+    return player; 
 }
 
-
 // ** IPFS version // check
-
-   
 async function SetupVideoWindowIPFS(ipfs,windowid,hash) {       
     var vp=getElement(windowid);
     video=document.createElement("video");
@@ -143,10 +123,9 @@ async function SetupVideoWindowIPFS(ipfs,windowid,hash) {
     video.addEventListener('error', videoerror, true);   
     vp.appendChild(video);
     video.addEventListener('timeupdate', (event) => {  // about 4x/second
-      VideoLocation();
+        VideoLocation();
     });    
     LoadHlsVideo(video,ipfs,hash);
-
 }
 
 function LoadHlsVideo(video,node,hash) {
@@ -161,24 +140,6 @@ function LoadHlsVideo(video,node,hash) {
         hls.on(Hls.Events.MANIFEST_PARSED, () => log("Video ready to play"))
     }
 }
-
-
-       //loadScriptAsync("https://unpkg.com/hlsjs-ipfs-loader@0.1.4/dist/index.js"),  // not needed now
-       //loadScriptAsync("https://cdn.jsdelivr.net/npm/hls.js@latest"),
-       //loadScriptAsync("https://cdnjs.cloudflare.com/ajax/libs/bignumber.js/9.0.0/bignumber.min.js")
-       
-       
-/*   get stream info, only for video
-    const stream = ipfs.stats.bwReadableStream({ poll: true })
-    var prevtotin=0;
-    stream.on('data', (data) => {
-        var totin=data.totalIn.dividedBy(1000000).toFixed(1);
-        if (totin !=prevtotin) {
-            console.log(`IPFS Total in: ${totin} mb`);
-            prevtotin = totin;
-        }          
-    });
-*/ 
 
 function videoerror(event){ 
   let error = event;
