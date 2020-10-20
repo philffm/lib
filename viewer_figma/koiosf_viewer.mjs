@@ -12,7 +12,7 @@
     import {} from './koiosf_notes.mjs';
     import {InitSpeak,StopSpeak,StartSpeak,EnableSpeech,IsSpeechOn} from './koiosf_speech.mjs';
     //import {} from './koiosf_test.mjs';
-    import {SelectPopup,InitPopup} from './koiosf_popup.mjs';
+    import {SelectPopup} from './koiosf_popup.mjs';
     import {DisplayMessageContinous,SwitchDisplayMessageContinous,DisplayMessage} from './koiosf_messages.mjs';
     import {} from './koiosf_music.mjs';
 
@@ -527,7 +527,6 @@ console.log("Init ready3");
     //SetupSliders(); now done via move.mjs
     //NavigateLessons();
 
-    InitPopup();
     console.log("Init ready4");
     console.log(localStorage.getItem("currentlang"));
     SetglobalplayerSubtitle(localStorage.getItem("currentlang"));
