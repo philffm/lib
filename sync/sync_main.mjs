@@ -390,7 +390,7 @@ function SetupButtons() {
     getElement("SENDBUTTON").addEventListener("click", Send);
     getElement("SEARCH").addEventListener("click", UpdateRecordList);
     getElement("SWIPE").addEventListener("click", Swipe);
-    getElement("DELETE").addEventListener("click", Delete);
+    getElement("DELETEALL").addEventListener("click", DeleteAll);
     getElement("DBDELETE").addEventListener("click", DbDelete);
     getElement("PEERS").addEventListener("click", Peers);
     getElement("CONNECT").addEventListener("click", Connect);
@@ -724,18 +724,18 @@ async function DbDelete() {
         }
     }
 }    
+
+async function DeleteAll() {
+    const result = await globaldb.query(() => true); // get all records
+    for (var i=0;i<result.length;i++)
+           await globaldb.del(result[i]._id)
+
+    UpdateRecordList();       
+}      
         
-async function Delete(delete_id) {
-    if (delete_id) {
-       await globaldb.del(delete_id)
-    }
-    else // delete all
-    {
-        const result = await globaldb.query(() => true); // get all records
-        for (var i=0;i<result.length;i++)
-               await globaldb.del(result[i]._id)
-    }
-    //UpdateRecordList();       
+async function Delete(delete_id) {   
+    await globaldb.del(delete_id)
+    UpdateRecordList();       
 }        
 
 async function Peers() {
