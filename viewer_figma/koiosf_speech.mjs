@@ -6,7 +6,6 @@ var PrepareSpeechIconsParent;
 var fspeechon=false;
 
 export function SetSpeechLang (lang) {
-    console.log("In SetSpeechLang");
     var mainlang= lang.split("-")[0]; // take first characters before "-"
     
     for (var i=0;i<voices.length;i++) {
