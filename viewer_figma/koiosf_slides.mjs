@@ -21,6 +21,7 @@ class SlideList {
     async GetList() {
         return await this.SlideListPromise;
     }
+
     async SwitchList(cid) {
         this.currentSlide=0;
         if (this.cid == cid) return this.SlideListPromise// hasn't been changed
@@ -36,7 +37,6 @@ class SlideList {
     async LoadList(match) {
         if (this.currentList) {
             for (var i=0;i<this.currentList.length;i++) {
-				console.log("revoke");
 				URL.revokeObjectURL(this.currentList[i])  
 			}			   
         }    
@@ -84,9 +84,7 @@ async function GetSlidesFromVideo(vidinfo) {
     var cid= await GetCourseInfo("slides")
 
     var slideindex = await GlobalSlideList.SwitchList(cid)   
-    //	console.log(slideindex)
     var currentlist = await GlobalSlideList.LoadList(match)   
-	//console.log(currentlist);
     publish ("slidesloaded");
     ShowSlide();
 	UpdateButtons()
@@ -97,9 +95,6 @@ export function UpdateSlide(CurrentPos) {   // called frequently
         var res=SecondsArraySlides[ parseInt(CurrentPos)]
     } 
 }
-
- 
-
 
 function ClearSlides() {
 	var url="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" // otherwise previous slide is still shown
@@ -119,7 +114,8 @@ function ShowSlide(template) {
 		var url=GlobalSlideList.GetCurrentSlide()
 		if (!url)
 			url=getElement("noslides").src
-	}
+    }
+    
     var slide=getElement("slideimage")
     slide.src=url;
     slide.style.width="100%"
