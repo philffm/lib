@@ -40,12 +40,6 @@ export async function GetSubTitlesAndSheets(vidinfo,SubtitleCB,SheetsCB) {
     SheetsCB(array,vidinfo);  // array could be undefined if nothing found
 }
 
-
-//              lang_code:        lc,
-//              lang_original:    captions[i].getAttribute('lang_original'),
-//              lang_translated:  captions[i].getAttribute('lang_translated'),
-//              subtitle:         subtitle
-
 // *** get subtiles from IPFS / check    
     
 async function SetupSubtitles(windowid,surl,lang) {

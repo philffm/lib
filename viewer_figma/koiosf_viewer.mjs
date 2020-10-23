@@ -1,45 +1,35 @@
-//console.log(`In ${window.location.href} starting script: ${import.meta.url}`);
 // https://browserhow.com/how-to-clear-chrome-android-history-cookies-and-cache-data/
- // imports
-
-    import {LinkButton,HideButton,DragItem,publish,subscribe,LinkClickButton,LinkToggleButton,CanvasProgressInfoClass,ForceButton,getElement,setElementVal,LinkVisible } from '../lib/koiosf_util.mjs';
-    import {SetupLogWindow} from '../lib/koiosf_log.mjs';
-    import {SetupVideoWindowYouTube} from './koiosf_playvideo.mjs';
-    import {SelectLesson,SelectNextLesson,GlobalLessonList } from './koiosf_lessons.mjs';
-    import {GetSubTitlesAndSheets} from './koiosf_subtitles.mjs';
-    import {UpdateTranscript,FoundTranscript,SelectLanguage,SetVideoTranscriptCallbacks} from './koiosf_showtranscript.mjs';
-    import {/*FoundSlides,*/UpdateSlide} from './koiosf_slides.mjs';
-    import {} from './koiosf_notes.mjs';
-    import {InitSpeak,StopSpeak,StartSpeak,EnableSpeech,IsSpeechOn} from './koiosf_speech.mjs';
-    //import {} from './koiosf_test.mjs';
-    import {SelectPopup} from './koiosf_popup.mjs';
-    import {DisplayMessageContinous,SwitchDisplayMessageContinous,DisplayMessage} from './koiosf_messages.mjs';
-    import {} from './koiosf_music.mjs';
-
-    import {GetCourseInfo} from './koiosf_course.mjs';
-    import {Login} from './koiosf_login.mjs';
-
-    import {} from './koiosf_literature.mjs';
-    import {} from './koiosf_screenlayout.mjs';
-    import {} from './koiosf_comments.mjs';
-    import {} from './koiosf_quiz.mjs';
-    import {} from './koiosf_badges.mjs';
-    import {currentlang, setLangEn, setDarkmode} from './koiosf_settings.mjs';
-    import {} from './koiosf_leaderboard.mjs';
+// imports
+import {HideButton,DragItem,publish,subscribe,LinkClickButton,CanvasProgressInfoClass,getElement,LinkVisible } from '../lib/koiosf_util.mjs';
+import {SetupLogWindow} from '../lib/koiosf_log.mjs';
+import {} from './koiosf_playvideo.mjs';
+import {SelectNextLesson,GlobalLessonList } from './koiosf_lessons.mjs';
+import {} from './koiosf_subtitles.mjs';
+import {UpdateTranscript,SetVideoTranscriptCallbacks} from './koiosf_showtranscript.mjs';
+import {UpdateSlide} from './koiosf_slides.mjs';
+import {} from './koiosf_notes.mjs';
+import {InitSpeak,StopSpeak,StartSpeak,EnableSpeech,IsSpeechOn} from './koiosf_speech.mjs';
+import {} from './koiosf_popup.mjs';
+import {} from './koiosf_messages.mjs';
+import {} from './koiosf_music.mjs';
+import {GetCourseInfo} from './koiosf_course.mjs';
+import {} from './koiosf_login.mjs';
+import {} from './koiosf_literature.mjs';
+import {} from './koiosf_screenlayout.mjs';
+import {} from './koiosf_comments.mjs';
+import {} from './koiosf_quiz.mjs';
+import {} from './koiosf_badges.mjs';
+import {currentlang, setDarkmode} from './koiosf_settings.mjs';
+import {} from './koiosf_leaderboard.mjs';
 
 var globalplayer=0;
-//export var currentduration;
 export var currentvidinfo;
 
-{ // Global variables
-//var currentvideoid;
-
-
+// Global variables
 var position;
 var logpos;
 var logtext=0;
 var logipfs;
-
 var video=0;
 var slide;
 var ToggleCueVisibilityStatus=true;
@@ -50,14 +40,12 @@ var previous_row=-1;
 var table
 var tablediv
 var captionLanguageGlobal = "en";
-
 var defaultvolume=100;
 var vidproginput=0;
 var vidprogress=0;
 var slider=0; // global
-
 var fSoundOn=true;
-}
+
 function GetDuration() {
     if (video) return video.duration;
     if (globalplayer && globalplayer.getDuration) return  globalplayer.getDuration();
