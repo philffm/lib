@@ -276,7 +276,7 @@ function MailApplication() {
      href += "?SUBJECT=Job application";
      href += "&BODY="+str
      console.log(href);
-    window.open(href,"_blank"); 
+    window.open(href);//,"_blank"); 
     
     console.log(globalavailableofferings[globalcurrentcard].status)
     switch (globalavailableofferings[globalcurrentcard].status) {
@@ -507,6 +507,16 @@ async function main() {
     LinkVisible("scr_addjob"  ,ScrAddJobMadeVisible)    
     LinkVisible("scr_browsecards"  ,ScrBrowseCardsMadeVisible)    
     LinkVisible("scr_mydetails", ScrMyDetailsMadeVisible)
+    // @svg @click @dest:https://3box.io/hub
+    
+    
+    var domid=getElement("editon3box ")
+    if (domid) {
+        domid.href="http://3box.io/hub"
+        domid.target="_blank"
+        console.log(getElement("name"));
+    }
+    
     
     
     await SetupFields("jobinfo",selectlist1)

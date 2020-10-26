@@ -288,6 +288,10 @@ export async function getBox() {
  * Disconnect wallet button pressed.
  */
 async function onDisconnect() {
+
+  console.log("Killing the wallet connection", provider);
+
+
 	// TODO: Which providers have close method?
 	if(provider.close) {
 		await provider.close();
@@ -303,4 +307,5 @@ async function onDisconnect() {
 	// Set the UI back to the initial state
 	// document.querySelector("#prepare").style.display = "block";
 	//document.querySelector("#connected").style.display = "none";
+
 }
