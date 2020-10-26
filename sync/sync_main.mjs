@@ -507,13 +507,14 @@ async function main() {
     LinkVisible("scr_addjob"  ,ScrAddJobMadeVisible)    
     LinkVisible("scr_browsecards"  ,ScrBrowseCardsMadeVisible)    
     LinkVisible("scr_mydetails", ScrMyDetailsMadeVisible)
-     
+    // @svg @click @dest:https://3box.io/hub
     
     
     var domid=getElement("editon3box ")
     if (domid) {
         domid.href="http://3box.io/hub"
-        domid.target="_blank"        
+        domid.target="_blank"
+        console.log(getElement("name"));
     }
     
     
