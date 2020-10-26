@@ -160,7 +160,7 @@ var globalprevpage;
 var currentoverlay
 var mainurl=""
 
-export function SwitchPage(newpage,callerthis,fbackbutton) {    
+export function SwitchPage(newpage,callerthis,fbackbutton,target) {    
     console.log(`SwitchPage to ${newpage} from `) 	
     console.log(globalprevpage)
     
@@ -168,7 +168,12 @@ if (newpage && newpage.includes("http")) {// must be webpage
         var decoded=decodeURIComponent(newpage)
         decoded=decoded.replace("https//","https://") // : seems to be deleted
         console.log(decoded);
-        window.parent.location.href=decoded  // change at the highest level
+        if (target) {
+           window.open(decoded,target)
+           return
+        }
+        else
+            window.parent.location.href=decoded  // change at the highest level
     }
     
     
@@ -302,7 +307,7 @@ async function onmouseuphandler(event) {
       //  console.log(this)        
         this.dispatchEvent(ev3);              
         if (this.dataset && this.dataset.dest)  // otherwise action is defined elsewhere
-           SwitchPage(this.dataset.dest,this)
+           SwitchPage(this.dataset.dest,this,false,this.dataset.target)
     }
     SetToggleState(this,"mousedown",false)
 }
