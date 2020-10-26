@@ -856,6 +856,7 @@ async function recurse(figdata,figmadocument,documentid,token,fpartofgrid,button
         var dimensions=""
         var objecttype="div" // standard type
         var strhref=""
+        var strtarget=GetAtParam(figdata,"@target");
         var urllocation=""
         var insdata=""
         var transform=""
@@ -1329,8 +1330,12 @@ function ConvertColor(color) {
         
         
         if (dest) {
-            insdata=`data-dest="${encodeURIComponent(dest)}"`
+            insdata+=`data-dest="${encodeURIComponent(dest)}" `
           //  console.log(`insdata : ${insdata}`);
+        }
+        if (strtarget) {
+            insdata+=`data-target="${strtarget}" `
+              console.log(`insdata : ${insdata}`);
         }
         
         if (onclick) {
@@ -1395,7 +1400,7 @@ function ConvertColor(color) {
                 break;
             
                 case "a":  strhref=`href="{urllocation}" `;
-                case "div": htmlobjects.push(`<${objecttype} class="${classname}" ${insrtstyle} ${insdata} ${strhref} ">${strtxt}\n`) //  ${figdata.type} // title="${figdata.name}
+                case "div": htmlobjects.push(`<${objecttype} class="${classname}" ${insrtstyle} ${insdata} ${strhref}">${strtxt}\n`) //  ${figdata.type} // title="${figdata.name}
                             break;
         }
 

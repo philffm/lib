@@ -1,6 +1,17 @@
 Version 2.10
 
+Update 2020-10-26 : (no version nr upgrade)
 
+Functional updates:
+- url's can be started in a seperated tab (@target:_blank in figma)
+
+Technical updates:
+- source refactor by corwin
+
+
+Layout updates:
+
+Course content:
 
 Update 2020-10-19: (no version nr upgrade)
 

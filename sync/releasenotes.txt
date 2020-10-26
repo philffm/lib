@@ -1,11 +1,13 @@
-Version V0.0..
+Version V0.9
 Functional updates:
+- free text
  
 Technical updates:
 - minor bugfixes
 
 Layout updates:
-- 
+- job => oppertunity
+- buttons two "swipe" left & right
 
 
 Version V0.08
