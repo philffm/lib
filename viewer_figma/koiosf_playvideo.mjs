@@ -48,7 +48,6 @@ player.setOption("captions", "displaySettings", {"background": "#fff"}); // does
 */  
 
 async function onStateChange(event) {
-    //console.log(`In onStateChange ${event.data}`);
     SetglobalplayerSubtitle(localStorage.getItem("currentlang"));
   
     switch (event.data) {
@@ -60,20 +59,6 @@ async function onStateChange(event) {
         case  5: publish ("videocued");      break;
     }
 }    
-// YT.PlayerState.PLAYING
-//-1 – unstarted
-//0 – ended
-//1 – playing
-//2 – paused
-//3 – buffering
-//5 – video cued
-    //;A("YT.PlayerState.UNSTARTED", -1);
-    //A("YT.PlayerState.ENDED", 0);
-    //A("YT.PlayerState.PLAYING", 1);
-    //A("YT.PlayerState.PAUSED", 2);
-    //A("YT.PlayerState.BUFFERING", 3);
-    //A("YT.PlayerState.CUED", 5);
-   
    
 export async function SetupVideoWindowYouTube(id) { 
     var domid=getElement(id)
@@ -142,95 +127,19 @@ function LoadHlsVideo(video,node,hash) {
 }
 
 function videoerror(event){ 
-  let error = event;
+    let error = event;
     if (event.path && event.path[0]) {     // Chrome v60
-      error = event.path[0].error;
+        error = event.path[0].error;
     }    
     if (event.originalTarget) { // Firefox v55
-      error = error.originalTarget.error;
+        error = error.originalTarget.error;
     }
     alert(`Video error: ${error.message}`);     // Here comes the error message
 }
-
-/*
-
-    if (video) {
-        console.log(video);
-        let track = video.addTextTrack('subtitles',  lang_translated,  lang_code);    
-        track.mode = "disabled"; // default disabled           
-        track.oncuechange= ( x => { // every change of subtitles    // checkout GetCueAsHTML      
-            if (x.currentTarget.activeCues.length != 0) {                
-                HighlightTransscript(x.currentTarget.activeCues[0].id)                                
-            } 
-        }); 
-    }
-    
-      if (video) {
-            var cue = new VTTCue(subtitle[j].start, parseFloat(subtitle[j].start)+parseFloat(subtitle[j].dur), subtitle[j].text);
-            cue.id=`sub-${lang_code}-${j}`;
-            track.addCue(cue);
-        }
-    
-    
-    function CueVisible(on) {
-        if (video)
-        currenttrack.mode=on?"showing":"hidden"; // while hidden, events are still triggered
-    
-    
-    
-    function selectLanguage(lang_code)
-       if (video) { // only if we control the video object
-        let ttList=video.textTracks;
-        let wanted=0;
-        for (let i=0;i<ttList.length;i++) {
-            if (ttList[i].language == lang_code) {
-                wanted=ttList[i];
-                break;
-            }    
-        }
-        if (wanted) {
-            if (currenttrack) currenttrack.mode="disabled"; // disable previous
-            currenttrack = wanted;    
-            wanted.mode="showing";
-        }
-    }
-    
-    VideoLocation() 
-     if (video) {
-        CurrentPos=video.currentTime
-        for (let i=0;i< video.played.length;i++) { // check amount of really played
-           ReallyPlayed += video.played.end(i) - video.played.start(i);
-        } 
-        PlaybackRate = video.playbackRate;
-
-    }
-  /*
-function StyleCues() {
-    let s = document.createElement("style");
-    s.type = "text/css";
-    s.id="cuestyle";
-    document.body.appendChild(s);
-    CueVisible(ToggleCueVisibilityStatus);
-}
-
-SetVideoSeconds
-    if (video) {
-        video.currentTime=seconds;
-        //video.play();
-    }
-    
-        var vid_url='QmXVnrbjf4xGGhUpAJp6LTj3fDoWo9VqtpepkWGPCWotq8';
-   console.log(`Video url=${vid_url}`); 
-    // SetupVideoWindowIPFS("videoplayer",vid_url)
-    
-*/ 
   
-  async function asyncloaded() {    
-    console.log(`In asyncloaded of script: ${import.meta.url}`); 
+async function asyncloaded() {    
     var player = await SetupVideoWindowYouTube("realvideoplayer");   
     publish("videoplayerready",player)
 }
   
-  
-    window.addEventListener('DOMContentLoaded', asyncloaded);  // load      
-
+window.addEventListener('DOMContentLoaded', asyncloaded);  // load      
