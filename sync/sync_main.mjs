@@ -482,7 +482,7 @@ async function SetupOrbitdb() {
     
     
     
-    //UpdateRecordList() would overlap with other instance of UpdateRecordList giving weird results
+    //UpdateRecordList() //would overlap with other instance of UpdateRecordList giving weird results
 }    
 
  
