@@ -1,6 +1,6 @@
 
 import {loadScriptAsync,getElement,GetImageIPFS,publish,setElementVal,subscribe} from '../lib/koiosf_util.mjs';
-//import { } from "../lib/3box.js"; // from "https://unpkg.com/3box/dist/3box.js"; // prevent rate errors
+import { } from "../lib/3box.js"; // from "https://unpkg.com/3box/dist/3box.js"; // prevent rate errors
 
 let web3Modal     // Web3modal instance
 var  provider;  // Chosen wallet provider given by the dialog window
@@ -16,7 +16,6 @@ window.addEventListener('DOMContentLoaded', asyncloaded);  // load
 async function init() {
     await Promise.all(
         [
-        await loadScriptAsync("../lib/3box.js"),
         await loadScriptAsync("https://unpkg.com/web3@latest/dist/web3.min.js"),
         await loadScriptAsync("https://unpkg.com/web3modal"),        
         await loadScriptAsync("https://unpkg.com/evm-chains/lib/index.js"),
