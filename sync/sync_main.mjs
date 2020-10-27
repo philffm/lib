@@ -484,7 +484,7 @@ async function SetupOrbitdb() {
     
     
     
-    UpdateRecordList()
+    //UpdateRecordList() would overlap with other instance of UpdateRecordList giving weird results
 }    
 
  
@@ -643,7 +643,7 @@ async function UpdateRecordList() {
     globaloutofscope=0
     
     globalavailableofferings = await globaldb.query(() => true); // get all records
-    //console.log(globalavailableofferings);                
+    console.log(globalavailableofferings);                
     for (var i=0;i<globalavailableofferings.length;i++) {     
         var status=GetStatus(globalavailableofferings[i]._id)
 
