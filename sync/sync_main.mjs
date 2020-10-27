@@ -575,11 +575,12 @@ console.log("Start login");
     
     if (!globaladr) globaladr="unknown" 
     
-
+/* not really used
     globalbox = await getBox()
     console.log(globalbox)
     if (globalbox)
         await globalbox.syncDone
+*/
 
     //const profile = await globalbox.public.all()
 //console.log(profile)

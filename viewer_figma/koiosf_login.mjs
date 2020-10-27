@@ -270,7 +270,7 @@ subscribe("web3providerfound",NextStep)
 var init3boxpromise;
 
 async function NextStep() {
-    init3boxpromise=Init3box();  
+   // init3boxpromise=Init3box();  // not done automatically (requires extra signing)
 }     
 
 async function Init3box() {
@@ -280,6 +280,7 @@ async function Init3box() {
 }
 
 export async function getBox() {
+    if (!init3boxpromise) init3boxpromise=Init3box();
     await authorize()
     await init3boxpromise;
     //const verifiedAccounts = await Box.getVerifiedAccounts(getUserAddress()) - unused    
