@@ -8,6 +8,7 @@ Functional updates:
 Technical updates:
 - source refactor by corwin
 - timeing optimization in koiosf_login
+- init of 3box only done at getbox()
 
 Layout updates:
 
