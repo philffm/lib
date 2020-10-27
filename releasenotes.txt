@@ -7,7 +7,7 @@ Functional updates:
 
 Technical updates:
 - source refactor by corwin
-
+- timeing optimization in koiosf_login
 
 Layout updates:
 

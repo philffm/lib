@@ -543,7 +543,7 @@ async function main() {
 
 
  
-SetupOrbitdb() // note: asychronous!
+await SetupOrbitdb() // note: asychronous!
 
     subscribe("ethereumchanged",EthereumChanged)
     subscribe("web3providerfound",EthereumChanged) // update the records once address is known
@@ -569,7 +569,7 @@ SetupOrbitdb() // note: asychronous!
     await SetupFields(firstitem,selectlist2)
     SetupButtons() 
     
-    
+console.log("Start login");    
     await Login() // should be suffiently initiated
     globaladr=getUserAddress()         
     
