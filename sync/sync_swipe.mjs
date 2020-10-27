@@ -135,6 +135,7 @@ class Carousel {   // based on https://github.com/simonepm/likecarousel
         if (this.callbackchosen) 
             this.callbackchosen(fselected,this.topCard)
     
+        this.topCard.style.transition = 'transform 250ms ease-out'  // set back transition properties
         this.topCard.style.transform ='translateX(' + posX + 'px) translateY(' + posY + 'px) rotate(' + deg + 'deg)' // throw card in the chosen direction                       
         setTimeout(() => {   // wait transition end
             // remove swiped card
