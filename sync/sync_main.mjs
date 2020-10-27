@@ -370,20 +370,18 @@ function SetupEditField(key,id,loc1,loc2) {
     
     
     if (!idvalue)
-        idvalue=localStorage.getItem(`sync-${globaladr}-${key}`); 
+        idvalue=GetStatus(key); 
     if (!idvalue) 
             idvalue = target.innerHTML   
     target.innerHTML=idvalue    
     target.addEventListener('input',SaveTxt , true); // save the notes    
     
     function SaveTxt(txt) { 
-        localStorage.setItem(`sync-${globaladr}-{key}`, txt.target.innerText);
+        SetStatus(key,txt.target.innerText);
         console.log("input");
         console.log(txt.target.innerText); 
     }
 }
-        
- 
  
  
  
@@ -427,7 +425,7 @@ function SetupButtons() {
 async function SetupOrbitdb() {
  
     
-    //window.LOG='Verbose' // 'debug'
+    window.LOG='Verbose' // 'debug'
  
      await Promise.all(
         [
@@ -488,7 +486,9 @@ async function SetupOrbitdb() {
 }    
 
  
+       
 
+ 
 
 function getProfileInfo() {
     var profile=getProfile()
@@ -503,10 +503,10 @@ function getProfileInfo() {
     }
 
     
-    profile.mail=localStorage.getItem(`sync-${globaladr}-mail`)
+    profile.mail=GetStatus("mail")
     console.log(profile.mail);
     if (!profile.mail) profile.mail="Fill in via my details"
-    profile.phone=localStorage.getItem(`sync-${globaladr}-phone`)
+    profile.phone=GetStatus("phone")
     if (!profile.phone) profile.phone="Fill in via my details"
      
    // const email = await globalbox.private.get('email') // doesn't work
