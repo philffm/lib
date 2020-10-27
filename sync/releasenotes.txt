@@ -4,6 +4,9 @@ Functional updates:
  
 Technical updates:
 - minor bugfixes
+- timing issue in koiosf_login
+- 3box box not loaded in koiosf_login
+- fixed timeing issue with starting UpdateRecordList twice
 
 Layout updates:
 - job => oppertunity
