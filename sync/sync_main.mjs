@@ -9,7 +9,7 @@ var globaldb;
 var globalipfs;
 var globaladr="unknown"
 const globalserverid='QmaXQNNLvMo6vNYuwxD86AxNx757FoUJ3qaDoQ58PY2bxz' 
-var descriptions=new DomList('descriptioncontainer','scr_offerings');     
+//var descriptions=new DomList('descriptioncontainer','scr_offerings');     
 var alloptionsset={}
 var selectlist1=new DomList('selectblock',"selectlist1",'scr_addopportunity ');
 var selectlist2=new DomList('selectblock',"selectlist2",'scr_addopportunity ');
@@ -36,6 +36,7 @@ async function GetChoiceItems(source) {
     return Items;    
 }            
 
+/*
 function Select(e) {
     var ds=e.target.parentNode.dataset
     
@@ -43,9 +44,11 @@ function Select(e) {
     var fselected=!(ds.selected=="false")
     console.log(fselected);
     ds.selected=!fselected
-    descriptions.FilterDataset(ds.type,ds.name,!fselected,true)         //toggle
+    //descriptions.FilterDataset(ds.type,ds.name,!fselected,true)         //toggle
     console.log(ds)
 }    
+   */
+   
    
 function CreateDropdown(location,list,listname) {    
     //console.log("In CreateDropdown");
@@ -238,7 +241,7 @@ function UpdateStatusFields() {
     setElementVal("SWIPE",         `START SWIPING: ${globaltoswipe}`);
     setElementVal("to_swipe",       `to swipe: ${globaltoswipe}`);
     setElementVal("to_apply",       `to apply: ${globalliked}`);    
-    setElementVal("done",           `done: ${globaldone}`);
+    setElementVal("done",           `done: ${globaldone}`,"statistics");
     setElementVal("supplied",       `supplied: ${globalsupplied}`);
     setElementVal("disliked",       `disliked: ${globaldisliked}`);    
     setElementVal("out_of_scope",   `out of scope: ${globaloutofscope}`);
@@ -352,6 +355,11 @@ function CurrentCardSetStatus(status) {
 
 }   
  
+function ReloadEditField(key,id,loc1,loc2) {
+    var target=getElement(id,loc1,loc2)
+    var idvalue=GetStatus(key); 
+    target.innerHTML=idvalue
+}    
  
 function SetupEditField(key,id,loc1,loc2) {
     let params = (new URL(document.location)).searchParams;
@@ -405,15 +413,15 @@ async function SetupFields(filename,selectlist) {
         
 function SetupButtons() {
     getElement("SENDBUTTON").addEventListener("click", Send);
-    getElement("SEARCH").addEventListener("click", UpdateRecordList);
+    getElement("SEARCHBUTTON").addEventListener("click", UpdateRecordList);
     getElement("SWIPE").addEventListener("click", Swipe);
     getElement("DELETEALL").addEventListener("click", DeleteAll);
-    getElement("DBDELETE").addEventListener("click", DbDelete);
-    getElement("PEERS").addEventListener("click", Peers);
-    getElement("CONNECT").addEventListener("click", Connect);
-    getElement("DISCONNECT").addEventListener("click", Disconnect);
-    getElement("INFO").addEventListener("click", Pubsubinfo);
-    getElement("CLEAR").addEventListener("click", Clear);
+    getElement("DBDELETEBUTTON").addEventListener("click", DbDelete);
+    getElement("PEERSBUTTON").addEventListener("click", Peers);
+    getElement("CONNECTBUTTON").addEventListener("click", Connect);
+    getElement("DISCONNECTBUTTON").addEventListener("click", Disconnect);
+    getElement("INFOBUTTON").addEventListener("click", Pubsubinfo);
+    getElement("CLEARBUTTON").addEventListener("click", Clear);
     
     getElement("APPLYBUTTON").addEventListener("click", MailApplication);
     getElement("DELETEBUTTON").addEventListener("click", DeleteCurrentCard);
@@ -425,7 +433,7 @@ function SetupButtons() {
 async function SetupOrbitdb() {
  
     
-    window.LOG='Verbose' // 'debug'
+    //window.LOG='Verbose' // 'debug'
  
      await Promise.all(
         [
@@ -536,28 +544,36 @@ function EthereumChanged() {
     if (!globaladr) globaladr="unknown" 
     UpdateRecordList()
     SwitchPage("scr_sync");//close the popup
+    
+    ReloadEditField("motivation","line3","motivation","scr_browsecards")
+    ReloadEditField("mail","text","mail","scr_mydetails")
+    ReloadEditField("phone","text","phone","scr_mydetails")
+    ReloadEditField("freetext","freetext","scr_addopportunity ")
+    
+    
 }
         
 async function main() {
     console.log("Main");   
-
-
- 
-await SetupOrbitdb() // note: asychronous!
-
-    subscribe("ethereumchanged",EthereumChanged)
-    subscribe("web3providerfound",EthereumChanged) // update the records once address is known
-
-    LinkVisible("scr_addopportunity "  ,ScrAddOpportunityMadeVisible)    
-    LinkVisible("scr_browsecards"  ,ScrBrowseCardsMadeVisible)    
-    LinkVisible("scr_mydetails", ScrMyDetailsMadeVisible)
-    
     
     SetupEditField("motivation","line3","motivation","scr_browsecards")
     SetupEditField("mail","text","mail","scr_mydetails")
     SetupEditField("phone","text","phone","scr_mydetails")
     SetupEditField("freetext","freetext","scr_addopportunity ")
     PrepFreeTxt()
+    subscribe("ethereumchanged",EthereumChanged)
+    subscribe("web3providerfound",EthereumChanged) // update the records once address is known
+
+ 
+ await SetupOrbitdb() // note: asychronous => then metamask not allways loaded
+
+   
+    LinkVisible("scr_addopportunity "  ,ScrAddOpportunityMadeVisible)    
+    LinkVisible("scr_browsecards"  ,ScrBrowseCardsMadeVisible)    
+    LinkVisible("scr_mydetails", ScrMyDetailsMadeVisible)
+    
+    
+   
     
     var jobinfo=await SetupFields("jobinfo",selectlist1)
     var firstitem=""
@@ -643,7 +659,7 @@ async function UpdateRecordList() {
     globaloutofscope=0
     
     globalavailableofferings = await globaldb.query(() => true); // get all records
-    console.log(globalavailableofferings);                
+    //console.log(globalavailableofferings);                
     for (var i=0;i<globalavailableofferings.length;i++) {     
         var status=GetStatus(globalavailableofferings[i]._id)
 

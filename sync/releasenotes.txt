@@ -1,3 +1,14 @@
+Version V0.91
+Functional updates:
+ 
+ 
+Technical updates:
+- fixed warning
+- retrieve my details after account switch
+
+Layout updates:
+- search screen updated
+
 Version V0.9
 Functional updates:
 - free text
