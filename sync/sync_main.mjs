@@ -657,6 +657,7 @@ async function UpdateRecordList() {
     globalsupplied=0  
     globaldone=0
     globaloutofscope=0
+    if (!globaldb) return;
     
     globalavailableofferings = await globaldb.query(() => true); // get all records
     //console.log(globalavailableofferings);                
