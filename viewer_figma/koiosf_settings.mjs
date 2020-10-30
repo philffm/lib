@@ -85,9 +85,9 @@ function FontSize() {
 	}
 }
 
-function AudioOnOff() {
+async function AudioOnOff() {
     //var fOn=GetToggleState(this,"displayactive");
-	if (!globalplayer) return;
+	//if (!globalplayer) return;
 	
 	globalVideovolume++
     if (globalVideovolume >=5) globalVideovolume=0;
