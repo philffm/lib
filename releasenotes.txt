@@ -1,5 +1,13 @@
 Version 2.10
+Functional updates:
+- Full screen button no longer overlaps with lessons
 
+Technical updates:
+- Cleaned up code to increase readability/minor speed increase
+
+Layout updates:
+
+Course content:
 
 
 Update 2020-10-19: (no version nr upgrade)
