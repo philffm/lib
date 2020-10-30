@@ -1,3 +1,25 @@
+Version V0.0
+Functional updates:
+ 
+Technical updates:
+- mninor bugfixes
+
+Layout updates:
+- 
+
+
+Version V0.08
+Functional updates:
+- add mail
+- add browse
+
+Technical updates:
+- fixed lots of details
+
+Layout updates:
+- 
+
+
 Version V0.07
 Functional updates:
 - implemented more screens
