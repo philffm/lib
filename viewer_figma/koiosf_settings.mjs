@@ -14,7 +14,7 @@ async function asyncloaded() {
     LinkClickButton("videospeed",RotateVideoSpeed);
     subscribe("videoplayerready",VideoPlayerReady);
     LinkClickButton("fontsize",FontSize);
-    LinkToggleButton("audioonoff",AudioOnOff);
+    LinkClickButton("audioonoff",AudioOnOff);
     LinkClickButton("lang_nl", setLangNl);
     LinkClickButton("lang_en", setLangEn);
     LinkToggleButton("darkmodeTog", DarkmodeOnOff);
@@ -84,13 +84,31 @@ function FontSize() {
 	}
 }
 
-function AudioOnOff(event) {
-    var fOn=GetToggleState(this,"displayactive");
-    if (!globalplayer) return;
-    if (!fOn)
+function AudioOnOff() {
+    //var fOn=GetToggleState(this,"displayactive");
+	if (!globalplayer) return;
+	
+	globalVideovolume++
+    if (globalVideovolume >=5) globalVideovolume=0;
+    /*if (!fOn)
         globalplayer.unMute();
     else
-        globalplayer.mute();
+		globalplayer.mute();*/
+		
+	if (globalplayer)
+        switch (globalVideovolume) {
+			case 0: globalplayer.setVolume(100);break;
+			case 1: globalplayer.setVolume(75);break;
+			case 2: globalplayer.setVolume(50);break;
+			case 3: globalplayer.setVolume(25);break;
+			case 4: 
+				globalplayer.mute();
+				setElementVal("__label","muted","audioonoff");
+				break;
+		}
+		  
+	await sleep(100); // wait until speed is processed
+	if(globalplayer.getVolume() > 24) setElementVal("__label",globalplayer.getVolume(),"audioonoff")
 }
 
 export function DarkmodeOnOff(event) {
