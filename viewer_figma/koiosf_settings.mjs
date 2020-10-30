@@ -6,6 +6,7 @@ import {SetglobalplayerSubtitle} from '../viewer_figma/koiosf_viewer.mjs'
 
 var globalplayer=0;
 var globalVideospeed=0;
+var globalVideovolume=0;
 var globalInjectedCSS;
 export var currentlang;
 
