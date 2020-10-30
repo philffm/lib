@@ -90,7 +90,10 @@ async function AudioOnOff() {
 	//if (!globalplayer) return;
 	
 	globalVideovolume++
-    if (globalVideovolume >=5) globalVideovolume=0;
+    if (globalVideovolume >=5) {
+		globalVideovolume=0;
+		globalplayer.unMute();
+	} 
     /*if (!fOn)
         globalplayer.unMute();
     else
@@ -104,6 +107,7 @@ async function AudioOnOff() {
 			case 3: globalplayer.setVolume(25);break;
 			case 4: 
 				globalplayer.mute();
+				globalplayer.setVolume(0);
 				setElementVal("__label","muted","audioonoff");
 				break;
 		}
