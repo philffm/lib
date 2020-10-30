@@ -1,6 +1,7 @@
 Version 2.10
 Functional updates:
 - Full screen button no longer overlaps with lessons
+- Volume can now be changed (muted/25%/50%/75%/100%)
 
 Technical updates:
 - Cleaned up code to increase readability/minor speed increase
