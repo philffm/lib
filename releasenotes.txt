@@ -1,5 +1,18 @@
 Version 2.10
 
+Update 3-11-2020
+
+Functional updates:
+
+
+Technical updates:
+- update on import of evm-chains
+- removed unused code for fullscreen
+
+Layout updates:
+
+Course content:
+
 Update 2020-10-26 : (no version nr upgrade)
 
 Functional updates:
