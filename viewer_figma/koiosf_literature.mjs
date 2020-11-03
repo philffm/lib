@@ -60,6 +60,8 @@ async function GetLiteratureForVideo() {
     if (!vidinfo) return;
     
     var match=(vidinfo.title).split(" ")[0]
+    match=match.replace(/\.+$/g,'')               // remove trailing . (dots) // usefull te be able change the sort order
+    console.log(`GetLiteratureForVideo match=${match}`)
     GlobalUrlList.EmptyList()    
     
     if (!globalslideindex) return; // not loaded yet
