@@ -8,6 +8,7 @@ Functional updates:
 Technical updates:
 - update on import of evm-chains
 - removed unused code for fullscreen
+- ignore trailing . after chapter number (to be able to use playlist sorter for youtube plugin)
 
 Layout updates:
 
