@@ -318,6 +318,8 @@ function loaded() {
 	Initial("showliterature1",false)
 	Initial("showliterature2",false)
 	Initial("showfullscreen",false)
+	
+	LinkToggleButton("fullscreen",FullScreenOnOff,"scr_viewer")
 }    
 
 document.addEventListener("DOMContentLoaded", loaded )
