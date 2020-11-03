@@ -3,6 +3,7 @@ import {LinkToggleButton,subscribe,setElementVal,LinkClickButton,LinkVisible,sle
 import {GetToggleState} from '../genhtml/startgen.mjs'
 import {ToggleCueVisibility} from '../viewer_figma/koiosf_viewer.mjs'
 import {SetglobalplayerSubtitle} from '../viewer_figma/koiosf_viewer.mjs'
+import { getElementVal } from '../lib/koiosf_util.mjs';
 
 var globalplayer=0;
 var globalVideospeed=0;
@@ -113,6 +114,8 @@ async function AudioOnOff() {
 				break;
 		}
 		  
+	var imgval = getElementVal("Vector1 (Stroke)", "audioonoff");
+	console.log("imgval :", imgval);
 	await sleep(100); // wait until speed is processed
 	if(globalplayer.getVolume() > 24) setElementVal("__label",globalplayer.getVolume(),"audioonoff")
 }
