@@ -18,7 +18,7 @@ async function init() {
         [
         await loadScriptAsync("https://unpkg.com/web3@latest/dist/web3.min.js"),
         await loadScriptAsync("https://unpkg.com/web3modal"),        
-        await loadScriptAsync("https://unpkg.com/evm-chains/lib/index.js"),
+        await loadScriptAsync("https://unpkg.com/evm-chains"), // was https://unpkg.com/evm-chains/lib/index.js
         await loadScriptAsync("https://unpkg.com/@walletconnect/web3-provider@latest/dist/umd/index.min.js"),
         await loadScriptAsync("https://cdn.jsdelivr.net/npm/fortmatic@latest/dist/fortmatic.js"),        // https://unpkg.com/fortmatic@2.0.6/dist/fortmatic.js
         ])
