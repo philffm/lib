@@ -109,6 +109,7 @@ async function AudioOnOff() {
 				globalplayer.mute();
 				globalplayer.setVolume(0);
 				setElementVal("__label","muted","audioonoff");
+				setElementVal("vector1 (Stroke","","audioonoff");
 				break;
 		}
 		  
