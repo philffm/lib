@@ -4,6 +4,7 @@ Update 4-11-2020
 
 Technical updates:
 - added Koios token
+- update images of tokens (hex surrounding)
 - in token json fixed ipfs issue (ipfs://ipfs/cid ==> ipfs://cid)
 - update koiosf_util to support improved ipfs format
 
