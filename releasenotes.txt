@@ -1,5 +1,12 @@
 Version 2.10
 
+Update 4-11-2020
+
+Technical updates:
+- added Koios token
+- in token json fixed ipfs issue (ipfs://ipfs/cid ==> ipfs://cid)
+- update koiosf_util to support improved ipfs format
+
 Update 3-11-2020
 
 Functional updates:

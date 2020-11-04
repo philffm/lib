@@ -25,6 +25,8 @@ module.exports = async function(deployer) {
 		
 		decimals=await ERC20TokenContract[i].decimals()	
 		//console.log(`Address token ${tokenaddress} name:${name} decimals:${decimals}`)	
+        
+        
 		const ten = new BN("10")
 		for (var j=0;j<toarrayamount.length;j++)  {	
 			var item=toarrayamount[j]
@@ -34,14 +36,14 @@ module.exports = async function(deployer) {
 			await MintandProcess(tokenaddress,amount,ERC20TokenContract[i],dest,acts[0])
 		}	
 		var left=await ERC20TokenContract[i].balanceOf(acts[0])
-		console.log(`Left on account ${acts[0]} ${web3.utils.fromWei(left,'ether')}`)
+		console.log(`${name} Left on account ${acts[0]} ${web3.utils.fromWei(left,'ether')}`)
 		for (var j=0;j<toarrayamount.length;j++)  {	
 			var item=toarrayamount[j]
 			var left=await ERC20TokenContract[i].balanceOf(item[0])
-			console.log(`${item[2].padEnd(20, ' ')} ${item[0]} needs ${item[1].toString().padEnd(15, ' ')} and has ${web3.utils.fromWei(left,'ether').padEnd(15, ' ')}`)
+			console.log(`${name} ${item[3].padEnd(20, ' ')} ${item[0]} needs ${item[1].toString().padEnd(15, ' ')} and has ${web3.utils.fromWei(left,'ether').padEnd(15, ' ')}`)
 		}
 		var nrOwners=await ERC20TokenContract[i].nrOwners()
-		console.log(`Total ${nrOwners} owners`);
+		console.log(`${name} Total ${nrOwners} owners`);
 		for (var j=0;j<nrOwners;j++) {
 			var owner=await ERC20TokenContract[i].GetOwner(j)
 			console.log(`Owner ${j} ${owner}`);

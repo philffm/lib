@@ -9,14 +9,15 @@ module.exports = async function(deployer) {
 	var tokenaddress=[];
 	ERC20TokenFactoryContract = await ERC20TokenFactory.deployed()
 	NrTokens=await ERC20TokenFactoryContract.NrTokens();	
-	console.log(`NrTokens=${NrTokens}`);
+	console.log(`Already deployed tokens=${NrTokens}`);
 		
-	for (var i=NrTokens;i<list.length;i++) 
+	for (var i=NrTokens;i<list.length;i++) // continue with the list after it might have stopped, also usefull for new tokens
 		await CreateNewToken(ERC20TokenFactoryContract,list[i].name,list[i].cid);
 	
 	NrTokens=await ERC20TokenFactoryContract.NrTokens();	
 	console.log(`Now NrTokens=${NrTokens} (should be ${list.length})`);
 		
+                
 	var ERC20TokenContract=[];
 	for (var i=0;i<NrTokens;i++) {
 		tokenaddress[i]=await ERC20TokenFactoryContract.tokens(i);	
@@ -24,9 +25,19 @@ module.exports = async function(deployer) {
 	}	
 	for (var i=0;i<NrTokens;i++) {	   
 	   name=await ERC20TokenContract[i].name()
-	   tokenURI=await ERC20TokenContract[i].tokenURI()
+       console.log(name)
+       console.log(list[i].cid)
+
+	   var tokenURI=await ERC20TokenContract[i].tokenURI()
+       
+       if (tokenURI != list[i].cid) {
+            console.log(`Update tokenuri from ${tokenURI} to ${list[i].cid}`)
+            await ERC20TokenContract[i].setTokenURI(list[i].cid); // update the tokenuri    
+            tokenURI=await ERC20TokenContract[i].tokenURI()
+       }
 	   console.log(`Address token ${i} ${tokenaddress[i]} name:${name} tokenURI:${tokenURI}`)
     }	
+    error
 };
  
 async function CreateNewToken(contract,name,cid) {   		
