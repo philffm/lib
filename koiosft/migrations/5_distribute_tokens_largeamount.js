@@ -1,3 +1,9 @@
+// format distribute.json
+//  address, min amount of titan tokens, min amount of gaia tokens, name
+//	["0x8e2A89fF2F45ed7f8C8506f846200D671e2f176f", 1000, 1, "Gerard"],
+
+
+
 var ERC20TokenFactory = artifacts.require("ERC20TokenFactory");
 var ERC20Token = artifacts.require("ERC20Token");
 
@@ -19,21 +25,22 @@ module.exports = async function(deployer) {
 	
 	var acts=await web3.eth.getAccounts()
 	for (var i=0;i<NrTokens;i++) {
-		name=await ERC20TokenContract[i].name()
-		if (!name.includes("Titan")) continue; // only titan tokens
+		name=await ERC20TokenContract[i].name()		
 		console.log(`Processing contract ${name}`)
-		
+        if (name != "Koios") continue;
 		decimals=await ERC20TokenContract[i].decimals()	
 		//console.log(`Address token ${tokenaddress} name:${name} decimals:${decimals}`)	
-        
-        
-		const ten = new BN("10")
-		for (var j=0;j<toarrayamount.length;j++)  {	
-			var item=toarrayamount[j]
-			var dest=item[0]
-			var amountinput=new BN(item[1])
-			var amount = ten.pow(new BN(decimals)).mul(amountinput)
-			await MintandProcess(tokenaddress,amount,ERC20TokenContract[i],dest,acts[0])
+
+		for (var item of toarrayamount)  {	
+            var dest=item[0]
+            switch (name) {
+                case "TitanOff": 
+                    await MintandProcess(tokenaddress,item[1] ,ERC20TokenContract[i],dest,acts[0],decimals)
+                    break
+                case "Koios":
+                    await MintandProcess(tokenaddress,item[2] ,ERC20TokenContract[i],dest,acts[0],decimals)
+                    break
+            }
 		}	
 		var left=await ERC20TokenContract[i].balanceOf(acts[0])
 		console.log(`${name} Left on account ${acts[0]} ${web3.utils.fromWei(left,'ether')}`)
@@ -44,26 +51,33 @@ module.exports = async function(deployer) {
 		}
 		var nrOwners=await ERC20TokenContract[i].nrOwners()
 		console.log(`${name} Total ${nrOwners} owners`);
+        /*
 		for (var j=0;j<nrOwners;j++) {
 			var owner=await ERC20TokenContract[i].GetOwner(j)
 			console.log(`Owner ${j} ${owner}`);
-		}		
+		}
+*/		
 	}
 error
 }  
   
 const BN = web3.utils.BN
   
-async function MintandProcess(tokenaddress,requiredbalance,contract,dest,adminact)  {
+async function MintandProcess(tokenaddress,requiredbalance,contract,dest,adminact,decimals)  {
+    if (!requiredbalance) return;
+    const ten = new BN("10")
+    var amountinput=new BN(requiredbalance)
+    var amount = ten.pow(new BN(decimals)).mul(amountinput)
+    
 	var destbalance=await contract.balanceOf(dest)
 	console.log(`Destination ${dest} has now: ${web3.utils.fromWei(destbalance,'ether')} tokens `)
-	console.log(`Required  ${web3.utils.fromWei(requiredbalance,'ether')} tokens `)
+	console.log(`Required  ${web3.utils.fromWei(amount,'ether')} tokens `)
 	
-	if (destbalance.gte(requiredbalance) ) {
+	if (destbalance.gte(amount) ) {
 		console.log("Skipping, because already has sufficient balance")
 		return
 	}
-	var extraneeded = requiredbalance.sub(destbalance);
+	var extraneeded = amount.sub(destbalance);
 	console.log(`extraneeded  ${web3.utils.fromWei(extraneeded,'ether')} tokens `)
 	
 	var adminbalance=await contract.balanceOf(adminact)
