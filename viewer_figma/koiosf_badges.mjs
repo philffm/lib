@@ -155,7 +155,7 @@ async function GetTokenDetails(urltarget,contracttoken,balance) {
    	var tokencontent=await GetJsonIPFS(uri)
     if (!tokencontent) return undefined;		
 	
-	setElementVal("__label",tokencontent.name+"<br>"+balance,urltarget)
+	setElementVal("__label",`${tokencontent.name} ${balance}`,urltarget)
 	if (!tokencontent.image) return undefined
 		
 	var imageobject=await GetImageIPFS(tokencontent.image)

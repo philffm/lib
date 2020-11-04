@@ -7,6 +7,7 @@ Technical updates:
 - update images of tokens (hex surrounding)
 - in token json fixed ipfs issue (ipfs://ipfs/cid ==> ipfs://cid)
 - update koiosf_util to support improved ipfs format
+- token tabel: added space
 
 Update 3-11-2020
 

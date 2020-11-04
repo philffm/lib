@@ -37,7 +37,6 @@ module.exports = async function(deployer) {
        }
 	   console.log(`Address token ${i} ${tokenaddress[i]} name:${name} tokenURI:${tokenURI}`)
     }	
-    error
 };
  
 async function CreateNewToken(contract,name,cid) {   		
