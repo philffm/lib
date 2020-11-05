@@ -1,4 +1,7 @@
-Version 2.10
+Version 2.10 5-11-2020
+
+Layout updates:
+ -updated format of badges texts
 
 Update 4-11-2020
 
