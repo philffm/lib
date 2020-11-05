@@ -1240,7 +1240,8 @@ function ConvertColor(color) {
         
         switch (figdata.type) {
            case "TEXT": strtxt+=figdata.characters.replace(/\n/g,"<br>"); // replace all newlines
-           
+                console.log(figdata.style)
+                console.log(strstyle);
                 switch(figdata.style.textAlignVertical) {
                    case "TOP":   break // is already default // display="flex";strstyle +="align-items: flex-start;";
                    case "CENTER": display="flex";strstyle +="align-items: center;";    break
@@ -1251,7 +1252,7 @@ function ConvertColor(color) {
                    case "CENTER": /*display="flex";*/strstyle +="text-align: center;"; break; // "justify-content: center;";    break;
                    case "RIGHT":  /*display="flex";*/strstyle +="text-align: right;"; break;  // "justify-content: flex-end;";  break;
                 }    
-                // console.log(strstyle);
+                 console.log(strstyle);
            break;
            //case "RECTANGLE": { console.log(figdata);                          break; }
          //  case "GROUP": strstyle +=`position: relative; display:inline-block;`; break;
