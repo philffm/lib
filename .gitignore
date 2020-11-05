@@ -15,3 +15,4 @@ courses/.figma
 courses/.figmadocument
 lib/github/*
 
+*/*.off/*
