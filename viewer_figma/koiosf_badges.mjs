@@ -101,7 +101,7 @@ async function GetBadgeDetails(urltarget,i) { // put in function to be able to r
 			var imageobject=await GetImageIPFS(badgecontent.image)
 			setElementVal("__icon",imageobject,urltarget)
 		}        
-		setElementVal("__label",badgecontent.name+" "+badgecontent.description,urltarget)
+		setElementVal("__label",badgecontent.name,urltarget) //" "+badgecontent.description  has same info
 	}
 	return tostore		
 }        
