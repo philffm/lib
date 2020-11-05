@@ -3,6 +3,12 @@ Version 2.10 5-11-2020
 Layout updates:
  -updated format of badges texts
 
+Technical updates:
+- switch on test on push: .github\workflows\main.yml
+- github settings / branches / branch protection rules:
+    require status checks to pass before merging / require brachnes to be up to date before merging
+        build 12.x
+
 Update 4-11-2020
 
 Technical updates:
