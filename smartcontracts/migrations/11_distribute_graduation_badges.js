@@ -7,10 +7,10 @@ module.exports = async function(deployer) {
   console.log(`totalSupply is now:  ${total}`);
   
   var toarray=[
-		  //  "0xC3036b696Ea52F6846F3F22E2EB709C595F0e09A", // jordi
             //"0x8e2A89fF2F45ed7f8C8506f846200D671e2f176f", // gerard
-            "0x84C173Df9C7903cc5F5FCA4327123bD18a70A350" //gerard account 2
-            
+            //"0x84C173Df9C7903cc5F5FCA4327123bD18a70A350" //gerard account 2
+            "0xC3036b696Ea52F6846F3F22E2EB709C595F0e09A", // "Jordi
+            "0x4373294DD0f98eC2783f759Ae546A55E527487e7" // "Dennis
             ]
   var nrTemplates=await KOIOSNFTContract.nrTemplates()
     for (var i=0;i<nrTemplates;i++) {          
