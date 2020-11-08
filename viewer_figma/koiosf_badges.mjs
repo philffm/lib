@@ -68,8 +68,6 @@ function HasBadge(wantedname) {
 
 function GetBadgeInfo(wantedid) {
 	for (var i=0;i<globalbadgeinfo.length;i++) {
-		console.log(i);
-		console.log(globalbadgeinfo[i])
 		if (!globalbadgeinfo[i]) continue;
 		if (globalbadgeinfo[i].tokenid != wantedid) continue;
 		return globalbadgeinfo[i]
@@ -279,7 +277,6 @@ async function ShowGetBadgeInfo(tokenid,show) {
 	show(`<br>`)
 	show(`address:${owneraddress}<br>`)
 }	
-
 
 async function init() {	 
     LinkVisible("ov_join",Joincourse,"scr_profile")    

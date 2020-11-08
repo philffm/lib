@@ -1,5 +1,9 @@
 Version 2.10 5-11-2020 
 
+Functional updates:
+- Full screen button no longer overlaps with lessons
+- Volume can now be changed (muted/25%/50%/75%/100%)
+
 Layout updates:
  -updated format of badges texts
 
@@ -8,6 +12,7 @@ Technical updates:
 - github settings / branches / branch protection rules:
     require status checks to pass before merging / require brachnes to be up to date before merging
         build 12.x
+- Cleaned up code to increase readability/minor speed increase
 
 Update 4-11-2020
 
