@@ -9,10 +9,10 @@ var globaldb;
 var globalipfs;
 var globaladr="unknown"
 const globalserverid='QmaXQNNLvMo6vNYuwxD86AxNx757FoUJ3qaDoQ58PY2bxz' 
-var descriptions=new DomList('descriptioncontainer','scr_offerings');     
+//var descriptions=new DomList('descriptioncontainer','scr_offerings');     
 var alloptionsset={}
-var selectlist1=new DomList('selectblock',"selectlist1",'scr_addjob');
-var selectlist2=new DomList('selectblock',"selectlist2",'scr_addjob');
+var selectlist1=new DomList('selectblock',"selectlist1",'scr_addopportunity ');
+var selectlist2=new DomList('selectblock',"selectlist2",'scr_addopportunity ');
 var globalavailableofferings=[];     
 var globalsupplied=0   
 
@@ -36,6 +36,7 @@ async function GetChoiceItems(source) {
     return Items;    
 }            
 
+/*
 function Select(e) {
     var ds=e.target.parentNode.dataset
     
@@ -43,15 +44,18 @@ function Select(e) {
     var fselected=!(ds.selected=="false")
     console.log(fselected);
     ds.selected=!fselected
-    descriptions.FilterDataset(ds.type,ds.name,!fselected,true)         //toggle
+    //descriptions.FilterDataset(ds.type,ds.name,!fselected,true)         //toggle
     console.log(ds)
 }    
+   */
+   
    
 function CreateDropdown(location,list,listname) {    
     //console.log("In CreateDropdown");
     var select = document.createElement("select");
     select.size=3
     select.multiple=true;
+    select.style.width="100%" // make all blocks the same & max width
     for (var i=0;i<list.length;i++) {        
         var option = document.createElement("option");        
         option.innerHTML=option.value=list[i]
@@ -78,8 +82,8 @@ function CreateDropdown(location,list,listname) {
             SetupFields(this.value,selectlist2)
         }       
   
-        ShowProfile(getProfileInfo(),"line1","card","scr_addjob")
-        ShowSettingsInCard(alloptionsset,"scr_addjob")
+        ShowProfile(getProfileInfo(),"line1","card","scr_addopportunity ")
+        ShowSettingsInCard(alloptionsset,"scr_addopportunity ")
     });
 }
 
@@ -138,18 +142,31 @@ function ShowSettingsInCard(options,screenlocation1) {
     return strnohtml;
 }   
 
-function ScrAddJobMadeVisible() {
+function ScrAddOpportunityMadeVisible() {
     
-    ShowProfile(getProfileInfo(),"line1","card","scr_addjob")
-    ShowSettingsInCard(alloptionsset,"scr_addjob")
- 
-}    
+    ShowProfile(getProfileInfo(),"line1","card","scr_addopportunity ")
+    ShowSettingsInCard(alloptionsset,"scr_addopportunity ")
+
+}
+      
+
+
+function PrepFreeTxt() {
+     getElement("freetext").addEventListener('input',SaveFreeTxt , true); // save the notes    
+    
+    function SaveFreeTxt(txt) { 
+        alloptionsset.freetext={}
+        alloptionsset.freetext[txt.target.innerText]=txt.target.innerText
+console.log(alloptionsset)        
+        ShowSettingsInCard(alloptionsset,"scr_addopportunity ")
+    }
+}
 
 
 function ScrBrowseCardsMadeVisible() {
     ShowProfile(getProfileInfo(),"line1","myinfo","scr_browsecards")
     
-    SetupEditField(`sync-${globaladr}-motivation`,"line3","motivation","scr_browsecards")
+    
     getElement("left","scr_browsecards").addEventListener('click',CardLeft)  
     getElement("right","scr_browsecards").addEventListener('click',CardRight)        
     globalcurrentcard=0
@@ -191,7 +208,7 @@ function UpdateButtons() {
                    case "Y": statustext="Liked"; break
                    case "N": statustext="Disliked";break;
                    case "S": statustext="Supplied";break
-                   case "A": statustext="Applied";break
+                   case "D": statustext="Done";break
                    case "O": statustext="Out of scope";break
                    default:
                         statustext="To swipe"; break
@@ -200,8 +217,8 @@ function UpdateButtons() {
             
             
             var status=globalavailableofferings[globalcurrentcard].status
-            getElement("DELETEBUTTON").style.display=status=="S"?"block":"none" // can only delete if owner
-            getElement("APPLYBUTTON").style.display=(status=="S" || status=="A")?"none":"block" // cannot apply when owner, and also not when already applied
+            getElement("DELETEBUTTON","scr_browsecards").style.display=status=="S"?"block":"none" // can only delete if owner
+            getElement("APPLYBUTTON","scr_browsecards").style.display=(status=="S" || status=="A")?"none":"block" // cannot apply when owner, and also not when already applied
         }
     
 }	
@@ -224,7 +241,7 @@ function UpdateStatusFields() {
     setElementVal("SWIPE",         `START SWIPING: ${globaltoswipe}`);
     setElementVal("to_swipe",       `to swipe: ${globaltoswipe}`);
     setElementVal("to_apply",       `to apply: ${globalliked}`);    
-    setElementVal("applied_for",     `applied for: ${globalapplied}`);
+    setElementVal("done",           `done: ${globaldone}`,"statistics");
     setElementVal("supplied",       `supplied: ${globalsupplied}`);
     setElementVal("disliked",       `disliked: ${globaldisliked}`);    
     setElementVal("out_of_scope",   `out of scope: ${globaloutofscope}`);
@@ -276,7 +293,7 @@ function MailApplication() {
      href += "?SUBJECT=Job application";
      href += "&BODY="+str
      console.log(href);
-    window.open(href,"_blank"); 
+    window.open(href);//,"_blank"); 
     
     console.log(globalavailableofferings[globalcurrentcard].status)
     switch (globalavailableofferings[globalcurrentcard].status) {
@@ -284,12 +301,19 @@ function MailApplication() {
         case null: globaltoswipe--;break;
     }
     
-    CurrentCardSetStatus("A");
-    globalapplied++
     ShowCard()
 	UpdateButtons()
     UpdateStatusFields()       
 }
+
+
+function SetToDone() {
+    globaldone++
+    CurrentCardSetStatus("D");
+    ShowCard()
+	UpdateButtons()
+    UpdateStatusFields()       
+}    
 
 
 function CurrentCardSetStatus(status) {
@@ -328,10 +352,14 @@ function CurrentCardSetStatus(status) {
     proof_twitter: "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NksifQ.eyJpYXQiOjE2MDIwNjIxNTMsInN1YiI6ImRpZDozOmJhZnlyZWliYWZlbmZwMmR2bWFwb3Z3ZjZ1aXJ1ZndrcWZtamZqeHJmdm5hc3VlaGM0M3kycXY3YzJ1IiwiY2xhaW0iOnsidHdpdHRlcl9oYW5kbGUiOiJncGVyc29vbiIsInR3aXR0ZXJfcHJvb2YiOiJodHRwczovL3R3aXR0ZXIuY29tL2dwZXJzb29uL3N0YXR1cy8xMzEzNzY5OTY0MTg5NDk1Mjk2In0sImlzcyI6ImRpZDpodHRwczp2ZXJpZmljYXRpb25zLjNib3guaW8ifQ.5jf0to4pGS10JkCEeyRJpJ969TI6gSHVSl-fDZjC6rPMFn1XRWXbfi6-zoj9QpNYL-DJwGNOmgqTc0heH6oEPg"
     */
   
- SetupEditField(`sync-${globaladr}-mail`,"text","mail","scr_mydetails")
- SetupEditField(`sync-${globaladr}-phone`,"text","phone","scr_mydetails")
+
 }   
  
+function ReloadEditField(key,id,loc1,loc2) {
+    var target=getElement(id,loc1,loc2)
+    var idvalue=GetStatus(key); 
+    target.innerHTML=idvalue
+}    
  
 function SetupEditField(key,id,loc1,loc2) {
     let params = (new URL(document.location)).searchParams;
@@ -350,37 +378,34 @@ function SetupEditField(key,id,loc1,loc2) {
     
     
     if (!idvalue)
-        idvalue=localStorage.getItem(key); 
+        idvalue=GetStatus(key); 
     if (!idvalue) 
             idvalue = target.innerHTML   
     target.innerHTML=idvalue    
     target.addEventListener('input',SaveTxt , true); // save the notes    
     
     function SaveTxt(txt) { 
-        localStorage.setItem(key, txt.target.innerText);
+        SetStatus(key,txt.target.innerText);
         console.log("input");
         console.log(txt.target.innerText); 
     }
 }
-        
  
  
  
- 
-async function SetupFields(filename,selectlist) {
-    
+async function SetupFields(filename,selectlist) {    
     selectlist.EmptyList()
-
     var jobinfo=await GetChoiceItems(`https://gpersoon.com/koios/lib/sync/${filename}.json`);
     console.log(jobinfo);
     
-    for (var i in jobinfo) {
+    for (var i in jobinfo) {        
         //console.log(i);
         var selectblock=selectlist.AddListItem()
         setElementVal("selectname",i,selectblock)
         var selectvalues=getElement("selectvalues",selectblock)
         CreateDropdown(selectvalues,jobinfo[i],i);
-    }    
+    }   
+    return jobinfo;
 }    
  
           
@@ -388,30 +413,42 @@ async function SetupFields(filename,selectlist) {
         
 function SetupButtons() {
     getElement("SENDBUTTON").addEventListener("click", Send);
-    getElement("SEARCH").addEventListener("click", UpdateRecordList);
+    getElement("SEARCHBUTTON").addEventListener("click", UpdateRecordList);
     getElement("SWIPE").addEventListener("click", Swipe);
     getElement("DELETEALL").addEventListener("click", DeleteAll);
-    getElement("DBDELETE").addEventListener("click", DbDelete);
-    getElement("PEERS").addEventListener("click", Peers);
-    getElement("CONNECT").addEventListener("click", Connect);
-    getElement("DISCONNECT").addEventListener("click", Disconnect);
-    getElement("INFO").addEventListener("click", Pubsubinfo);
-    getElement("CLEAR").addEventListener("click", Clear);
+    getElement("DBDELETEBUTTON").addEventListener("click", DbDelete);
+    getElement("PEERSBUTTON").addEventListener("click", Peers);
+    getElement("CONNECTBUTTON").addEventListener("click", Connect);
+    getElement("DISCONNECTBUTTON").addEventListener("click", Disconnect);
+    getElement("INFOBUTTON").addEventListener("click", Pubsubinfo);
+    getElement("CLEARBUTTON").addEventListener("click", Clear);
     
     getElement("APPLYBUTTON").addEventListener("click", MailApplication);
     getElement("DELETEBUTTON").addEventListener("click", DeleteCurrentCard);
+    getElement("DONEBUTTON").addEventListener("click", SetToDone);
     
     
 }
 
 async function SetupOrbitdb() {
+ 
+    
     //window.LOG='Verbose' // 'debug'
+ 
+     await Promise.all(
+        [
+            // await loadScriptAsync("https://gpersoon.com/koios/lib/lib/ipfs0.46.1.min.js")     // https://unpkg.com/ipfs@0.46.0/dist/index.min.js    
+            await loadScriptAsync("https://gpersoon.com/koios/lib/lib/ipfs0.50.2min.js"),     // https://unpkg.com/ipfs@0.50.2/dist/index.min.js   
+            //await loadScriptAsync("https://gpersoon.com/koios/lib/lib/orbitdb0.24.1.min.js"); // https://www.unpkg.com/orbit-db@0.24.1/dist/orbitdb.min.js
+            await loadScriptAsync("https://gpersoon.com/koios/lib/lib/orbitdb26.min.js")    // clone from github & npm run build:dist     
+        ])
+    console.log('libs loaded');
+    Peers()
     var IPFS=Ipfs; // for the browser version    
-    globalipfs = await IPFS.create(
+    globalipfs = await IPFS.create({ preload: { enabled: false} }) // otherwise keeps on loading lots of data from node*.preload.ipfs.io // see https://discuss.ipfs.io/t/how-do-i-host-my-own-preload-nodes/8583    
     
-    { preload: { enabled: false} } // otherwise keeps on loading lots of data from node*.preload.ipfs.io // see https://discuss.ipfs.io/t/how-do-i-host-my-own-preload-nodes/8583
+    await Connect();    //connect asap to node with the data
     
-    ) //{EXPERIMENTAL: { pubsub: true } }, only for ipfs < 0.38 ???
     const orbitdb = await OrbitDB.createInstance(globalipfs,{ directory: './access_db_httpclient_diskstation' })   
     var accessController = { write: ["*"] }  
 
@@ -423,13 +460,14 @@ async function SetupOrbitdb() {
     await globaldb.load();
     UpdateRecordList()
     var dbeventsonreplicated=false;
+    
     globaldb.events.on('replicate.progress', (address, hash, entry, progress, have) => {
-        console.log(progress, have)
+      //  console.log(progress, have)
           getElement("loaded").innerHTML=`loaded: ${(parseFloat(progress) /  parseFloat(have) * 100).toFixed(0)}%`;
         if (progress >= have) { // then we have the initial batch
              if (!dbeventsonreplicated) {
                 dbeventsonreplicated=true;
-        globaldb.events.on('replicated', UpdateRecordList)
+                //globaldb.events.on('replicated', UpdateRecordList)
                }
         }
     } )
@@ -438,11 +476,27 @@ async function SetupOrbitdb() {
         console.log('write', address, entry, heads);
         UpdateRecordList()
     } )
-    Connect();
+    
+    
+    globaldb.events.on('load', (dbname) => {
+        console.log('load')
+        getElement("loaded").innerHTML=`loaded: 100%`
+    })
+    
+    globaldb.events.on('load.progress', (address, hash, entry, progress, total) => {
+        console.log('load progress')
+        getElement("loaded").innerHTML=`loaded: ${(parseFloat(progress) /  parseFloat(total) * 100).toFixed(0)}%`
+    })
+    
+    
+    
+    //UpdateRecordList() //would overlap with other instance of UpdateRecordList giving weird results
 }    
 
  
+       
 
+ 
 
 function getProfileInfo() {
     var profile=getProfile()
@@ -457,10 +511,10 @@ function getProfileInfo() {
     }
 
     
-    profile.mail=localStorage.getItem(`sync-${globaladr}-mail`)
+    profile.mail=GetStatus("mail")
     console.log(profile.mail);
     if (!profile.mail) profile.mail="Fill in via my details"
-    profile.phone=localStorage.getItem(`sync-${globaladr}-phone`)
+    profile.phone=GetStatus("phone")
     if (!profile.phone) profile.phone="Fill in via my details"
      
    // const email = await globalbox.private.get('email') // doesn't work
@@ -490,40 +544,59 @@ function EthereumChanged() {
     if (!globaladr) globaladr="unknown" 
     UpdateRecordList()
     SwitchPage("scr_sync");//close the popup
+    
+    ReloadEditField("motivation","line3","motivation","scr_browsecards")
+    ReloadEditField("mail","text","mail","scr_mydetails")
+    ReloadEditField("phone","text","phone","scr_mydetails")
+    ReloadEditField("freetext","freetext","scr_addopportunity ")
+    
+    
 }
         
 async function main() {
-    console.log("Main");           
-   // await loadScriptAsync("https://gpersoon.com/koios/lib/lib/ipfs0.46.1.min.js")     // https://unpkg.com/ipfs@0.46.0/dist/index.min.js
-   
-    await loadScriptAsync("https://gpersoon.com/koios/lib/lib/ipfs0.50.2min.js")     // https://unpkg.com/ipfs@0.50.2/dist/index.min.js
-   
-    //await loadScriptAsync("https://gpersoon.com/koios/lib/lib/orbitdb0.24.1.min.js"); // https://www.unpkg.com/orbit-db@0.24.1/dist/orbitdb.min.js
-         await loadScriptAsync("https://gpersoon.com/koios/lib/lib/orbitdb26.min.js")    // clone from github & npm run build:dist
-
+    console.log("Main");   
+    
+    SetupEditField("motivation","line3","motivation","scr_browsecards")
+    SetupEditField("mail","text","mail","scr_mydetails")
+    SetupEditField("phone","text","phone","scr_mydetails")
+    SetupEditField("freetext","freetext","scr_addopportunity ")
+    PrepFreeTxt()
     subscribe("ethereumchanged",EthereumChanged)
     subscribe("web3providerfound",EthereumChanged) // update the records once address is known
 
-    LinkVisible("scr_addjob"  ,ScrAddJobMadeVisible)    
+ 
+ await SetupOrbitdb() // note: asychronous => then metamask not allways loaded
+
+   
+    LinkVisible("scr_addopportunity "  ,ScrAddOpportunityMadeVisible)    
     LinkVisible("scr_browsecards"  ,ScrBrowseCardsMadeVisible)    
     LinkVisible("scr_mydetails", ScrMyDetailsMadeVisible)
     
     
-    await SetupFields("jobinfo",selectlist1)
-    await SetupFields("financial",selectlist2)
-    SetupButtons() 
-    await SetupOrbitdb()
+   
     
+    var jobinfo=await SetupFields("jobinfo",selectlist1)
+    var firstitem=""
+    for (var i of jobinfo.area) {
+        firstitem=i;
+        break;
+    }
+    
+    await SetupFields(firstitem,selectlist2)
+    SetupButtons() 
+    
+console.log("Start login");    
     await Login() // should be suffiently initiated
     globaladr=getUserAddress()         
     
     if (!globaladr) globaladr="unknown" 
     
-
+/* not really used
     globalbox = await getBox()
     console.log(globalbox)
     if (globalbox)
         await globalbox.syncDone
+*/
 
     //const profile = await globalbox.public.all()
 //console.log(profile)
@@ -562,51 +635,55 @@ function ConvertToText() {
 }
 */
 
-var globalapplied=0
+var globaldone=0
 var globaloutofscope=0
         
         
 function MyOwn(id) {
     if (!id) return false;
+    id=String(id)
     return id.includes(globaladr)
 }    
         
 async function UpdateRecordList() {
-    console.log(`In UpdateRecordList globaladr=${globaladr}`)
+    //console.log(`In UpdateRecordList globaladr=${globaladr}`)
+    Peers()
+    
     globalavailableofferings=[];             
     globalliked=0
     globaldisliked=0
     globaltoswipe=0
     
     globalsupplied=0  
-    globalapplied=0
+    globaldone=0
     globaloutofscope=0
+    if (!globaldb) return;
     
     globalavailableofferings = await globaldb.query(() => true); // get all records
-    console.log(globalavailableofferings);                
+    //console.log(globalavailableofferings);                
     for (var i=0;i<globalavailableofferings.length;i++) {     
         var status=GetStatus(globalavailableofferings[i]._id)
 
-        console.log(`UpdateRecordList i=${i} status=${status}`);
+        //console.log(`UpdateRecordList i=${i} status=${status}`);
         if (MyOwn(globalavailableofferings[i]._id) )        
             status="S"    
-        console.log(status)
+        //console.log(status)
         switch (status) {
                case "Y": globalliked++  ; break
                case "N": globaldisliked++;break;
                case "S": globalsupplied++;break
-               case "A": globalapplied++;break
+               case "D": globaldone++;break
                case "O": globaloutofscope++;break
                default:
                     globaltoswipe++; break
         }
         
         globalavailableofferings[i].status=status
-        console.log(globalavailableofferings[i]);
+        //console.log(globalavailableofferings[i]);
         
     }
     UpdateStatusFields() 
-    console.log(globalavailableofferings)
+    //console.log(globalavailableofferings)
 }          
   
   
@@ -677,7 +754,7 @@ async function Swipe() {
         
         card.id=globalavailableofferings[i]._id;
     }
-   await carrouselwait(getElement('cardcontainer'),"card",callbackselected)
+   await carrouselwait(getElement('cardcontainer'),"card",callbackselected,"DISLIKEBUTTON","LIKEBUTTON")
    console.log("Ready swiping");
    SwitchPage("close");//close the popup
    UpdateRecordList()
@@ -739,16 +816,20 @@ async function Delete(delete_id) {
 }        
 
 async function Peers() {
-    var peers=await globalipfs.swarm.peers()
-   console.log()
-   var fconnectedtoserver=false;
-   for (var i=0;i<peers.length;i++) {        
-        var adr=peers[i].addr.toString();
-        console.log(adr);
-        if (adr.includes(globalserverid)) fconnectedtoserver=true;
-   } 
-   console.log(`Connected to server: ${fconnectedtoserver}`);
-    getElement("connected").innerHTML=fconnectedtoserver;
+    var fconnectedtoserver=false;
+    if (globalipfs) {
+        var peers=await globalipfs.swarm.peers()
+       for (var i=0;i<peers.length;i++) {        
+            var adr=peers[i].addr.toString();
+       //     console.log(adr);
+            if (adr.includes(globalserverid)) {
+                fconnectedtoserver=true;
+                break;
+            }
+       } 
+    }
+   //console.log(`Connected to server: ${fconnectedtoserver}`);
+    getElement("connected").innerHTML=fconnectedtoserver?"connected:yes":"connected:no";
    
 }
 
@@ -756,7 +837,7 @@ async function Connect() {
     const con='/dns4/gpersoon.com/tcp/4004/wss/p2p/'+globalserverid;
     log(`Connect ${con}`)
     await globalipfs.swarm.connect(con).catch(console.log); // put the address of the create_db.js here
-    //await Peers();
+    await Peers();
 }
 
 async function Disconnect() {

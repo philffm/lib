@@ -319,9 +319,6 @@ function loaded() {
 	Initial("showliterature2",false)
 	Initial("showfullscreen",false)
 	
-    LinkToggleButton("fullscreen",FullScreenOnOff,"scr_profile") // multiple copies of the fullscreen button // use clickbutton (otherwise state is confusing)
-    LinkToggleButton("fullscreen",FullScreenOnOff,"scr_my")
-    LinkToggleButton("fullscreen",FullScreenOnOff,"scr_other")
 	LinkToggleButton("fullscreen",FullScreenOnOff,"scr_viewer")
 }    
 

@@ -80,7 +80,10 @@ async function GetSlidesFromVideo(vidinfo) {
     ShowSlide("loading");
     
     if (!vidinfo) return
-    var match = vidinfo.txt.split(" ")[0];    
+    var match = vidinfo.txt.split(" ")[0];
+    match=match.replace(/\.+$/g,'')               // remove trailing . (dots) // usefull te be able change the sort order
+    console.log(`GetSlidesFromVideo match=${match}`)
+    
     var cid= await GetCourseInfo("slides")
 
     var slideindex = await GlobalSlideList.SwitchList(cid)   
