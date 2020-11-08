@@ -1,15 +1,50 @@
-Version 2.10
-Functional updates:
-- Full screen button no longer overlaps with lessons
-- Volume can now be changed (muted/25%/50%/75%/100%)
+Version 2.10 5-11-2020 
+
+Layout updates:
+ -updated format of badges texts
 
 Technical updates:
-- Cleaned up code to increase readability/minor speed increase
+- switch on test on push: .github\workflows\main.yml
+- github settings / branches / branch protection rules:
+    require status checks to pass before merging / require brachnes to be up to date before merging
+        build 12.x
+
+Update 4-11-2020
+
+Technical updates:
+- added Koios token
+- update images of tokens (hex surrounding)
+- in token json fixed ipfs issue (ipfs://ipfs/cid ==> ipfs://cid)
+- update koiosf_util to support improved ipfs format
+- token tabel: added space
+
+Update 3-11-2020
+
+Functional updates:
+
+
+Technical updates:
+- update on import of evm-chains
+- removed unused code for fullscreen
+- ignore trailing . after chapter number (to be able to use playlist sorter for youtube plugin)
 
 Layout updates:
 
 Course content:
 
+Update 2020-10-26 : (no version nr upgrade)
+
+Functional updates:
+- url's can be started in a seperated tab (@target:_blank in figma)
+
+Technical updates:
+- source refactor by corwin
+- timeing optimization in koiosf_login
+- init of 3box only done at getbox()
+
+Layout updates:
+
+Course content:
 
 Update 2020-10-19: (no version nr upgrade)
 
