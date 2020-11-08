@@ -1,11 +1,27 @@
-Version V0.0
+Version V0.91
 Functional updates:
  
+ 
 Technical updates:
-- mninor bugfixes
+- fixed warning
+- retrieve my details after account switch
 
 Layout updates:
-- 
+- search screen updated
+
+Version V0.9
+Functional updates:
+- free text
+ 
+Technical updates:
+- minor bugfixes
+- timing issue in koiosf_login
+- 3box box not loaded in koiosf_login
+- fixed timeing issue with starting UpdateRecordList twice
+
+Layout updates:
+- job => oppertunity
+- buttons two "swipe" left & right
 
 
 Version V0.08

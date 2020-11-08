@@ -10,14 +10,46 @@ async function asyncloaded() {
 document.addEventListener("DOMContentLoaded", asyncloaded)
 
 class Carousel {   // based on https://github.com/simonepm/likecarousel
-    constructor(element,card,callbackchosen,callbackready) {
+    constructor(element,card,callbackchosen,callbackready,dislike,like) {
         this.counter=0
         this.board = element                
         this.card = card
         this.callbackready = callbackready
         this.callbackchosen = callbackchosen
+   
+        this.dislike=dislike
+        this.like=like
         this.handle()                 // handle gestures
     }
+    
+    GetXY() {
+        let style = window.getComputedStyle(this.topCard)  // get top card coordinates in pixels
+        let mx = style.transform.match(/^matrix\((.+)\)$/)
+        this.startPosX = mx ? parseFloat(mx[1].split(', ')[4]) : 0
+        this.startPosY = mx ? parseFloat(mx[1].split(', ')[5]) : 0                   
+    }
+    
+    DislikeCard() {
+        console.log("DislikeCard")
+        this.GetXY()
+        var posx=-this.board.clientWidth // + this.topCard.clientWidth)
+        var rect=this.board.parentNode.getBoundingClientRect()
+        console.log(rect.width)
+        posx=this.startPosX-rect.width/2
+        setTimeout(() => {this.Successful(false,posx,this.startPosY,-180)  }, 100) // wait for the tap actions to finish
+        
+    }
+    LikeCard() {
+        console.log("LikeCard")
+        this.GetXY()
+        var posx=this.board.clientWidth        
+        var rect=this.board.parentNode.getBoundingClientRect()
+        posx=this.startPosX+rect.width/2
+        console.log(rect.width)
+        setTimeout(() => {this.Successful(true,posx,this.startPosY,180)  }, 100) // wait for the tap actions to finish
+    }
+    
+    
     handle() {
        // console.log("In handle")
         this.cards = this.board.querySelectorAll('.'+this.card)  // list all cards
@@ -32,6 +64,10 @@ class Carousel {   // based on https://github.com/simonepm/likecarousel
             this.hammer.add(new Hammer.Pan({position: Hammer.position_ALL,threshold: 0}))
             this.hammer.on('tap', (e) => { this.onTap(e)}) // pass events data to custom callbacks
             this.hammer.on('pan', (e) => { this.onPan(e)})
+            var tc=this.topCard
+            tc.getElementsByClassName(this.dislike)[0].addEventListener("click",x=>this.DislikeCard()) 
+            tc.getElementsByClassName(this.like)[0].addEventListener("click",x=>this.LikeCard())
+            
         }
         else {
             console.log("No more cards");
@@ -46,15 +82,16 @@ class Carousel {   // based on https://github.com/simonepm/likecarousel
         this.topCard.style.transform ='  rotate(0deg) rotateY(' + rotateY + 'deg) scale(1)'                 // apply rotation around Y axis
         setTimeout(() => {this.topCard.style.transform ='  rotate(0deg) rotateY(0deg) scale(1)'}, 100)  // // wait for transition end reset transform properties
     }
+    
+  
+    
     onPan(e) {
         if (!this.isPanning) {
             this.isPanning = true                   
             this.topCard.style.transition = null  // remove transition properties
-            if (this.nextCard) this.nextCard.style.transition = null                   
-            let style = window.getComputedStyle(this.topCard)  // get top card coordinates in pixels
-            let mx = style.transform.match(/^matrix\((.+)\)$/)
-            this.startPosX = mx ? parseFloat(mx[1].split(', ')[4]) : 0
-            this.startPosY = mx ? parseFloat(mx[1].split(', ')[5]) : 0                   
+            if (this.nextCard) this.nextCard.style.transition = null   
+            this.GetXY()
+
             let bounds = this.topCard.getBoundingClientRect() // get top card bounds                   
             this.isDraggingFrom =(e.center.y - bounds.top) > this.topCard.clientHeight / 2 ? -1 : 1  // get finger position on top card, top (1) or bottom (-1)
         }
@@ -67,7 +104,6 @@ class Carousel {   // based on https://github.com/simonepm/likecarousel
         let scale = (95 + (5 * Math.abs(propX))) / 100                   // get scale ratio, between .95 and 1               
         this.topCard.style.transform ='translateX(' + posX + 'px) translateY(' + posY + 'px) rotate(' + deg + 'deg) rotateY(0deg) scale(1)' // move and rotate top card                
         if (this.nextCard) this.nextCard.style.transform = '  rotate(0deg) rotateY(0deg) scale(' + scale + ')' // scale up next card
-
         if (e.isFinal) {
             this.isPanning = false
             let successful = false                   
@@ -83,33 +119,40 @@ class Carousel {   // based on https://github.com/simonepm/likecarousel
                 successful = true                        
                 posY = -(this.board.clientHeight + this.topCard.clientHeight) // get top border position
             }
-            if (successful) {     
-                var fselected=(e.direction==Hammer.DIRECTION_RIGHT)
-                if (this.callbackchosen) 
-                    this.callbackchosen(fselected,this.topCard)
             
-                this.topCard.style.transform ='translateX(' + posX + 'px) translateY(' + posY + 'px) rotate(' + deg + 'deg)' // throw card in the chosen direction                       
-                setTimeout(() => {   // wait transition end
-                    // remove swiped card
-                    this.board.removeChild(this.topCard)
-                    // add new card
-                    this.handle()
-                }, 200)
+            if (successful) {
+                var fselected=(e.direction==Hammer.DIRECTION_RIGHT)
+                this.Successful(fselected,posX,posY,deg)       
             } else {
                 this.topCard.style.transform ='  rotate(0deg) rotateY(0deg) scale(1)' // reset cards position and size
                 if (this.nextCard) this.nextCard.style.transform = '  rotate(0deg) rotateY(0deg) scale(0.95)'
             }
-        }
+        }    
+            
     }
     
+    Successful(fselected,posX,posY,deg) {
+        if (this.callbackchosen) 
+            this.callbackchosen(fselected,this.topCard)
+    
+        this.topCard.style.transition = 'transform 250ms ease-out'  // set back transition properties
+        this.topCard.style.transform ='translateX(' + posX + 'px) translateY(' + posY + 'px) rotate(' + deg + 'deg)' // throw card in the chosen direction                       
+        setTimeout(() => {   // wait transition end
+            // remove swiped card
+            this.board.removeChild(this.topCard)
+            // add new card
+            this.handle()
+        }, 200)
+    
+    }
     
 }
 
 
 
-export var carrouselwait = function(board,card,callbackchosen){
+export var carrouselwait = function(board,card,callbackchosen,dislike,like){
   return new Promise((resolve, reject) => {    
-    let carousel = new Carousel(board,card,callbackchosen,resolve);
+    let carousel = new Carousel(board,card,callbackchosen,resolve,dislike,like);
 });
 }
 

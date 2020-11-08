@@ -99,7 +99,7 @@ async function GetBadgeDetails(urltarget,i) { // put in function to be able to r
 			var imageobject=await GetImageIPFS(badgecontent.image)
 			setElementVal("__icon",imageobject,urltarget)
 		}        
-		setElementVal("__label",badgecontent.name+" "+badgecontent.description,urltarget)
+		setElementVal("__label",badgecontent.name,urltarget) //" "+badgecontent.description  has same info
 	}
 	return tostore		
 }        
@@ -153,7 +153,7 @@ async function GetTokenDetails(urltarget,contracttoken,balance) {
    	var tokencontent=await GetJsonIPFS(uri)
     if (!tokencontent) return undefined;		
 	
-	setElementVal("__label",tokencontent.name+"<br>"+balance,urltarget)
+	setElementVal("__label",`${tokencontent.name} ${balance}`,urltarget)
 	if (!tokencontent.image) return undefined
 		
 	var imageobject=await GetImageIPFS(tokencontent.image)

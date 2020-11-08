@@ -11,12 +11,14 @@ var globalprofile
 var globalprofileimage
 var initpromise=init();
 
+window.addEventListener('DOMContentLoaded', asyncloaded);  // load  
+
 async function init() {
     await Promise.all(
         [
         await loadScriptAsync("https://unpkg.com/web3@latest/dist/web3.min.js"),
         await loadScriptAsync("https://unpkg.com/web3modal"),        
-        await loadScriptAsync("https://unpkg.com/evm-chains/lib/index.js"),        
+        await loadScriptAsync("https://unpkg.com/evm-chains@0.1.1/lib/index.js"), // note new version 2.00 exits, slightly differnt
         await loadScriptAsync("https://unpkg.com/@walletconnect/web3-provider@latest/dist/umd/index.min.js"),
         await loadScriptAsync("https://cdn.jsdelivr.net/npm/fortmatic@latest/dist/fortmatic.js"),        // https://unpkg.com/fortmatic@2.0.6/dist/fortmatic.js
         ])
@@ -27,7 +29,7 @@ if (window.ethereum)
     else
         window.ethereum=1; // so at least a box is shown
 
-window.addEventListener('DOMContentLoaded', asyncloaded);  // load  
+
  
 export function ClearCachedProvider() {
     web3Modal.clearCachedProvider();
@@ -151,8 +153,11 @@ async function fetchAccountData() {
 		if (profile.image) {
 			var imagecid=profile.image[0].contentUrl
 			imagecid=imagecid[`\/`]
-			globalprofileimage=await GetImageIPFS(imagecid)
-			var domid=getElement("userphoto"); if (domid) domid.src=globalprofileimage
+			
+            GetImageIPFS(imagecid).then(globalprofileimage=> {  // don't wait for this, could take a while
+                var domid=getElement("userphoto"); 
+                if (domid) domid.src=globalprofileimage
+            })
 		}
 	}    
 
@@ -268,7 +273,7 @@ subscribe("web3providerfound",NextStep)
 var init3boxpromise;
 
 async function NextStep() {
-    init3boxpromise=Init3box();  
+   // init3boxpromise=Init3box();  // not done automatically (requires extra signing)
 }     
 
 async function Init3box() {
@@ -278,6 +283,7 @@ async function Init3box() {
 }
 
 export async function getBox() {
+    if (!init3boxpromise) init3boxpromise=Init3box();
     await authorize()
     await init3boxpromise;
     //const verifiedAccounts = await Box.getVerifiedAccounts(getUserAddress()) - unused    
@@ -288,6 +294,10 @@ export async function getBox() {
  * Disconnect wallet button pressed.
  */
 async function onDisconnect() {
+
+  console.log("Killing the wallet connection", provider);
+
+
 	// TODO: Which providers have close method?
 	if(provider.close) {
 		await provider.close();
@@ -303,4 +313,5 @@ async function onDisconnect() {
 	// Set the UI back to the initial state
 	// document.querySelector("#prepare").style.display = "block";
 	//document.querySelector("#connected").style.display = "none";
+
 }

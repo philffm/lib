@@ -856,6 +856,7 @@ async function recurse(figdata,figmadocument,documentid,token,fpartofgrid,button
         var dimensions=""
         var objecttype="div" // standard type
         var strhref=""
+        var strtarget=GetAtParam(figdata,"@target");
         var urllocation=""
         var insdata=""
         var transform=""
@@ -1239,7 +1240,8 @@ function ConvertColor(color) {
         
         switch (figdata.type) {
            case "TEXT": strtxt+=figdata.characters.replace(/\n/g,"<br>"); // replace all newlines
-           
+                console.log(figdata.style)
+                console.log(strstyle);
                 switch(figdata.style.textAlignVertical) {
                    case "TOP":   break // is already default // display="flex";strstyle +="align-items: flex-start;";
                    case "CENTER": display="flex";strstyle +="align-items: center;";    break
@@ -1250,7 +1252,7 @@ function ConvertColor(color) {
                    case "CENTER": /*display="flex";*/strstyle +="text-align: center;"; break; // "justify-content: center;";    break;
                    case "RIGHT":  /*display="flex";*/strstyle +="text-align: right;"; break;  // "justify-content: flex-end;";  break;
                 }    
-                // console.log(strstyle);
+                 console.log(strstyle);
            break;
            //case "RECTANGLE": { console.log(figdata);                          break; }
          //  case "GROUP": strstyle +=`position: relative; display:inline-block;`; break;
@@ -1329,8 +1331,12 @@ function ConvertColor(color) {
         
         
         if (dest) {
-            insdata=`data-dest="${encodeURIComponent(dest)}"`
+            insdata+=`data-dest="${encodeURIComponent(dest)}" `
           //  console.log(`insdata : ${insdata}`);
+        }
+        if (strtarget) {
+            insdata+=`data-target="${strtarget}" `
+              console.log(`insdata : ${insdata}`);
         }
         
         if (onclick) {
@@ -1395,7 +1401,7 @@ function ConvertColor(color) {
                 break;
             
                 case "a":  strhref=`href="{urllocation}" `;
-                case "div": htmlobjects.push(`<${objecttype} class="${classname}" ${insrtstyle} ${insdata} ${strhref} ">${strtxt}\n`) //  ${figdata.type} // title="${figdata.name}
+                case "div": htmlobjects.push(`<${objecttype} class="${classname}" ${insrtstyle} ${insdata} ${strhref}">${strtxt}\n`) //  ${figdata.type} // title="${figdata.name}
                             break;
         }
 

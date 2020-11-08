@@ -1,0 +1,16 @@
+{    
+        "skill": [],
+        "teamsize":
+        [
+            "2",
+            "3-5",
+            "6+"
+        ],
+        "roles":
+        [
+            "finance",
+            "legal",
+            "programming",
+            "ux design"
+        ]       
+}
