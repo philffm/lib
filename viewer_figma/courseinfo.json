@@ -122,12 +122,12 @@
 		"communityinvite":"https://join.slack.com/t/koiosblockcha-ma69869/shared_invite/zt-i2blvdtj-UODbUG_O1UgjKaIVyjWgHQ"                
 	},
 	"programmingdapps01": {   
-		"course": "Programming dapps",
-		"courselevel": "Programming dapps",
+		"course": "Programming DAPPS",
+		"courselevel": "Programming DAPPS",
 		"level": "3",		
      "videoinfo": "QmP2P5237u3yGZRqPJZAf7HYzAqvvxY2MuJPt21SVtjnDx",
      "duration": "9340",
-		"slides": "QmYuH88CJtyxp5EJJAa63y2Y83y7z34QduQiZvBTRiCcMu",
+		"slides": "QmPBGiMtDMGSCaCM7zenP1cgvFvtmAtvCKdDkzLUgGzAPp",
         "quizinfo": "",
 		"contributer": "Gerard Persoon",
 		"subtitle": "Ethereum & solidity",
