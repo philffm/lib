@@ -54,7 +54,7 @@
 		"start": "31-8-2020",
 		"image": "https://ipfs.io/ipfs/QmcR3DR5wZWBUaJzpbkhV7Nspne1dJ75P4eHzXrtgbniRE",
 		"community":"https://koiosblockcha-ma69869.slack.com",
-		"communityinvite":"https://join.slack.com/t/koiosblockcha-ma69869/shared_invite/zt-glxugcib-ZJCMueimSPN3svG45gG0Xw"                
+		"communityinvite":"https://join.slack.com/t/koiosblockcha-ma69869/shared_invite/zt-i2blvdtj-UODbUG_O1UgjKaIVyjWgHQ"                
 	},	
 	"bclevel02": {
 		"course": "Mastering Blockchain",
@@ -71,7 +71,7 @@
 		"start": "31-8-2020",
 		"image": "https://ipfs.io/ipfs/QmYPt618XA9KHnLsfTwXPBsgvt8YJi8Tp4amysDUVCg1zn",
 		"community":"https://koiosblockcha-ma69869.slack.com",
-		"communityinvite":"https://join.slack.com/t/koiosblockcha-ma69869/shared_invite/zt-glxugcib-ZJCMueimSPN3svG45gG0Xw"                
+		"communityinvite":"https://join.slack.com/t/koiosblockcha-ma69869/shared_invite/zt-i2blvdtj-UODbUG_O1UgjKaIVyjWgHQ"                
 	},    
 	"bclevel03": {
 		"course": "Mastering Blockchain",
@@ -119,9 +119,8 @@
 		"slides": "QmagLJr432F86K6YEy4yzWHb499cdsyAyyE1jrVn1ctHvN",				
 		"quizinfo": "QmSYWwA3Arn4rm7vQYBTYpCTx3CiM84ipg9BozNyES8tCv",
 		"community":"https://koiosonline.slack.com",
-		"communityinvite":"https://join.slack.com/t/koiosonline/shared_invite/enQtNjE0MjAyNzMyODY4LTFlYWIzODRkNTI2ZWExOWM0NGNmMjFjNTU1YzFmZGExOWUzY2EzYTg4NDMwNDVhOTBkMGU0MTFkNzJkN2I5MWM"                
+		"communityinvite":"https://join.slack.com/t/koiosblockcha-ma69869/shared_invite/zt-i2blvdtj-UODbUG_O1UgjKaIVyjWgHQ"                
 	},
-    {
 	"programmingdapps01": {   
 		"course": "Programming dapps",
 		"courselevel": "Programming dapps",
