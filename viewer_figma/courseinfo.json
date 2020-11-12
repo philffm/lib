@@ -72,7 +72,7 @@
 		"image": "https://ipfs.io/ipfs/QmYPt618XA9KHnLsfTwXPBsgvt8YJi8Tp4amysDUVCg1zn",
 		"community":"https://koiosblockcha-ma69869.slack.com",
 		"communityinvite":"https://join.slack.com/t/koiosblockcha-ma69869/shared_invite/zt-i2blvdtj-UODbUG_O1UgjKaIVyjWgHQ",
-        "token": "Titan"
+		"token": "Titan"
 	},    
 	"bclevel03": {
 		"course": "Mastering Blockchain",
@@ -89,7 +89,7 @@
 		"image": "https://ipfs.io/ipfs/QmfAh2yJyHN9pPP93Sm58QrqSnVsw2MyVXQz6vCcgZRZzU",
 		"community":"https://koiosblockcha-ma69869.slack.com",
 		"communityinvite":"https://join.slack.com/t/koiosblockcha-ma69869/shared_invite/zt-i2blvdtj-UODbUG_O1UgjKaIVyjWgHQ",
-        "token": "TitanL320B"
+		"token": "TitanL320B"
 	},
 	"datascience01": {
 		"course": "Datascience & Python",
@@ -138,8 +138,8 @@
 		"goal": "Solidity IPFS",
 		"start": "now",
 		"image": "http://web3examples.com/logo.png",        
-        "community":"https://koiosblockcha-ma69869.slack.com",
+		"community":"https://koiosblockcha-ma69869.slack.com",
 		"communityinvite":"https://join.slack.com/t/koiosblockcha-ma69869/shared_invite/zt-i2blvdtj-UODbUG_O1UgjKaIVyjWgHQ",
-        "token": "TitanPD20B"
+		"token": "TitanPD20B"
 	}
 }
