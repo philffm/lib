@@ -1,3 +1,9 @@
+12-11-2020
+
+Functional updates:
+course specific titan tokens (leaderboard only shows for the specific course)
+
+
 9-11-2020
 
 Course content:
