@@ -65,6 +65,7 @@ async function NextStep() {
 
 async function getTitanTokenCount() {
     var tokenname=await GetCourseInfo("token")
+    console.log(tokenname)
     if (!tokenname) tokenname="Titan" // default token
     var totalTokens = await contracttokenfactory.methods.NrTokens().call();
     var addresspromises = new Array;
