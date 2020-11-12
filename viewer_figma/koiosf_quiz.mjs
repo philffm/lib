@@ -32,7 +32,7 @@ class QuizList {
         this.subset=[]
         for (var i=0;i<List.length;i++) {
             var line=List[i]
-            if (line[0]===match) 
+            if ((line[0]===match) && line[1]) // skip empty questions
                this.subset.push(line)
         } 
         this.start=0

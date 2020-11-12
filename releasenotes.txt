@@ -2,6 +2,11 @@
 
 Functional updates:
 course specific titan tokens (leaderboard only shows for the specific course)
+Technical updates:
+- skip empty quiz questions
+
+Course content:
+- added quiz for level 3
 
 
 9-11-2020
