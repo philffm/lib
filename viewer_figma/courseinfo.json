@@ -72,7 +72,7 @@
 		"image": "https://ipfs.io/ipfs/QmYPt618XA9KHnLsfTwXPBsgvt8YJi8Tp4amysDUVCg1zn",
 		"community":"https://koiosblockcha-ma69869.slack.com",
 		"communityinvite":"https://join.slack.com/t/koiosblockcha-ma69869/shared_invite/zt-i2blvdtj-UODbUG_O1UgjKaIVyjWgHQ",
-        "token": "Titan"
+		"token": "Titan"
 	},    
 	"bclevel03": {
 		"course": "Mastering Blockchain",
@@ -81,6 +81,7 @@
      "videoinfo": "QmPMMaPkekVioCSPHmERYpJ7EdcUZGdSUNm5yGJEmouRji",
      "duration": "36072",
 		"slides": "QmNcvkvjyq4cDRB4CidU6EExfX5bYCsM9B9mMygwWVwXhi",
+        "quizinfo": "QmaTadUToxc7rXBxJQ4FDp51y5o4bdnSmNju28vdZLfWMT",
 		"contributer": "Jordi",
 		"subtitle": "The intermediate level. This is where things get serious.",
 		"description": "Welcome to the third part of the KOIOS Blockchain Technology course. This is the so called 'economic deep dive', where we will focus on economics in relation to Blockchain Technology.",
@@ -88,7 +89,7 @@
 		"image": "https://ipfs.io/ipfs/QmfAh2yJyHN9pPP93Sm58QrqSnVsw2MyVXQz6vCcgZRZzU",
 		"community":"https://koiosblockcha-ma69869.slack.com",
 		"communityinvite":"https://join.slack.com/t/koiosblockcha-ma69869/shared_invite/zt-i2blvdtj-UODbUG_O1UgjKaIVyjWgHQ",
-        "token": "TitanL320B"
+		"token": "TitanL320B"
 	},
 	"datascience01": {
 		"course": "Datascience & Python",
@@ -137,8 +138,8 @@
 		"goal": "Solidity IPFS",
 		"start": "now",
 		"image": "http://web3examples.com/logo.png",        
-        "community":"https://koiosblockcha-ma69869.slack.com",
+		"community":"https://koiosblockcha-ma69869.slack.com",
 		"communityinvite":"https://join.slack.com/t/koiosblockcha-ma69869/shared_invite/zt-i2blvdtj-UODbUG_O1UgjKaIVyjWgHQ",
-        "token": "TitanPD20B"
+		"token": "TitanPD20B"
 	}
 }
