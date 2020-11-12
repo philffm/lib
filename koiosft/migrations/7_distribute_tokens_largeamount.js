@@ -33,8 +33,12 @@ module.exports = async function(deployer) {
 
 		for (var item of toarrayamount)  {	
             var dest=item[0]            
-            if (name.includes("Titan")) await MintandProcess(tokenaddress,item[1] ,ERC20TokenContract[i],dest,acts[0],decimals)
+            if (name.includes("PD20B")) await MintandProcess(tokenaddress,item[1] ,ERC20TokenContract[i],dest,acts[0],decimals)
             if (name.includes("Koios")) await MintandProcess(tokenaddress,item[2] ,ERC20TokenContract[i],dest,acts[0],decimals)
+                
+            
+            // PD20B / L320B
+            
 		}	
 		var left=await ERC20TokenContract[i].balanceOf(acts[0])
 		console.log(`${name} Left on account ${acts[0]} ${web3.utils.fromWei(left,'ether')}`)
