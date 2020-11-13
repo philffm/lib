@@ -58,9 +58,35 @@ async function asyncloaded() {
     `);
     LoadCSS(githubRepoUrl +'flasq.css');
     init();
-    LinkToggleButton("modeselect party", switchDarkmode);
+    
+    LinkToggleButton("partymode", switchDarkmode);
+}
+function switchDarkmode(event) {
+    var fOn=GetToggleState(this,"displayactive");
+    if (!fOn)
+        setDarkmode();
+    else
+        setDarkmode();
+        
 }
 
+function setDarkmode(){
+    if (darkModeactive == false){
+        LoadCSS(githubRepoUrl +'dm.css');
+        darkModeactive = true;
+        console.log('DARKMODE HALLO');
+    }else if(darkModeactive == true){
+        RemoveCSS('dm.css');
+        darkModeactive = false;
+        console.log('DARKMODE CIAO');
+
+    }
+    
+
+}
+
+    
+            
 
 async function init(){
     initTextFields();
@@ -68,33 +94,19 @@ async function init(){
     initLottie('https://assets3.lottiefiles.com/private_files/lf30_c7yhrgse.json');
 }
 
-function initYoutube(youtubeUrl){
+async function initYoutube(youtubeUrl){
     var youtubeElement = getElement("videowrapper");
     youtubeElement.innerHTML = '<iframe width="100%" height="100%" src="https://www.youtube-nocookie.com/embed/7dzNcHe1mL0?controls=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
 
 }
 
-function initLottie(lottieUrl){
+async function initLottie(lottieUrl){
     LoadJS('https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js');
     var lottieElement = getElement("glasscaraffe");
 
     lottieElement.innerHTML = '<lottie-player src="'+ lottieUrl +  '" background="transparent"  speed=".5"  style="width: 500px; height: 500px;" loop autoplay></lottie-player>';
 }
 
-function switchDarkmode() {
-    if (darkModeactive = false){
-        console.log('DARKMODE HALLO');
-
-        LoadCSS(githubRepoUrl +'dm.css');
-        darkModeactive = true;
-
-    }else if (darkModeactive = true) {
-
-    }
-
-
-  
-}
 
 function initTextFields(){
     var target=getElement("Input");
@@ -117,6 +129,11 @@ function LoadCSS(cssurl){
     link.href = cssurl;
     document.head.appendChild(link);
 }
+
+function RemoveCSS(cssurl){
+    document.querySelector('link[href$="'+cssurl+'"]').remove();
+}
+
 
 function LoadJS(jsurl){
     var script = document.createElement('script');
