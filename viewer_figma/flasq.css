@@ -36,7 +36,7 @@
 .modeselect--active {
     scale: 1.2 !important;
     left: 0%!important;
-    -webkit-transform: scale(1.2);
+    -webkit-transform: scale(1.2)!important;
 
 }
 
