@@ -53,7 +53,7 @@ async function asyncloaded() {
             
         }
     `);
-    LoadCSS('http://127.0.0.1:5500/viewer_figma/flasq.css');
+    LoadCSS('https://philffm.github.io/lib/viewer_figma/flasq.css');
     initTextFields();
     initLottie('https://assets3.lottiefiles.com/private_files/lf30_c7yhrgse.json');
     initYoutube('https://www.youtube.com/watch?v=7dzNcHe1mL0')
