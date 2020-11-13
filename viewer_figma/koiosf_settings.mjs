@@ -117,11 +117,11 @@ function enableDarkmode() {
   	globalInjectedCSS.disabled = false;
 }
 
-function LoadCSS(){
+export function LoadCSS(cssurl){
 	return new Promise( function( resolve, reject ) {
 		var link = document.createElement('link');
 		link.rel  = 'stylesheet';
-		link.href = "https://koiosonline.github.io/lib/viewer_figma/dm.css";
+		link.href = cssurl;
 		document.body.appendChild(link);
 		link.onload = function() {
 			globalInjectedCSS = link;
