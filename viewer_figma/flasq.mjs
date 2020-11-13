@@ -92,6 +92,7 @@ async function init(){
     initTextFields();
     initYoutube('https://www.youtube.com/watch?v=7dzNcHe1mL0');
     initLottie('https://assets3.lottiefiles.com/private_files/lf30_c7yhrgse.json');
+    initFonts();
 }
 
 async function initYoutube(youtubeUrl){
@@ -123,28 +124,33 @@ window.addEventListener('DOMContentLoaded', asyncloaded);  // load
 
 
 
-function LoadCSS(cssurl){
+async function LoadCSS(cssurl){
     var link = document.createElement('link');
     link.rel  = 'stylesheet';
     link.href = cssurl;
     document.head.appendChild(link);
 }
 
-function RemoveCSS(cssurl){
+async function RemoveCSS(cssurl){
     document.querySelector('link[href$="'+cssurl+'"]').remove();
 }
 
 
-function LoadJS(jsurl){
+async function LoadJS(jsurl){
     var script = document.createElement('script');
     script.setAttribute('type', 'text/javascript');
     script.setAttribute('src', jsurl);
     document.head.appendChild(script);
 }
 
-function addStyle(styleString) {
+async function addStyle(styleString) {
     const style = document.createElement('style');
     style.textContent = styleString;
     document.head.append(style);
   }
   
+
+async function initFonts(){
+    LoadCSS("https://fonts.gstatic.com");
+    LoadCSS("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,100;1,300;1,400&display=swap");
+}
