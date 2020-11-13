@@ -3,6 +3,8 @@
 import {HideButton,DragItem,publish,subscribe,LinkClickButton,CanvasProgressInfoClass,LinkVisible,ForAllElements,setElementVal,getElementVal,DomList,getElement} from '../lib/koiosf_util.mjs';
 import {SetupLogWindow} from '../lib/koiosf_log.mjs';
 
+var darkModeactive = false;
+var githubRepoUrl = 'https://philffm.github.io/lib/viewer_figma/';
 
 
 //Unused variables
@@ -53,10 +55,16 @@ async function asyncloaded() {
             
         }
     `);
-    LoadCSS('https://philffm.github.io/lib/viewer_figma/flasq.css');
+    LoadCSS(githubRepoUrl +'flasq.css');
+    init();
+    LinkClickButton("modeselect party",switchDarkmode);
+}
+
+
+async function init(){
     initTextFields();
+    initYoutube('https://www.youtube.com/watch?v=7dzNcHe1mL0');
     initLottie('https://assets3.lottiefiles.com/private_files/lf30_c7yhrgse.json');
-    initYoutube('https://www.youtube.com/watch?v=7dzNcHe1mL0')
 }
 
 function initYoutube(youtubeUrl){
@@ -70,6 +78,18 @@ function initLottie(lottieUrl){
     var lottieElement = getElement("glasscaraffe");
 
     lottieElement.innerHTML = '<lottie-player src="'+ lottieUrl +  '" background="transparent"  speed=".5"  style="width: 500px; height: 500px;" loop autoplay></lottie-player>';
+}
+
+function switchDarkmode() {
+    if (darkModeactive ==true) {
+
+    }else if (darkModeactive == false){
+        console.log('DARKMODE HALLO');
+
+        LoadCSS(githubRepoUrl +'dm.css');
+        darkModeactive = true;
+    }
+
 }
 
 function initTextFields(){
