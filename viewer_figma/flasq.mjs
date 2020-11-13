@@ -1,7 +1,8 @@
 // https://browserhow.com/how-to-clear-chrome-android-history-cookies-and-cache-data/
 // imports
-import {HideButton,DragItem,publish,subscribe,LinkClickButton,CanvasProgressInfoClass,LinkVisible,ForAllElements,setElementVal,getElementVal,DomList,getElement} from '../lib/koiosf_util.mjs';
+import {HideButton,DragItem,publish,subscribe,LinkClickButton,LinkToggleButton,CanvasProgressInfoClass,LinkVisible,ForAllElements,setElementVal,getElementVal,DomList,getElement} from '../lib/koiosf_util.mjs';
 import {SetupLogWindow} from '../lib/koiosf_log.mjs';
+import {GetToggleState} from '../genhtml/startgen.mjs';
 
 var darkModeactive = false;
 var githubRepoUrl = 'https://philffm.github.io/lib/viewer_figma/';
@@ -57,7 +58,7 @@ async function asyncloaded() {
     `);
     LoadCSS(githubRepoUrl +'flasq.css');
     init();
-    LinkClickButton("modeselect party",switchDarkmode);
+    LinkToggleButton("modeselect party", switchDarkmode);
 }
 
 
@@ -81,15 +82,18 @@ function initLottie(lottieUrl){
 }
 
 function switchDarkmode() {
-    if (darkModeactive ==true) {
-
-    }else if (darkModeactive == false){
+    if (darkModeactive = false){
         console.log('DARKMODE HALLO');
 
         LoadCSS(githubRepoUrl +'dm.css');
         darkModeactive = true;
+
+    }else if (darkModeactive = true) {
+
     }
 
+
+  
 }
 
 function initTextFields(){
