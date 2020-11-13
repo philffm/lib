@@ -53,6 +53,13 @@
     height: auto !important;
     width: auto !important;
 }
+
+
+.glasscaraffe {
+    left: 0 !important;
+    top: 145px !important;
+}
+
 }
 
 @media only screen and (min-width: 600px) {
