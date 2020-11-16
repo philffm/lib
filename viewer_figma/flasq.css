@@ -41,6 +41,10 @@
 
 }
 
+.scr_main {
+    position: fixed !important;
+}
+
 @media (max-width:767px) {
 .footer {
     flex-direction: column!important;
