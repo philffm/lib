@@ -104,22 +104,17 @@ async function EmptyList() {
 async function SendTransaction() {
     await GetAddressInformation();
     var totalTokens = await contracttokenfactory.methods.NrTokens().call();
-    console.log("totaltokens: ", totalTokens);
     for (var i=0;i<totalTokens;i++) {
         var address=await contracttokenfactory.methods.tokens(i).call();
         var contracttoken = await new web3.eth.Contract(tokenJson.abi, address);
         var name = await contracttoken.methods.name().call();
-        console.log("name: ", name);
-        console.log("stored value: ", localStorage.getItem("SelectedToken"));
-        if (name === localStorage.getItem("SelectedToken")) {
+        if (name == localStorage.getItem("SelectedToken")) {
             var decimals = await contracttoken.methods.decimals().call();  
-            console.log("tokenamount length: ", tokenamount.length) 
             for (var i=0;i<tokenamount.length;i++) {      
                 tokenamount[i] = BigInt(parseInt(tokenamount[i]) * (10**decimals));
-                console.log(tokenamount[i]);  
             }
             contracttoken.methods.transferBulk(useraddresses, tokenamount).send({from: globalaccounts[0]});
-            //break;
+            break;
         }
     }
 }
