@@ -119,6 +119,7 @@ async function SendTransaction() {
                 console.log(tokenamount[i]);  
             }
             contracttoken.methods.transferBulk(useraddresses, tokenamount).send({from: globalaccounts[0]});
+            break;
         }
     }
 }
