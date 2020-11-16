@@ -35,7 +35,7 @@
     left: 0%!important;
 }
 .modeselect--active {
-    scale: 1.2 !important;
+    /* scale: 1.2 !important; */
     left: 0%!important;
     -webkit-transform: scale(1.2)!important;
 
