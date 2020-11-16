@@ -109,6 +109,7 @@ async function SendTransaction() {
         var contracttoken = await new web3.eth.Contract(tokenJson.abi, address);
         var name = await contracttoken.methods.name().call();
         console.log(name);
+        console.log(localStorage.getItem("SelectedToken"));
         if (name == localStorage.getItem("SelectedToken")) {
             var decimals = await contracttoken.methods.decimals().call();   
             for (var i=0;i<tokenamount.length;i++) {      
