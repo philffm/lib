@@ -111,7 +111,7 @@ async function SendTransaction() {
         var name = await contracttoken.methods.name().call();
         console.log("name: ", name);
         console.log("stored value: ", localStorage.getItem("SelectedToken"));
-        if (name == localStorage.getItem("SelectedToken")) {
+        if (name === localStorage.getItem("SelectedToken")) {
             var decimals = await contracttoken.methods.decimals().call();  
             console.log("tokenamount length: ", tokenamount.length) 
             for (var i=0;i<tokenamount.length;i++) {      
@@ -119,7 +119,7 @@ async function SendTransaction() {
                 console.log(tokenamount[i]);  
             }
             contracttoken.methods.transferBulk(useraddresses, tokenamount).send({from: globalaccounts[0]});
-            break;
+            //break;
         }
     }
 }
