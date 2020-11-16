@@ -37,7 +37,9 @@
 		"quizinfo": "QmXsnYGKXxrAKiZKQ6AHtiwJq19xQoav9ea5Fs6tmB7xtU",
 		"image": "https://ipfs.io/ipfs/QmXG1pdYUovDFZ9jLQx4XqPhg1MYU6ghB1zyVT1jNutZYy",
 		"community":"https://tdfaslack.slack.com",
-		"communityinvite":"https://join.slack.com/t/tdfaslack/shared_invite/zt-f8ghb2gg-e8bUiNK~T1zU6vNvfseIdA"
+		"communityinvite":"https://join.slack.com/t/tdfaslack/shared_invite/zt-f8ghb2gg-e8bUiNK~T1zU6vNvfseIdA",
+        "token":"TitanTD20B"
+        
 	},
 	"bclevel01": {
 		"course": "Mastering Blockchain",
@@ -80,7 +82,7 @@
 		"level": "3",
      "videoinfo": "QmPMMaPkekVioCSPHmERYpJ7EdcUZGdSUNm5yGJEmouRji",
      "duration": "36072",
-		"slides": "Qmbxr99uj6MfFQaPgHCQXeWHBdZ5i1opZXVt18bNsfB9r4",
+		"slides": "QmNyDU4KauqoXQSHQphcbP8M6rsmaZcP5JEssRSULuw7Eg",
         "quizinfo": "QmaTadUToxc7rXBxJQ4FDp51y5o4bdnSmNju28vdZLfWMT",
 		"contributer": "Jordi",
 		"subtitle": "The intermediate level. This is where things get serious.",

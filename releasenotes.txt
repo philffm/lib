@@ -1,3 +1,12 @@
+16-11-2020
+
+Functional updates:
+- added token TitanTD20B for tdfa
+
+Course content:
+- move sheets for l3 from bc-3 => bc-3.0
+
+Course content:
 12-11-2020
 
 Functional updates:

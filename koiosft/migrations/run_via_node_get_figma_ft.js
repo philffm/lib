@@ -4,10 +4,18 @@ const token = fs2.readFileSync(".figma").toString().trim();
 const documentid = fs2.readFileSync(".figmadocument").toString().trim();
 
 
-list=[];
+var list=[];
+
+
+
 
 // module.exports
 var init = async function(deployer) {
+    
+    var listjson=fs2.readFileSync("tokens.json")
+    var list=await JSON.parse(listjson)
+    console.log(list)
+    
     const IpfsHttpClient = require('ipfs-http-client')
     var ipfs = await IpfsHttpClient( /*"http://diskstation:5002"); */ 'https://ipfs.infura.io:5001'); //for infura node
 	var url=`https://api.figma.com/v1/files/${documentid}`  // to export the vectors: ?geometry=paths    
@@ -15,17 +23,17 @@ var init = async function(deployer) {
 console.log(documentpart)
   //  var coursesdata=await fetch("https://gpersoon.com/koios/lib/viewer_figma/courseinfo.json");
   //  var courses=await coursesdata.json()
-console.log("1")    
+
+/*
     cid=await MakeImage(ipfs, "TitanToken",documentpart); 	   list.push({name:"Titan",cid:cid} );
-console.log("1")        
 	cid=await MakeImage(ipfs, "TutorToken",documentpart); 	   list.push({name:"Tutor",cid:cid} );
-console.log("1")        
 	cid=await MakeImage(ipfs, "JediToken",documentpart); 	  list.push({name:"Jedi",cid:cid} );
 	cid=await MakeImage(ipfs, "GaiaToken",documentpart); 	  list.push({name:"Gaia",cid:cid} );
-    cid=await MakeImage(ipfs, "KoiosToken",documentpart); 	  list.push({name:"Koios",cid:cid} );
-    
+    cid=await MakeImage(ipfs, "KoiosToken",documentpart); 	  list.push({name:"Koios",cid:cid} );  
     cid=await MakeImage(ipfs, "TitanToken",documentpart,"PD20B"); 	   list.push({name:"TitanPD20B",cid:cid} );
     cid=await MakeImage(ipfs, "TitanToken",documentpart,"L320B"); 	   list.push({name:"TitanL320B",cid:cid} );
+*/    
+    cid=await MakeImage(ipfs, "TitanToken",documentpart,"TD20B"); 	   list.push({name:"TitanTD20B",cid:cid} );
 	
     console.log(list);
 	fs2.writeFile('tokens.json', JSON.stringify(list),console.log)
