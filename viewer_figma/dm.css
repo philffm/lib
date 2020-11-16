@@ -1,5 +1,5 @@
 .dm {
-  filter: invert(.9);
+  filter: invert(1);
 }
 
 .ndm{
@@ -13,5 +13,27 @@
 .info {
   filter: grayscale(1);
 }
+.flasqbg {
+  filter: ;
+  -webkit-animation: rainbow 4s steps(36) infinite;
 
+
+  }
 /* Koios Dark Mode BETA - WIP */
+
+
+@-webkit-keyframes rainbow {
+   from { -webkit-filter:hue-rotate(10deg); }
+     to { -webkit-filter:hue-rotate(360deg); }
+}
+
+@keyframes rainbow {
+ from {
+    -webkit-filter:hue-rotate(10deg);
+            filter:hue-rotate(10deg);
+    }
+  to {
+    -webkit-filter:hue-rotate(360deg);
+            filter:hue-rotate(360deg);
+    }
+}
