@@ -42,8 +42,9 @@
 }
 
 .scr_main {
-    position: fixed !important;
-}
+    position: fixed;
+    top: 0px !important;
+    left: 0px !important;}
 
 @media (max-width:767px) {
 .footer {
@@ -64,6 +65,7 @@
     left: 0 !important;
     top: 145px !important;
 }
+
 
 }
 
