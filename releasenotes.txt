@@ -1,3 +1,20 @@
+12-11-2020
+
+Functional updates:
+course specific titan tokens (leaderboard only shows for the specific course)
+Technical updates:
+- skip empty quiz questions
+
+Course content:
+- added quiz for level 3
+- updated slides and literature for level 3
+
+9-11-2020
+
+Course content:
+added programming dapps
+
+
 Version 2.10 5-11-2020 
 
 Functional updates:

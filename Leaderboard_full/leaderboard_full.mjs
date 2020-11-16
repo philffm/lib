@@ -2,6 +2,11 @@ import { } from "../lib/3box.js"; // from "https://unpkg.com/3box/dist/3box.js";
 import {DomList, subscribe, setElementVal, GetJson, GetImageIPFS, FitOneLine} from '../lib/koiosf_util.mjs';
 import {DisplayMessage} from '../viewer_figma/koiosf_messages.mjs';
 import {getWeb3} from '../viewer_figma/koiosf_login.mjs'
+import {GetCourseInfo} from './koiosf_course.mjs';
+
+
+
+
 
 var GlobalLeaderboardList = new DomList("leaderboardentry");
 
@@ -59,6 +64,9 @@ async function NextStep() {
 }
 
 async function getTitanTokenCount() {
+    var tokenname=await GetCourseInfo("token")
+    console.log(tokenname)
+    if (!tokenname) tokenname="Titan" // default token
     var totalTokens = await contracttokenfactory.methods.NrTokens().call();
     var addresspromises = new Array;
     var tokencountpromises = new Array;
@@ -66,7 +74,7 @@ async function getTitanTokenCount() {
         var address=await contracttokenfactory.methods.tokens(i).call();
         var contracttoken = await new web3.eth.Contract(tokenJson.abi, address);
         var name = await contracttoken.methods.name().call();
-        if (name == "Titan") {
+        if (name == tokenname) {
             var decimals = await contracttoken.methods.decimals().call();
             var nrOwners=await contracttoken.methods.nrOwners().call();
             for (var i=13;i<nrOwners;i++) {

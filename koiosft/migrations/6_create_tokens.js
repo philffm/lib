@@ -41,7 +41,7 @@ module.exports = async function(deployer) {
  
 async function CreateNewToken(contract,name,cid) {   		
 	await contract.createToken(name,name,18,cid);		
-    console.log(`Adding Badge ${name} cid=${cid} `)	
+    console.log(`Adding Token ${name} cid=${cid} `)	
 }
 
   
