@@ -1,4 +1,5 @@
 import {LinkClickButton, LinkVisible} from '../../lib/koiosf_util.mjs';
+import {updateDisplayedToken} from '../Transfertokens/koiosf_transfertokens.mjs';
 
 export var SelectedToken;
 
@@ -17,15 +18,18 @@ async function ScrSelectMadeVisible() {
 
 export function setClassicTitan(){
 	SelectedToken="Titan";
-	localStorage.setItem("SelectedToken", SelectedToken);
+    localStorage.setItem("SelectedToken", SelectedToken);
+    updateDisplayedToken();
 }
 
 export function setTitanPD20B(){
 	SelectedToken="TitanPD20B";
-	localStorage.setItem("SelectedToken", SelectedToken);
+    localStorage.setItem("SelectedToken", SelectedToken);
+    updateDisplayedToken();
 }
 
 export function setTitanL320B(){
 	SelectedToken="TitanL320B";
-	localStorage.setItem("SelectedToken", SelectedToken);
+    localStorage.setItem("SelectedToken", SelectedToken);
+    updateDisplayedToken();
 }

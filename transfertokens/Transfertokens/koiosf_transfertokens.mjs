@@ -26,12 +26,12 @@ async function onLoad() {
     var tokenamountlist=getElement("namestextboxtext");    
     tokenamountlist.contentEditable="true"; // make div editable
     tokenamountlist.style.whiteSpace ="pre"; 
-
-    setElementVal("CurrentToken", SelectedToken);
  
     LinkClickButton("confirmbutton",AddElementsToList)
     LinkClickButton("emptylistbutton",EmptyList)  
     LinkClickButton("sendbutton",SendTransaction)
+
+    updateDisplayedToken();
 
     initContractInformation();
 }
@@ -108,7 +108,7 @@ async function SendTransaction() {
         var address=await contracttokenfactory.methods.tokens(i).call();
         var contracttoken = await new web3.eth.Contract(tokenJson.abi, address);
         var name = await contracttoken.methods.name().call();
-        if (name == SelectedToken) {
+        if (name == localStorage.getItem("SelectedToken")) {
             var decimals = await contracttoken.methods.decimals().call();   
             for (var i=0;i<tokenamount.length;i++) {      
                 tokenamount[i] = BigInt(parseInt(tokenamount[i]) * (10**decimals));
@@ -125,4 +125,8 @@ async function GetAddressInformation() {
         tokenamount[i] = getElementVal("transfertokencounttext",entries[i])
         useraddresses[i] = getElementVal("transferuseraddresstext",entries[i])
     }
+}
+
+export function updateDisplayedToken() {
+    setElementVal("CurrentToken", localStorage.getItem("SelectedToken"));
 }
