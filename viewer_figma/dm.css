@@ -12,7 +12,7 @@
 
 
 .head {
-  background-color: 0!important;
+  background-color: rgba(255, 255, 255, 0)!important;
 }
 .info {
   filter: grayscale(1);
