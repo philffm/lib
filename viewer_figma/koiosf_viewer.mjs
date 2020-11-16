@@ -319,9 +319,11 @@ async function SetCurrentCourse() {
 }
 
 function ScrCommunityMadeVisible () {
-    getElement("communitylink").href=globalcommunity
-    getElement("communitylink").target="_blank"
-    getElement("communitylink").textContent=globalcommunity;
+    var cl=getElement("communitylink")
+    if (!cl) {console.error("communitylink not found");return;}
+    cl.href=globalcommunity
+    cl.target="_blank"
+    cl.textContent=globalcommunity;
 }
 
 function SlackJoin() {
