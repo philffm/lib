@@ -37,9 +37,7 @@
 		"quizinfo": "QmXsnYGKXxrAKiZKQ6AHtiwJq19xQoav9ea5Fs6tmB7xtU",
 		"image": "https://ipfs.io/ipfs/QmXG1pdYUovDFZ9jLQx4XqPhg1MYU6ghB1zyVT1jNutZYy",
 		"community":"https://tdfaslack.slack.com",
-		"communityinvite":"https://join.slack.com/t/tdfaslack/shared_invite/zt-f8ghb2gg-e8bUiNK~T1zU6vNvfseIdA",
-        "token":"TitanTD20B"
-        
+		"communityinvite":"https://join.slack.com/t/tdfaslack/shared_invite/zt-f8ghb2gg-e8bUiNK~T1zU6vNvfseIdA"
 	},
 	"bclevel01": {
 		"course": "Mastering Blockchain",
@@ -90,8 +88,7 @@
 		"goal": "More advanced blockchain stuff",
 		"image": "https://ipfs.io/ipfs/QmfAh2yJyHN9pPP93Sm58QrqSnVsw2MyVXQz6vCcgZRZzU",
 		"community":"https://koiosblockcha-ma69869.slack.com",
-		"communityinvite":"https://join.slack.com/t/koiosblockcha-ma69869/shared_invite/zt-i2blvdtj-UODbUG_O1UgjKaIVyjWgHQ",
-		"token": "TitanL320B"
+		"communityinvite":"https://join.slack.com/t/koiosblockcha-ma69869/shared_invite/zt-i2blvdtj-UODbUG_O1UgjKaIVyjWgHQ"		
 	},
 	"datascience01": {
 		"course": "Datascience & Python",
@@ -141,7 +138,7 @@
 		"start": "now",
 		"image": "http://web3examples.com/logo.png",        
 		"community":"https://koiosblockcha-ma69869.slack.com",
-		"communityinvite":"https://join.slack.com/t/koiosblockcha-ma69869/shared_invite/zt-i2blvdtj-UODbUG_O1UgjKaIVyjWgHQ",
-		"token": "TitanPD20B"
+		"communityinvite":"https://join.slack.com/t/koiosblockcha-ma69869/shared_invite/zt-i2blvdtj-UODbUG_O1UgjKaIVyjWgHQ"
+		
 	}
 }
