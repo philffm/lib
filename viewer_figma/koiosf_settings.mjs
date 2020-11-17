@@ -35,7 +35,7 @@ export function setLangEn(){
 	SetglobalplayerSubtitle(currentlang);
 }
 
-//Not very useful
+//Does not seem very useful
 async function ScrSettingsMadeVisible() {
   	console.log("In ScrSettingsMadeVisible");
 }
