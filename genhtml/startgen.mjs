@@ -163,6 +163,7 @@ var mainurl=""
 export function SwitchPage(newpage,callerthis,fbackbutton,target) {    
     console.log(`SwitchPage to ${newpage} from `) 	
     console.log(globalprevpage)
+    AdjustTitle();
     
 if (newpage && newpage.includes("http")) {// must be webpage
         var decoded=decodeURIComponent(newpage)
@@ -526,3 +527,29 @@ export function PrepLazy(domid,floaddirect) {
 	else
 		lazyImages.forEach(lazyImage => lazyImageObserver.observe(lazyImage));
 }      
+
+async function AdjustTitle(){
+    //Inject document title from meta component in Figma
+
+
+    var metaProps = [
+        { name: 'title' },
+        { name: 'author' },
+        { name: 'description' },
+        ]
+
+    var figTitle = document.querySelector('.meta .__title').innerText;
+    var figDesc = document.querySelector('.meta .__desc').innerText;
+    document.querySelector('.meta').remove()
+    document.title = figTitle;
+    var metaDesc = document.createElement('meta');
+    metaDesc.setAttribute('name',metaProps[2]);
+    SetAttributes(metaDesc, {'name': metaProps[2].name, 'content': figDesc});
+    document.getElementsByTagName('head')[0].appendChild(metaDesc);
+}
+
+async function SetAttributes(el, attrs) {
+    for(var key in attrs) {
+      el.setAttribute(key, attrs[key]);
+    }
+  }

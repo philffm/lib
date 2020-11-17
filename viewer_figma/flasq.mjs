@@ -85,7 +85,7 @@ function setDarkmode(){
 
 }
 
-    
+//document.querySelector('.E-Mail').textContent();
             
 
 async function init(){
