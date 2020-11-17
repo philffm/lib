@@ -80,7 +80,7 @@
 		"level": "3",
      "videoinfo": "QmPMMaPkekVioCSPHmERYpJ7EdcUZGdSUNm5yGJEmouRji",
      "duration": "36072",
-		"slides": "Qmbxr99uj6MfFQaPgHCQXeWHBdZ5i1opZXVt18bNsfB9r4",
+		"slides": "QmNyDU4KauqoXQSHQphcbP8M6rsmaZcP5JEssRSULuw7Eg",
         "quizinfo": "QmaTadUToxc7rXBxJQ4FDp51y5o4bdnSmNju28vdZLfWMT",
 		"contributer": "Jordi",
 		"subtitle": "The intermediate level. This is where things get serious.",
@@ -88,8 +88,7 @@
 		"goal": "More advanced blockchain stuff",
 		"image": "https://ipfs.io/ipfs/QmfAh2yJyHN9pPP93Sm58QrqSnVsw2MyVXQz6vCcgZRZzU",
 		"community":"https://koiosblockcha-ma69869.slack.com",
-		"communityinvite":"https://join.slack.com/t/koiosblockcha-ma69869/shared_invite/zt-i2blvdtj-UODbUG_O1UgjKaIVyjWgHQ",
-		"token": "TitanL320B"
+		"communityinvite":"https://join.slack.com/t/koiosblockcha-ma69869/shared_invite/zt-i2blvdtj-UODbUG_O1UgjKaIVyjWgHQ"		
 	},
 	"datascience01": {
 		"course": "Datascience & Python",
@@ -139,7 +138,7 @@
 		"start": "now",
 		"image": "http://web3examples.com/logo.png",        
 		"community":"https://koiosblockcha-ma69869.slack.com",
-		"communityinvite":"https://join.slack.com/t/koiosblockcha-ma69869/shared_invite/zt-i2blvdtj-UODbUG_O1UgjKaIVyjWgHQ",
-		"token": "TitanPD20B"
+		"communityinvite":"https://join.slack.com/t/koiosblockcha-ma69869/shared_invite/zt-i2blvdtj-UODbUG_O1UgjKaIVyjWgHQ"
+		
 	}
 }
