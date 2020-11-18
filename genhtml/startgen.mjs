@@ -534,7 +534,6 @@ export function PrepLazy(domid,floaddirect) {
 async function AdjustTitle(){
     //Inject document title from meta component in Figma
 
-
     var metaProps = [
         { name: 'title' },
         { name: 'author' },
@@ -546,7 +545,6 @@ async function AdjustTitle(){
     document.querySelector('.meta').remove()
     document.title = figTitle;
     var metaDesc = document.createElement('meta');
-    metaDesc.setAttribute('name',metaProps[2]);
     SetAttributes(metaDesc, {'name': metaProps[2].name, 'content': figDesc});
     document.getElementsByTagName('head')[0].appendChild(metaDesc);
 }
