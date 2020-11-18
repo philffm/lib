@@ -1,0 +1,91 @@
+
+.footer {
+    justify-content: center;
+    display: flex;
+    position: relative;
+    padding: 0!important;
+    transform: 0!important;
+    justify-content: space-evenly;
+    background: black;
+}
+
+.footer .col {
+    padding: 0 !important;
+    margin: 10px!important;
+}
+
+[class*="Button"] {
+
+    left: 0!important;
+    top: 0!important;
+}
+
+.contentwrap {
+    left: 50%!important;
+    transform: translateX(-50%);
+}
+ 
+
+.usp.gallery{
+    left: 0 !important;
+    transform: none !important;
+}
+
+.modeselect {
+    left: 0%!important;
+}
+.modeselect--active {
+    /* scale: 1.2 !important; */
+    left: 0%!important;
+    -webkit-transform: scale(1.2)!important;
+
+}
+
+.scr_main {
+    position: fixed;
+    top: 0px !important;
+    left: 0px !important;}
+
+@media (max-width:767px) {
+.footer {
+    flex-direction: column!important;
+}
+
+.footer .col{
+    align-self: center!important;
+}
+
+.flasqbgn.\@svg {
+    height: auto !important;
+    width: auto !important;
+}
+
+
+.glasscaraffe {
+    left: 0 !important;
+    top: 145px !important;
+}
+
+.moon {
+    display: none;
+}
+
+}
+
+@media only screen and (min-width: 600px) {
+
+
+
+} 
+
+
+@media only screen and (min-width: 768px) {
+
+    .flasqbgn.\@svg {
+        height: auto !important;
+        width: 100%!important;
+    
+    }
+
+} 
+

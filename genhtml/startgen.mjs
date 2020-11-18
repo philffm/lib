@@ -3,13 +3,14 @@ import {GetImageIPFS} from '../lib/koiosf_util.mjs';
     console.log("Start script startgen");
     var loadedimages=[]
     
+
     
 window.addEventListener("popstate", function(e) {
 	console.log("Location: " + document.location + ", state: " + JSON.stringify(e.state))
     if (e.state && e.state.page)
         SwitchPage(e.state.page,undefined,true)
+        
 });
-    
     
     
 
@@ -163,11 +164,14 @@ var mainurl=""
 export function SwitchPage(newpage,callerthis,fbackbutton,target) {    
     console.log(`SwitchPage to ${newpage} from `) 	
     console.log(globalprevpage)
+    AdjustTitle();         
+
     
 if (newpage && newpage.includes("http")) {// must be webpage
         var decoded=decodeURIComponent(newpage)
         decoded=decoded.replace("https//","https://") // : seems to be deleted
         console.log(decoded);
+
         if (target) {
            window.open(decoded,target)
            return
@@ -191,7 +195,7 @@ if (newpage && newpage.includes("http")) {// must be webpage
     console.log("history");
     console.log(history);
     if (newpage) {
-        var destdomid=document.getElementsByClassName(newpage)[0];            
+        var destdomid=document.getElementsByClassName(newpage)[0];   
         if (globalprevpage==destdomid) // stays on same page
             return
         
@@ -526,3 +530,28 @@ export function PrepLazy(domid,floaddirect) {
 	else
 		lazyImages.forEach(lazyImage => lazyImageObserver.observe(lazyImage));
 }      
+
+async function AdjustTitle(){
+    //Inject document title from meta component in Figma
+
+
+    var metaProps = [
+        { name: 'title' },
+        { name: 'author' },
+        { name: 'description' },
+        ]
+
+    var figTitle = document.querySelector('.meta .__title').innerText;
+    var figDesc = document.querySelector('.meta .__desc').innerText;
+    document.querySelector('.meta').remove()
+    document.title = figTitle;
+    var metaDesc = document.createElement('meta');
+    SetAttributes(metaDesc, {'name': metaProps[2].name, 'content': figDesc});
+    document.getElementsByTagName('head')[0].appendChild(metaDesc);
+}
+
+async function SetAttributes(el, attrs) {
+    for(var key in attrs) {
+      el.setAttribute(key, attrs[key]);
+    }
+  }
