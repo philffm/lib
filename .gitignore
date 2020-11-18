@@ -14,5 +14,8 @@ Node_ipfs/
 courses/.figma
 courses/.figmadocument
 lib/github/*
+.DS_Store
 
 */*.off/*
+
+
