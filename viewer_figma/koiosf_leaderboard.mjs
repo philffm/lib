@@ -2,6 +2,7 @@ import { } from "../lib/3box.js"; // from "https://unpkg.com/3box/dist/3box.js";
 import {DomList, subscribe, setElementVal, GetJson, GetImageIPFS, FitOneLine} from '../lib/koiosf_util.mjs';
 import {DisplayMessage} from './koiosf_messages.mjs';
 import {getWeb3} from './koiosf_login.mjs'
+import {GetCourseInfo} from './koiosf_course.mjs';
 
 var GlobalLeaderboardList = new DomList("leaderboardentry");
 
@@ -21,8 +22,11 @@ async function onLoad() {
     await initContractInformation();
 }
 
+
+
 async function initContractInformation() {
     subscribe("web3providerfound",NextStep)   
+    
 
     var tokenfactoryinfo="https://koiosonline.github.io/lib/koiosft/build/contracts/ERC20TokenFactory.json"
 	tokenfactoryJson=await GetJson(tokenfactoryinfo)
@@ -54,11 +58,24 @@ async function NextStep() {
     for (var i=0; i<nonStudentsJson.length; i++) {
         nonStudentAddresses[i] = nonStudentsJson[i][0];
     }
-
+    console.log("subscribe setcurrentcourse")
+    subscribe("setcurrentcourse",ReloadTokens) // reload the titan count for the current course
     await ShowLeaderboard();
+    
 }
 
+async function ReloadTokens() {
+    console.log("ReloadTokens")
+    GlobalLeaderboardList.EmptyList()    
+    ranking=[]
+    console.log("ShowLeaderboard");
+    await ShowLeaderboard()
+}    
+
 async function getTitanTokenCount() {
+    var tokenname=await GetCourseInfo("token")
+    if (!tokenname) tokenname="Titan" // default token
+    console.log(`Current token=${tokenname}`)
     var totalTokens = await contracttokenfactory.methods.NrTokens().call();
     var addresspromises = new Array;
     var tokencountpromises = new Array;
@@ -66,7 +83,7 @@ async function getTitanTokenCount() {
         var address=await contracttokenfactory.methods.tokens(i).call();
         var contracttoken = await new web3.eth.Contract(tokenJson.abi, address);
         var name = await contracttoken.methods.name().call();
-        if (name == "Titan") {
+        if (name == tokenname) {
             var decimals = await contracttoken.methods.decimals().call();
             var nrOwners=await contracttoken.methods.nrOwners().call();
             for (var i=13;i<nrOwners;i++) {
@@ -101,10 +118,13 @@ async function getTitanTokenCount() {
     }
 }
 
+
+
+
 async function ShowLeaderboard() {
     await getTitanTokenCount();
     ranking.sort(function(a, b){return b[1]-a[1]});
-    for (var i=0;i<10;i++) {
+    for (var i=0;i<Math.min(10,ranking.length);i++) {
         var target = GlobalLeaderboardList.AddListItem();
         setElementVal("leaderboardtokencounttext",ranking[i][1],target);
         FindProfile(target.getElementsByClassName("leaderboardusertext")[0],ranking[i][0],target.getElementsByClassName("userphoto")[0]);

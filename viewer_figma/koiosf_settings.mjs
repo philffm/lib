@@ -3,9 +3,11 @@ import {LinkToggleButton,subscribe,setElementVal,LinkClickButton,LinkVisible,sle
 import {GetToggleState} from '../genhtml/startgen.mjs'
 import {ToggleCueVisibility} from '../viewer_figma/koiosf_viewer.mjs'
 import {SetglobalplayerSubtitle} from '../viewer_figma/koiosf_viewer.mjs'
+import { getElementVal } from '../lib/koiosf_util.mjs';
 
 var globalplayer=0;
 var globalVideospeed=0;
+var globalVideovolume=0;
 var globalInjectedCSS;
 export var currentlang;
 
@@ -14,7 +16,7 @@ async function asyncloaded() {
     LinkClickButton("videospeed",RotateVideoSpeed);
     subscribe("videoplayerready",VideoPlayerReady);
     LinkClickButton("fontsize",FontSize);
-    LinkToggleButton("audioonoff",AudioOnOff);
+    LinkClickButton("audioonoff",AudioOnOff);
     LinkClickButton("lang_nl", setLangNl);
     LinkClickButton("lang_en", setLangEn);
     LinkToggleButton("darkmodeTog", DarkmodeOnOff);
@@ -33,7 +35,7 @@ export function setLangEn(){
 	SetglobalplayerSubtitle(currentlang);
 }
 
-//Not very useful
+//Does not seem very useful
 async function ScrSettingsMadeVisible() {
   	console.log("In ScrSettingsMadeVisible");
 }
@@ -84,13 +86,38 @@ function FontSize() {
 	}
 }
 
-function AudioOnOff(event) {
-    var fOn=GetToggleState(this,"displayactive");
-    if (!globalplayer) return;
-    if (!fOn)
+async function AudioOnOff() {
+    //var fOn=GetToggleState(this,"displayactive");
+	//if (!globalplayer) return;
+	
+	globalVideovolume++
+    if (globalVideovolume >=5) {
+		globalVideovolume=0;
+		globalplayer.unMute();
+	} 
+    /*if (!fOn)
         globalplayer.unMute();
     else
-        globalplayer.mute();
+		globalplayer.mute();*/
+		
+	if (globalplayer)
+        switch (globalVideovolume) {
+			case 0: globalplayer.setVolume(100);break;
+			case 1: globalplayer.setVolume(75);break;
+			case 2: globalplayer.setVolume(50);break;
+			case 3: globalplayer.setVolume(25);break;
+			case 4: 
+				globalplayer.mute();
+				globalplayer.setVolume(0);
+				setElementVal("__label","muted","audioonoff");
+				setElementVal("Vector1 (Stroke)","","audioonoff");
+				break;
+		}
+		  
+	var imgval = getElementVal("Vector1 (Stroke)", "audioonoff");
+	console.log("imgval :", imgval);
+	await sleep(100); // wait until speed is processed
+	if(globalplayer.getVolume() > 24) setElementVal("__label",globalplayer.getVolume(),"audioonoff")
 }
 
 export function DarkmodeOnOff(event) {

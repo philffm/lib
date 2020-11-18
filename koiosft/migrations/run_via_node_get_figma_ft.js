@@ -4,10 +4,18 @@ const token = fs2.readFileSync(".figma").toString().trim();
 const documentid = fs2.readFileSync(".figmadocument").toString().trim();
 
 
-list=[];
+var list=[];
+
+
+
 
 // module.exports
 var init = async function(deployer) {
+    
+    var listjson=fs2.readFileSync("tokens.json")
+    var list=await JSON.parse(listjson)
+    console.log(list)
+    
     const IpfsHttpClient = require('ipfs-http-client')
     var ipfs = await IpfsHttpClient( /*"http://diskstation:5002"); */ 'https://ipfs.infura.io:5001'); //for infura node
 	var url=`https://api.figma.com/v1/files/${documentid}`  // to export the vectors: ?geometry=paths    
@@ -15,12 +23,17 @@ var init = async function(deployer) {
 console.log(documentpart)
   //  var coursesdata=await fetch("https://gpersoon.com/koios/lib/viewer_figma/courseinfo.json");
   //  var courses=await coursesdata.json()
-    
+
+/*
     cid=await MakeImage(ipfs, "TitanToken",documentpart); 	   list.push({name:"Titan",cid:cid} );
 	cid=await MakeImage(ipfs, "TutorToken",documentpart); 	   list.push({name:"Tutor",cid:cid} );
 	cid=await MakeImage(ipfs, "JediToken",documentpart); 	  list.push({name:"Jedi",cid:cid} );
 	cid=await MakeImage(ipfs, "GaiaToken",documentpart); 	  list.push({name:"Gaia",cid:cid} );
-    cid=await MakeImage(ipfs, "KoiosToken",documentpart); 	  list.push({name:"Koios",cid:cid} );
+    cid=await MakeImage(ipfs, "KoiosToken",documentpart); 	  list.push({name:"Koios",cid:cid} );  
+    cid=await MakeImage(ipfs, "TitanToken",documentpart,"PD20B"); 	   list.push({name:"TitanPD20B",cid:cid} );
+    cid=await MakeImage(ipfs, "TitanToken",documentpart,"L320B"); 	   list.push({name:"TitanL320B",cid:cid} );
+*/    
+    cid=await MakeImage(ipfs, "TitanToken",documentpart,"TD20B"); 	   list.push({name:"TitanTD20B",cid:cid} );
 	
     console.log(list);
 	fs2.writeFile('tokens.json', JSON.stringify(list),console.log)
@@ -81,10 +94,11 @@ function FindObject(objname,figdata) {
 }
 
 
-async function MakeImage(ipfs, name,documentpart) {   
+async function MakeImage(ipfs, name,documentpart,version) {   
+    if (!version) version=""
 	console.log(`Find ${name} in figma`);
 	var g=FindObject(name,documentpart);
-	if (!g) return undefined;
+	if (!g) { console.log(`Can't find ${name}`);return undefined;}
 	console.log(g.id);
 	var imagelink = `https://api.figma.com/v1/images/${documentid}?ids=${g.id}&format=png`       
 	var buffer=await FigmaApiGetImageSrc(imagelink,token)	
@@ -94,8 +108,8 @@ async function MakeImage(ipfs, name,documentpart) {
 	
     var str=`
 {
-    "name": "${name}",
-    "description": "${name}",
+    "name": "${name} ${version}",
+    "description": "${name} ${version}",
     "image": "${image?"ipfs://"+image:""}"
 }
 `   // this shouldn't be neccesary: //ipfs/

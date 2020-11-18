@@ -1,4 +1,34 @@
+16-11-2020
+
+Functional updates:
+- added token TitanTD20B for tdfa
+
+Course content:
+- move sheets for l3 from bc-3 => bc-3.0
+
+Course content:
+12-11-2020
+
+Functional updates:
+course specific titan tokens (leaderboard only shows for the specific course)
+Technical updates:
+- skip empty quiz questions
+
+Course content:
+- added quiz for level 3
+- updated slides and literature for level 3
+
+9-11-2020
+
+Course content:
+added programming dapps
+
+
 Version 2.10 5-11-2020 
+
+Functional updates:
+- Full screen button no longer overlaps with lessons
+- Volume can now be changed (muted/25%/50%/75%/100%)
 
 Layout updates:
  -updated format of badges texts
@@ -8,6 +38,7 @@ Technical updates:
 - github settings / branches / branch protection rules:
     require status checks to pass before merging / require brachnes to be up to date before merging
         build 12.x
+- Cleaned up code to increase readability/minor speed increase
 
 Update 4-11-2020
 
