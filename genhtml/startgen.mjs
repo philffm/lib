@@ -3,13 +3,11 @@ import {GetImageIPFS} from '../lib/koiosf_util.mjs';
     console.log("Start script startgen");
     var loadedimages=[]
     
-
     
 window.addEventListener("popstate", function(e) {
 	console.log("Location: " + document.location + ", state: " + JSON.stringify(e.state))
     if (e.state && e.state.page)
         SwitchPage(e.state.page,undefined,true)
-        
 });
     
     
@@ -165,7 +163,6 @@ export function SwitchPage(newpage,callerthis,fbackbutton,target) {
     console.log(`SwitchPage to ${newpage} from `) 	
     console.log(globalprevpage)
     AdjustTitle();         
-
     
 if (newpage && newpage.includes("http")) {// must be webpage
         var decoded=decodeURIComponent(newpage)
@@ -195,7 +192,7 @@ if (newpage && newpage.includes("http")) {// must be webpage
     console.log("history");
     console.log(history);
     if (newpage) {
-        var destdomid=document.getElementsByClassName(newpage)[0];   
+        var destdomid=document.getElementsByClassName(newpage)[0];
         if (globalprevpage==destdomid) // stays on same page
             return
         

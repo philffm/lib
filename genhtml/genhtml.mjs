@@ -1287,13 +1287,7 @@ function ConvertColor(color) {
             let r=figdata.rectangleCornerRadii;
             strstyle +=`border-radius: ${r[0]}px ${r[1]}px ${r[2]}px ${r[3]}px;`; // (first value applies to top-left corner, second value applies to top-right corner, third value applies to bottom-right corner, and fourth value applies to bottom-left corner)
         }
-        
 
-
-        if (figdata.cornerRadius) {
-            let r=figdata.cornerRadius;
-            strstyle +=`border-radius: ${r[0]}px ${r[1]}px ${r[2]}px ${r[3]}px;`; // (first value applies to top-left corner, second value applies to top-right corner, third value applies to bottom-right corner, and fourth value applies to bottom-left corner)
-        }
         
         if (!fsvg && !fpng) {  // don't draw boxed for svgs and for vector images
             if (figdata.type!="TEXT")
